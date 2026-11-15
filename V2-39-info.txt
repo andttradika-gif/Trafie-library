@@ -1,0 +1,1693 @@
+=== V2-39 INFO ===
+Tanggal: 2026-11-10 18:02
+
+--- php artisan route:list ---
+
+  GET|HEAD  / ....................... landing.v15 ÔÇ║ LandingV15Controller@index
+  GET|HEAD  admin/books ....... admin.books.index ÔÇ║ Admin\BookController@index
+  POST      admin/books ....... admin.books.store ÔÇ║ Admin\BookController@store
+  GET|HEAD  admin/books-lookup admin.books.lookup ÔÇ║ Admin\BookController@lookÔÇª
+  GET|HEAD  admin/books/create admin.books.create ÔÇ║ Admin\BookController@creaÔÇª
+  PUT       admin/books/{book} admin.books.update ÔÇ║ Admin\BookController@updaÔÇª
+  DELETE    admin/books/{book} admin.books.destroy ÔÇ║ Admin\BookController@desÔÇª
+  GET|HEAD  admin/books/{book}/edit admin.books.edit ÔÇ║ Admin\BookController@eÔÇª
+  GET|HEAD  admin/categories admin.categories.index ÔÇ║ Admin\CategoryControlleÔÇª
+  POST      admin/categories admin.categories.store ÔÇ║ Admin\CategoryControlleÔÇª
+  PUT       admin/categories/{category} admin.categories.update ÔÇ║ Admin\CategÔÇª
+  DELETE    admin/categories/{category} admin.categories.destroy ÔÇ║ Admin\CateÔÇª
+  GET|HEAD  admin/categories/{category}/edit admin.categories.edit ÔÇ║ Admin\CaÔÇª
+  GET|HEAD  admin/dashboard .................................. admin.dashboard
+  GET|HEAD  admin/denda . admin.extra.fines ÔÇ║ Admin\AdminExtraController@fines
+  POST      admin/denda/{loan}/lunas admin.extra.fines.pay ÔÇ║ Admin\AdminExtraÔÇª
+  GET|HEAD  admin/eksemplar admin.extra.copies ÔÇ║ Admin\AdminExtraController@cÔÇª
+  GET|HEAD  admin/kalender admin.extra.calendar ÔÇ║ Admin\AdminExtraController@ÔÇª
+  GET|HEAD  admin/loans ....... admin.loans.index ÔÇ║ Admin\LoanController@index
+  PATCH     admin/loans/{loan}/approve admin.loans.approve ÔÇ║ Admin\LoanControÔÇª
+  PATCH     admin/loans/{loan}/fine-paid admin.loans.finepaid ÔÇ║ Admin\LoanConÔÇª
+  PATCH     admin/loans/{loan}/reject admin.loans.reject ÔÇ║ Admin\LoanControllÔÇª
+  PATCH     admin/loans/{loan}/return admin.loans.return ÔÇ║ Admin\LoanControllÔÇª
+  GET|HEAD  admin/log-aktivitas admin.extra.activity ÔÇ║ Admin\AdminExtraControÔÇª
+  GET|HEAD  admin/pembayaran admin.extra.payments ÔÇ║ Admin\AdminExtraControlleÔÇª
+  GET|HEAD  admin/pembayaran-denda admin.fines.index ÔÇ║ Admin\FinePaymentContrÔÇª
+  PUT       admin/pembayaran-denda/metode admin.fines.settings ÔÇ║ Admin\FinePaÔÇª
+  POST      admin/pembayaran-denda/{loan}/tunai admin.fines.cash ÔÇ║ Admin\FineÔÇª
+  PATCH     admin/pembayaran-denda/{payment}/tolak admin.fines.reject ÔÇ║ AdminÔÇª
+  PATCH     admin/pembayaran-denda/{payment}/verifikasi admin.fines.verify ÔÇ║ ÔÇª
+  GET|HEAD  admin/pengembalian admin.extra.returns ÔÇ║ Admin\AdminExtraControllÔÇª
+  GET|HEAD  admin/pengumuman admin.announcements.index ÔÇ║ Admin\AnnouncementCoÔÇª
+  POST      admin/pengumuman admin.announcements.store ÔÇ║ Admin\AnnouncementCoÔÇª
+  DELETE    admin/pengumuman/{announcement} admin.announcements.destroy ÔÇ║ AdmÔÇª
+  PATCH     admin/pengumuman/{announcement}/tampil admin.announcements.toggleÔÇª
+  GET|HEAD  admin/penyelesaian admin.completions.index ÔÇ║ Admin\CompletionContÔÇª
+  PATCH     admin/penyelesaian/{completion}/batalkan admin.completions.revokeÔÇª
+  GET|HEAD  admin/renewals admin.renewals.index ÔÇ║ Admin\RenewalController@indÔÇª
+  PATCH     admin/renewals/{renewal}/approve admin.renewals.approve ÔÇ║ Admin\RÔÇª
+  PATCH     admin/renewals/{renewal}/reject admin.renewals.reject ÔÇ║ Admin\RenÔÇª
+  GET|HEAD  admin/reports . admin.reports.index ÔÇ║ Admin\ReportController@index
+  GET|HEAD  admin/reports/export admin.reports.export ÔÇ║ Admin\ReportControlleÔÇª
+  GET|HEAD  admin/reservasi admin.reservations.index ÔÇ║ Admin\ReservationContrÔÇª
+  PATCH     admin/reservasi/{reservation}/batal admin.reservations.cancel ÔÇ║ AÔÇª
+  PATCH     admin/reservasi/{reservation}/siap admin.reservations.ready ÔÇ║ AdmÔÇª
+  GET|HEAD  admin/reviews . admin.reviews.index ÔÇ║ Admin\ReviewController@index
+  DELETE    admin/reviews/{review} admin.reviews.destroy ÔÇ║ Admin\ReviewControÔÇª
+  PATCH     admin/reviews/{review}/approve admin.reviews.approve ÔÇ║ Admin\ReviÔÇª
+  GET|HEAD  admin/students admin.students.index ÔÇ║ Admin\StudentController@indÔÇª
+  GET|HEAD  admin/students/{student} admin.students.show ÔÇ║ Admin\StudentContrÔÇª
+  PATCH     admin/students/{student}/reset-password admin.students.reset ÔÇ║ AdÔÇª
+  GET|HEAD  admin/tantangan admin.challenges.index ÔÇ║ Admin\ChallengeControlleÔÇª
+  POST      admin/tantangan admin.challenges.store ÔÇ║ Admin\ChallengeControlleÔÇª
+  DELETE    admin/tantangan/{challenge} admin.challenges.destroy ÔÇ║ Admin\ChalÔÇª
+  PATCH     admin/tantangan/{challenge}/status admin.challenges.toggle ÔÇ║ AdmiÔÇª
+  GET|HEAD  admin/ulasan-rating admin.reviewboard.index ÔÇ║ Admin\ReviewBoardCoÔÇª
+  PATCH     admin/ulasan-rating/{review}/sembunyikan admin.reviewboard.hide  ÔÇª
+  GET|HEAD  akun ....................... account.edit ÔÇ║ AccountController@edit
+  POST      akun/foto ............... account.avatar ÔÇ║ AvatarController@update
+  DELETE    akun/foto ....... account.avatar.delete ÔÇ║ AvatarController@destroy
+  PUT       akun/nama ............ account.name ÔÇ║ AccountController@updateName
+  PUT       akun/password account.password ÔÇ║ AccountController@updatePassword
+  GET|HEAD  confirm-password password.confirm ÔÇ║ Auth\ConfirmablePasswordContrÔÇª
+  POST      confirm-password ........ Auth\ConfirmablePasswordController@store
+  GET|HEAD  dashboard .......................... dashboard ÔÇ║ routes/web.php:14
+  POST      email/verification-notification verification.send ÔÇ║ Auth\EmailVerÔÇª
+  GET|HEAD  forgot-password password.request ÔÇ║ Auth\PasswordResetLinkControllÔÇª
+  POST      forgot-password password.email ÔÇ║ Auth\PasswordResetLinkControllerÔÇª
+  GET|HEAD  login ......... login ÔÇ║ Auth\AuthenticatedSessionController@create
+  POST      login .................. Auth\AuthenticatedSessionController@store
+  POST      logout ...... logout ÔÇ║ Auth\AuthenticatedSessionController@destroy
+  PUT       password ........ password.update ÔÇ║ Auth\PasswordController@update
+  GET|HEAD  profile .................... profile.edit ÔÇ║ ProfileController@edit
+  PATCH     profile ................ profile.update ÔÇ║ ProfileController@update
+  DELETE    profile .............. profile.destroy ÔÇ║ ProfileController@destroy
+  GET|HEAD  register ......... register ÔÇ║ Auth\RegisteredUserController@create
+  POST      register ..................... Auth\RegisteredUserController@store
+  POST      reset-password . password.store ÔÇ║ Auth\NewPasswordController@store
+  GET|HEAD  reset-password/{token} password.reset ÔÇ║ Auth\NewPasswordControlleÔÇª
+  GET|HEAD  student/achievements student.achievements.index ÔÇ║ Student\AchieveÔÇª
+  GET|HEAD  student/books . student.books.index ÔÇ║ Student\BookController@index
+  GET|HEAD  student/books/{book} student.books.show ÔÇ║ Student\BookController@ÔÇª
+  POST      student/books/{book}/pinjam student.loans.store ÔÇ║ Student\LoanConÔÇª
+  POST      student/books/{book}/reservasi student.reservations.store ÔÇ║ StudeÔÇª
+  POST      student/books/{book}/review student.reviews.store ÔÇ║ Student\RevieÔÇª
+  GET|HEAD  student/categories student.categories.index ÔÇ║ Student\CategoryConÔÇª
+  GET|HEAD  student/challenges student.challenges.index ÔÇ║ Student\ChallengeCoÔÇª
+  POST      student/challenges/{challenge}/ikut student.challenges.join ÔÇ║ StuÔÇª
+  GET|HEAD  student/dashboard .............................. student.dashboard
+  GET|HEAD  student/denda . student.fines.index ÔÇ║ Student\FineController@index
+  GET|HEAD  student/denda/{loan}/bayar student.fines.pay ÔÇ║ Student\FineControÔÇª
+  POST      student/denda/{loan}/bayar student.fines.store ÔÇ║ Student\FineContÔÇª
+  GET|HEAD  student/favorites student.favorites.index ÔÇ║ Student\FavoriteContrÔÇª
+  POST      student/favorites/{book} student.favorites.toggle ÔÇ║ Student\FavorÔÇª
+  GET|HEAD  student/galaxy student.galaxy.index ÔÇ║ Student\GalaxyController@inÔÇª
+  GET|HEAD  student/loans . student.loans.index ÔÇ║ Student\LoanController@index
+  PATCH     student/loans/{loan}/cancel student.loans.cancel ÔÇ║ Student\LoanCoÔÇª
+  POST      student/loans/{loan}/renew student.loans.renew ÔÇ║ Student\RenewalCÔÇª
+  GET|HEAD  student/notifications student.notifications.index ÔÇ║ Student\NotifÔÇª
+  POST      student/notifications/baca-semua student.notifications.readall ÔÇ║ ÔÇª
+  GET|HEAD  student/notifications/{id}/buka student.notifications.open ÔÇ║ StudÔÇª
+  GET|HEAD  student/pengaturan student.settings.edit ÔÇ║ Student\SettingControlÔÇª
+  PUT       student/pengaturan student.settings.update ÔÇ║ Student\SettingContrÔÇª
+  GET|HEAD  student/pengumuman student.announcements.index ÔÇ║ Student\AnnounceÔÇª
+  GET|HEAD  student/profil student.profile.show ÔÇ║ Student\OverviewController@ÔÇª
+  GET|HEAD  student/reading student.reading.index ÔÇ║ Student\ReadingControllerÔÇª
+  POST      student/reading student.reading.store ÔÇ║ Student\ReadingControllerÔÇª
+  PATCH     student/reading/{progress} student.reading.update ÔÇ║ Student\ReadiÔÇª
+  POST      student/reading/{progress}/selesai student.reading.complete ÔÇ║ StuÔÇª
+  GET|HEAD  student/reservations student.reservations.index ÔÇ║ Student\ReservaÔÇª
+  POST      student/reservations/{reservation}/ambil student.reservations.claÔÇª
+  PATCH     student/reservations/{reservation}/batal student.reservations.canÔÇª
+  GET|HEAD  student/wrapped student.wrapped.index ÔÇ║ Student\WrappedControllerÔÇª
+  POST      tl-live/lumi ............... tl.live.lumi ÔÇ║ Tl\LiveController@lumi
+  GET|HEAD  tl-live/notifs ......... tl.live.notifs ÔÇ║ Tl\LiveController@notifs
+  GET|HEAD  verify-email verification.notice ÔÇ║ Auth\EmailVerificationPromptCoÔÇª
+  GET|HEAD  verify-email/{id}/{hash} verification.verify ÔÇ║ Auth\VerifyEmailCoÔÇª
+
+                                                          Showing [117] routes
+
+
+--- File controller ---
+  app\Http\Controllers\AccountController.php
+  app\Http\Controllers\AvatarController.php
+  app\Http\Controllers\Controller.php
+  app\Http\Controllers\LandingV15Controller.php
+  app\Http\Controllers\ProfileController.php
+  app\Http\Controllers\Admin\AdminExtraController.php
+  app\Http\Controllers\Admin\AnnouncementController.php
+  app\Http\Controllers\Admin\BookController.php
+  app\Http\Controllers\Admin\CategoryController.php
+  app\Http\Controllers\Admin\ChallengeController.php
+  app\Http\Controllers\Admin\CompletionController.php
+  app\Http\Controllers\Admin\FinePaymentController.php
+  app\Http\Controllers\Admin\LoanController.php
+  app\Http\Controllers\Admin\RenewalController.php
+  app\Http\Controllers\Admin\ReportController.php
+  app\Http\Controllers\Admin\ReservationController.php
+  app\Http\Controllers\Admin\ReviewBoardController.php
+  app\Http\Controllers\Admin\ReviewController.php
+  app\Http\Controllers\Admin\SocialController.php
+  app\Http\Controllers\Admin\StudentController.php
+  app\Http\Controllers\Auth\AuthenticatedSessionController.php
+  app\Http\Controllers\Auth\ConfirmablePasswordController.php
+  app\Http\Controllers\Auth\EmailVerificationNotificationController.php
+  app\Http\Controllers\Auth\EmailVerificationPromptController.php
+  app\Http\Controllers\Auth\NewPasswordController.php
+  app\Http\Controllers\Auth\PasswordController.php
+  app\Http\Controllers\Auth\PasswordResetLinkController.php
+  app\Http\Controllers\Auth\RegisteredUserController.php
+  app\Http\Controllers\Auth\VerifyEmailController.php
+  app\Http\Controllers\Student\AchievementController.php
+  app\Http\Controllers\Student\AnnouncementController.php
+  app\Http\Controllers\Student\BookController.php
+  app\Http\Controllers\Student\CategoryController.php
+  app\Http\Controllers\Student\ChallengeController.php
+  app\Http\Controllers\Student\FavoriteController.php
+  app\Http\Controllers\Student\FineController.php
+  app\Http\Controllers\Student\GalaxyController.php
+  app\Http\Controllers\Student\LoanController.php
+  app\Http\Controllers\Student\NotificationController.php
+  app\Http\Controllers\Student\OverviewController.php
+  app\Http\Controllers\Student\ReadingController.php
+  app\Http\Controllers\Student\RenewalController.php
+  app\Http\Controllers\Student\ReservationController.php
+  app\Http\Controllers\Student\ReviewController.php
+  app\Http\Controllers\Student\SettingController.php
+  app\Http\Controllers\Student\WrappedController.php
+  app\Http\Controllers\Tl\LiveController.php
+
+--- File migrasi ---
+  0001_01_01_000000_create_users_table.php
+  0001_01_01_000001_create_cache_table.php
+  0001_01_01_000002_create_jobs_table.php
+  2026_11_08_000001_add_role_and_nisn_to_users_table.php
+  2026_11_08_000002_create_categories_table.php
+  2026_11_08_000003_create_books_table.php
+  2026_11_08_000004_create_loans_table.php
+  2026_11_08_000005_add_fine_to_loans_table.php
+  2026_11_08_000006_create_loan_renewals_table.php
+  2026_11_08_000007_create_book_reviews_table.php
+  2026_11_10_000001_create_reservations_table.php
+  2026_11_10_000002_create_settings_table.php
+  2026_11_10_000003_create_fine_payments_table.php
+  2026_11_10_000004_create_announcements_table.php
+  2026_11_10_000005_create_reading_challenges_table.php
+  2026_11_10_000006_add_avatar_to_users_table.php
+  2026_11_11_000001_create_book_favorites_table.php
+  2026_11_11_000002_create_user_settings_table.php
+  2026_11_11_000003_create_notifications_table.php
+  2026_11_12_000001_create_reading_tables.php
+
+--- File view admin / student ---
+  resources\views\admin\dashboard.blade.php
+  resources\views\admin\announcements\index.blade.php
+  resources\views\admin\books\create.blade.php
+  resources\views\admin\books\edit.blade.php
+  resources\views\admin\books\index.blade.php
+  resources\views\admin\categories\edit.blade.php
+  resources\views\admin\categories\index.blade.php
+  resources\views\admin\challenges\index.blade.php
+  resources\views\admin\completions\index.blade.php
+  resources\views\admin\extra\activity.blade.php
+  resources\views\admin\extra\calendar.blade.php
+  resources\views\admin\extra\copies.blade.php
+  resources\views\admin\extra\fines.blade.php
+  resources\views\admin\extra\payments.blade.php
+  resources\views\admin\extra\returns.blade.php
+  resources\views\admin\fines\index.blade.php
+  resources\views\admin\loans\index.blade.php
+  resources\views\admin\partials\ui-dream.blade.php
+  resources\views\admin\partials\ui-gloss.blade.php
+  resources\views\admin\partials\ui-magic.blade.php
+  resources\views\admin\partials\ui.blade.php
+  resources\views\admin\renewals\index.blade.php
+  resources\views\admin\reports\index.blade.php
+  resources\views\admin\reservations\index.blade.php
+  resources\views\admin\reviewboard\index.blade.php
+  resources\views\admin\reviews\index.blade.php
+  resources\views\admin\students\index.blade.php
+  resources\views\admin\students\show.blade.php
+  resources\views\admin\tantangan\index.blade.php
+  resources\views\admin\ulasan\index.blade.php
+  resources\views\components\admin-layout.blade.php
+  resources\views\components\application-logo.blade.php
+  resources\views\components\auth-session-status.blade.php
+  resources\views\components\danger-button.blade.php
+  resources\views\components\dropdown-link.blade.php
+  resources\views\components\dropdown.blade.php
+  resources\views\components\input-error.blade.php
+  resources\views\components\input-label.blade.php
+  resources\views\components\modal.blade.php
+  resources\views\components\nav-link.blade.php
+  resources\views\components\primary-button.blade.php
+  resources\views\components\responsive-nav-link.blade.php
+  resources\views\components\secondary-button.blade.php
+  resources\views\components\shell.blade.php
+  resources\views\components\student-layout.blade.php
+  resources\views\components\text-input.blade.php
+  resources\views\student\dashboard.blade.php
+  resources\views\student\achievements\index.blade.php
+  resources\views\student\announcements\index.blade.php
+  resources\views\student\books\index.blade.php
+  resources\views\student\books\show.blade.php
+  resources\views\student\categories\index.blade.php
+  resources\views\student\challenges\index.blade.php
+  resources\views\student\favorites\index.blade.php
+  resources\views\student\fines\index.blade.php
+  resources\views\student\fines\pay.blade.php
+  resources\views\student\galaxy\index.blade.php
+  resources\views\student\loans\index.blade.php
+  resources\views\student\notifications\index.blade.php
+  resources\views\student\profile\show.blade.php
+  resources\views\student\reading\index.blade.php
+  resources\views\student\reservations\index.blade.php
+  resources\views\student\settings\edit.blade.php
+  resources\views\student\wrapped\index.blade.php
+
+################ routes\web.php ################
+<?php
+
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return Auth::user()->role === 'admin'
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('student.dashboard');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/akun', [AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/akun/nama', [AccountController::class, 'updateName'])->name('account.name');
+    Route::put('/akun/password', [AccountController::class, 'updatePassword'])->name('account.password');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        require base_path('routes/admin_extra.php');
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+    Route::get('/categories', [Admin\CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [Admin\CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [Admin\CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    Route::get('/books', [Admin\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [Admin\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [Admin\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [Admin\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [Admin\BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [Admin\BookController::class, 'destroy'])->name('books.destroy');
+
+    Route::get('/loans', [Admin\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/approve', [Admin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::patch('/loans/{loan}/reject', [Admin\LoanController::class, 'reject'])->name('loans.reject');
+    Route::patch('/loans/{loan}/return', [Admin\LoanController::class, 'returnBook'])->name('loans.return');
+    Route::patch('/loans/{loan}/fine-paid', [Admin\LoanController::class, 'finePaid'])->name('loans.finepaid');
+
+    Route::get('/renewals', [Admin\RenewalController::class, 'index'])->name('renewals.index');
+    Route::patch('/renewals/{renewal}/approve', [Admin\RenewalController::class, 'approve'])->name('renewals.approve');
+    Route::patch('/renewals/{renewal}/reject', [Admin\RenewalController::class, 'reject'])->name('renewals.reject');
+
+    Route::get('/reviews', [Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('/reviews/{review}/approve', [Admin\ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('/students', [Admin\StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/{student}', [Admin\StudentController::class, 'show'])->name('students.show');
+    Route::patch('/students/{student}/reset-password', [Admin\StudentController::class, 'resetPassword'])->name('students.reset');
+
+    Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [Admin\ReportController::class, 'export'])->name('reports.export');
+});
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::view('/dashboard', 'student.dashboard')->name('dashboard');
+
+    Route::get('/books', [Student\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/{book}', [Student\BookController::class, 'show'])->name('books.show');
+    Route::post('/books/{book}/review', [Student\ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::post('/books/{book}/pinjam', [Student\LoanController::class, 'store'])->name('loans.store');
+    Route::get('/loans', [Student\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/cancel', [Student\LoanController::class, 'cancel'])->name('loans.cancel');
+    Route::post('/loans/{loan}/renew', [Student\RenewalController::class, 'store'])->name('loans.renew');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/books-lookup', [\App\Http\Controllers\Admin\BookController::class, 'lookup'])->middleware('throttle:30,1')->name('books.lookup');
+});
+
+require __DIR__ . '/auth.php';
+
+// V2-15: landing page Trafie-library (didaftarkan terakhir, jadi menimpa route '/' lama)
+Route::get('/', [\App\Http\Controllers\LandingV15Controller::class, 'index'])->name('landing.v15');
+
+require __DIR__ . '/trafie.php';
+require __DIR__ . '/student-extra.php';
+require __DIR__ . '/reading.php';
+
+require base_path('routes/tl_live.php');
+
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Announcement.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Announcement extends Model
+{
+    protected $fillable = ['title', 'body', 'type', 'is_pinned', 'is_active', 'published_at', 'ends_on', 'created_by'];
+
+    protected function casts(): array
+    {
+        return ['is_pinned' => 'boolean', 'is_active' => 'boolean', 'published_at' => 'datetime', 'ends_on' => 'date'];
+    }
+
+    public const TYPES = ['info' => 'Informasi', 'penting' => 'Penting', 'event' => 'Acara'];
+
+    public function scopeLive($q)
+    {
+        return $q->where('is_active', true)->where(function ($w) {
+            $w->whereNull('ends_on')->orWhereDate('ends_on', '>=', today());
+        });
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Book.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Book extends Model
+{
+    protected $fillable = [
+        'isbn', 'title', 'slug', 'cover', 'author', 'publisher', 'publication_year',
+        'pages', 'description', 'category_id', 'language', 'shelf_location',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function copies()
+    {
+        return $this->hasMany(BookCopy::class);
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(BookReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(BookReview::class)->whereNotNull('approved_at');
+    }
+
+    public function getCoverUrlAttribute(): ?string
+    {
+        return $this->cover ? asset('storage/' . $this->cover) : null;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\BookCopy.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookCopy extends Model
+{
+    protected $fillable = ['book_id', 'copy_code', 'condition', 'procurement_date', 'status'];
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\BookFavorite.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookFavorite extends Model
+{
+    protected $fillable = ['user_id', 'book_id'];
+
+    public function book() { return $this->belongsTo(Book::class); }
+    public function user() { return $this->belongsTo(User::class); }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\BookReview.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookReview extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'rating', 'body', 'approved_at'];
+
+    protected function casts(): array
+    {
+        return ['approved_at' => 'datetime'];
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->whereNotNull('approved_at');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Category.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $fillable = ['name', 'slug', 'description'];
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Challenge.php ################
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Challenge extends Model {
+    protected $guarded = [];
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\FinePayment.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class FinePayment extends Model
+{
+    protected $fillable = ['loan_id', 'user_id', 'amount', 'method', 'status', 'proof_path', 'reference', 'note', 'reject_reason', 'verified_by', 'verified_at'];
+
+    protected function casts(): array
+    {
+        return ['verified_at' => 'datetime'];
+    }
+
+    public const METHODS = ['cash' => 'Tunai', 'ewallet' => 'E-Wallet', 'qris' => 'QRIS'];
+    public const LABELS = ['Pending' => 'Menunggu Verifikasi', 'Verified' => 'Terverifikasi', 'Rejected' => 'Ditolak'];
+
+    public function loan() { return $this->belongsTo(Loan::class); }
+    public function user() { return $this->belongsTo(User::class); }
+    public function verifier() { return $this->belongsTo(User::class, 'verified_by'); }
+
+    public function getMethodLabelAttribute(): string
+    {
+        return self::METHODS[$this->method] ?? $this->method;
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+
+    public function getProofUrlAttribute(): ?string
+    {
+        return $this->proof_path ? asset('storage/' . $this->proof_path) : null;
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Loan.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Loan extends Model
+{
+    protected $fillable = [
+        'user_id', 'book_id', 'book_copy_id', 'duration_days', 'status',
+        'requested_at', 'approved_at', 'approved_by', 'due_date', 'returned_at',
+        'fine_amount', 'fine_paid_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'requested_at' => 'datetime',
+            'approved_at'  => 'datetime',
+            'returned_at'  => 'datetime',
+            'fine_paid_at' => 'datetime',
+            'due_date'     => 'date',
+        ];
+    }
+
+    public const LABELS = [
+        'Pending'   => 'Menunggu',
+        'Borrowed'  => 'Dipinjam',
+        'Returned'  => 'Dikembalikan',
+        'Rejected'  => 'Ditolak',
+        'Cancelled' => 'Dibatalkan',
+    ];
+
+    public static function rupiah($n): string
+    {
+        return 'Rp ' . number_format((float) $n, 0, ',', '.');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+
+    public function copy()
+    {
+        return $this->belongsTo(BookCopy::class, 'book_copy_id');
+    }
+
+    public function renewals()
+    {
+        return $this->hasMany(LoanRenewal::class);
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->status === 'Borrowed' && $this->due_date && $this->due_date->copy()->endOfDay()->isPast();
+    }
+
+    // Jumlah hari keterlambatan (berjalan kalau masih dipinjam, tetap kalau sudah dikembalikan)
+    public function getLateDaysAttribute(): int
+    {
+        if (!in_array($this->status, ['Borrowed', 'Returned']) || !$this->due_date) {
+            return 0;
+        }
+        $end = $this->returned_at ?? now();
+        $due = $this->due_date->copy()->endOfDay();
+        if (!$end->greaterThan($due)) {
+            return 0;
+        }
+        return (int) ceil($due->diffInHours($end) / 24);
+    }
+
+    // Denda: berjalan kalau masih dipinjam, tetap (tersimpan) kalau sudah dikembalikan
+    public function getCurrentFineAttribute(): int
+    {
+        if ($this->status === 'Borrowed') {
+            return $this->late_days * (int) config('library.fine_per_day');
+        }
+        if ($this->status === 'Returned') {
+            return (int) $this->fine_amount;
+        }
+        return 0;
+    }
+
+    // Status perpanjangan: none, pending, done, overdue, can
+    public function renewalState(): string
+    {
+        if ($this->status !== 'Borrowed') {
+            return 'none';
+        }
+        $r = $this->renewals;
+        if ($r->where('status', 'Pending')->isNotEmpty()) {
+            return 'pending';
+        }
+        if ($r->where('status', 'Approved')->isNotEmpty()) {
+            return 'done';
+        }
+        if ($this->isOverdue()) {
+            return 'overdue';
+        }
+        return 'can';
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\LoanRenewal.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class LoanRenewal extends Model
+{
+    protected $fillable = ['loan_id', 'extra_days', 'status', 'decided_by', 'decided_at'];
+
+    protected function casts(): array
+    {
+        return ['decided_at' => 'datetime'];
+    }
+
+    public const LABELS = [
+        'Pending'  => 'Menunggu',
+        'Approved' => 'Disetujui',
+        'Rejected' => 'Ditolak',
+    ];
+
+    public function loan()
+    {
+        return $this->belongsTo(Loan::class);
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\ReadingChallenge.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ReadingChallenge extends Model
+{
+    protected $fillable = ['title', 'description', 'starts_on', 'ends_on', 'target_books', 'category_id', 'reward_xp', 'badge_name', 'status', 'created_by'];
+
+    protected function casts(): array
+    {
+        return ['starts_on' => 'date', 'ends_on' => 'date'];
+    }
+
+    public const LABELS = ['Active' => 'Aktif', 'Closed' => 'Ditutup'];
+
+    public function category() { return $this->belongsTo(Category::class); }
+
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'challenge_participants', 'challenge_id', 'user_id')->withPivot(['joined_at', 'completed_at']);
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\ReadingCompletion.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ReadingCompletion extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'loan_id', 'rating', 'reflection', 'completed_at', 'status', 'revoked_at'];
+
+    protected function casts(): array
+    {
+        return ['completed_at' => 'datetime', 'revoked_at' => 'datetime'];
+    }
+
+    public function user() { return $this->belongsTo(User::class); }
+    public function book() { return $this->belongsTo(Book::class); }
+    public function loan() { return $this->belongsTo(Loan::class); }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\ReadingLog.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ReadingLog extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'log_date', 'pages_read'];
+
+    protected function casts(): array
+    {
+        return ['log_date' => 'date'];
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\ReadingProgress.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ReadingProgress extends Model
+{
+    protected $table = 'reading_progress';
+    protected $fillable = ['user_id', 'book_id', 'status', 'current_page', 'total_pages', 'started_at', 'last_activity_at', 'completion_requested_at'];
+
+    protected function casts(): array
+    {
+        return ['started_at' => 'datetime', 'last_activity_at' => 'datetime', 'completion_requested_at' => 'datetime'];
+    }
+
+    public const LABELS = ['Want' => 'Want to Read', 'Reading' => 'Currently Reading', 'Paused' => 'Paused', 'Completed' => 'Completed'];
+
+    public function book() { return $this->belongsTo(Book::class); }
+
+    public function getPercentAttribute(): int
+    {
+        if ($this->status === 'Completed') { return 100; }
+        if (!$this->total_pages) { return 0; }
+        return (int) min(100, round($this->current_page / $this->total_pages * 100));
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Reservation.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Reservation extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'book_copy_id', 'status', 'ready_at', 'expires_at'];
+
+    protected function casts(): array
+    {
+        return ['ready_at' => 'datetime', 'expires_at' => 'datetime'];
+    }
+
+    public const LABELS = [
+        'Waiting'   => 'Menunggu',
+        'Ready'     => 'Siap Diambil',
+        'Claimed'   => 'Diajukan',
+        'Fulfilled' => 'Selesai',
+        'Expired'   => 'Kedaluwarsa',
+        'Cancelled' => 'Dibatalkan',
+    ];
+
+    public function user() { return $this->belongsTo(User::class); }
+    public function book() { return $this->belongsTo(Book::class); }
+    public function copy() { return $this->belongsTo(BookCopy::class, 'book_copy_id'); }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Review.php ################
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Review extends Model {
+    protected $guarded = [];
+    public function user() { return $this->belongsTo(User::class); }
+    public function book() { return $this->belongsTo(Book::class); }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\Setting.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Setting extends Model
+{
+    protected $primaryKey = 'key';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $fillable = ['key', 'value'];
+
+    public static function read(string $key, $default = null)
+    {
+        $v = static::query()->where('key', $key)->value('value');
+        return ($v === null || $v === '') ? $default : $v;
+    }
+
+    public static function put(string $key, $value): void
+    {
+        static::updateOrCreate(['key' => $key], ['value' => $value]);
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\User.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable;
+
+    // 'role' sengaja TIDAK ada di fillable: siswa tidak bisa mengubah dirinya jadi admin
+    protected $fillable = ['name', 'email', 'nisn', 'password'];
+
+    protected $hidden = ['password', 'remember_token'];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\UserAchievement.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserAchievement extends Model
+{
+    protected $fillable = ['user_id', 'code', 'unlocked_at'];
+
+    protected function casts(): array
+    {
+        return ['unlocked_at' => 'datetime'];
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\UserSetting.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserSetting extends Model
+{
+    protected $fillable = ['user_id', 'default_duration', 'n_due', 'n_reservation', 'n_fines', 'n_announcements'];
+
+    protected function casts(): array
+    {
+        return ['n_due' => 'boolean', 'n_reservation' => 'boolean', 'n_fines' => 'boolean', 'n_announcements' => 'boolean'];
+    }
+
+    public static function forUser(int $userId): self
+    {
+        return static::firstOrNew(['user_id' => $userId], ['default_duration' => 7, 'n_due' => true, 'n_reservation' => true, 'n_fines' => true, 'n_announcements' => true]);
+    }
+
+    public static function wants(int $userId, string $cat): bool
+    {
+        $map = ['due' => 'n_due', 'reservation' => 'n_reservation', 'fines' => 'n_fines', 'announcements' => 'n_announcements'];
+        if (!isset($map[$cat])) { return true; }
+        $row = static::where('user_id', $userId)->first();
+        return $row ? (bool) $row->{$map[$cat]} : true;
+    }
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\app\Models\XpTransaction.php ################
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class XpTransaction extends Model
+{
+    protected $fillable = ['user_id', 'amount', 'reason', 'ref', 'note'];
+
+    public const REASONS = ['completion' => 'Buku selesai', 'review' => 'Ulasan', 'rating' => 'Rating', 'new_genre' => 'Genre baru', 'challenge' => 'Tantangan', 'revoke' => 'Dibatalkan admin'];
+}
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\0001_01_01_000000_create_users_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
+    }
+};
+
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000001_add_role_and_nisn_to_users_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role', 20)->default('student')->after('email');
+            $table->string('nisn', 20)->nullable()->unique()->after('role');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['role', 'nisn']);
+        });
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000002_create_categories_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('categories');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000003_create_books_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('isbn', 20)->nullable()->unique();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('cover')->nullable();
+            $table->string('author');
+            $table->string('publisher');
+            $table->unsignedSmallInteger('publication_year');
+            $table->unsignedInteger('pages')->nullable();
+            $table->text('description')->nullable();
+            $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
+            $table->string('language', 50)->default('Indonesia');
+            $table->string('shelf_location', 50)->nullable();
+            $table->timestamps();
+            $table->index('title');
+            $table->index('author');
+        });
+
+        Schema::create('book_copies', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->string('copy_code')->unique();
+            $table->string('condition', 30)->default('Bagus');
+            $table->date('procurement_date')->nullable();
+            $table->string('status', 30)->default('Available');
+            $table->timestamps();
+            $table->index('status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_copies');
+        Schema::dropIfExists('books');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000004_create_loans_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('loans', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->foreignId('book_copy_id')->nullable()->constrained('book_copies')->nullOnDelete();
+            $table->unsignedTinyInteger('duration_days');
+            $table->string('status', 20)->default('Pending'); // Pending, Borrowed, Returned, Rejected, Cancelled
+            $table->timestamp('requested_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->date('due_date')->nullable();
+            $table->timestamp('returned_at')->nullable();
+            $table->timestamps();
+            $table->index('status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('loans');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000005_add_fine_to_loans_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::table('loans', function (Blueprint $table) {
+            $table->unsignedInteger('fine_amount')->default(0)->after('returned_at');
+            $table->timestamp('fine_paid_at')->nullable()->after('fine_amount');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('loans', function (Blueprint $table) {
+            $table->dropColumn(['fine_amount', 'fine_paid_at']);
+        });
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000006_create_loan_renewals_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('loan_renewals', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('loan_id')->constrained('loans')->cascadeOnDelete();
+            $table->unsignedTinyInteger('extra_days');
+            $table->string('status', 20)->default('Pending'); // Pending, Approved, Rejected
+            $table->foreignId('decided_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('decided_at')->nullable();
+            $table->timestamps();
+            $table->index('status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('loan_renewals');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_08_000007_create_book_reviews_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('book_reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->unsignedTinyInteger('rating');
+            $table->string('body', 500);
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamps();
+            $table->unique(['user_id', 'book_id']);
+            $table->index('approved_at');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_reviews');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000001_create_reservations_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('reservations', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_copy_id')->nullable()->constrained('book_copies')->nullOnDelete();
+            $t->string('status', 20)->default('Waiting');
+            $t->timestamp('ready_at')->nullable();
+            $t->timestamp('expires_at')->nullable();
+            $t->timestamps();
+            $t->index(['book_id', 'status']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('reservations');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000002_create_settings_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('settings', function (Blueprint $t) {
+            $t->string('key')->primary();
+            $t->text('value')->nullable();
+            $t->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('settings');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000003_create_fine_payments_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('fine_payments', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('loan_id')->constrained('loans')->cascadeOnDelete();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->unsignedInteger('amount');
+            $t->string('method', 20);
+            $t->string('status', 20)->default('Pending');
+            $t->string('proof_path')->nullable();
+            $t->string('reference', 100)->nullable();
+            $t->string('note', 255)->nullable();
+            $t->string('reject_reason', 255)->nullable();
+            $t->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
+            $t->timestamp('verified_at')->nullable();
+            $t->timestamps();
+            $t->index(['loan_id', 'status']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('fine_payments');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000004_create_announcements_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('announcements', function (Blueprint $t) {
+            $t->id();
+            $t->string('title', 150);
+            $t->text('body');
+            $t->string('type', 20)->default('info');
+            $t->boolean('is_pinned')->default(false);
+            $t->boolean('is_active')->default(true);
+            $t->timestamp('published_at')->nullable();
+            $t->date('ends_on')->nullable();
+            $t->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $t->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('announcements');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000005_create_reading_challenges_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('reading_challenges', function (Blueprint $t) {
+            $t->id();
+            $t->string('title', 150);
+            $t->text('description')->nullable();
+            $t->date('starts_on');
+            $t->date('ends_on');
+            $t->unsignedSmallInteger('target_books')->default(3);
+            $t->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $t->unsignedSmallInteger('reward_xp')->default(50);
+            $t->string('badge_name', 60)->nullable();
+            $t->string('status', 20)->default('Active');
+            $t->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $t->timestamps();
+        });
+
+        Schema::create('challenge_participants', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('challenge_id')->constrained('reading_challenges')->cascadeOnDelete();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->timestamp('joined_at')->nullable();
+            $t->timestamp('completed_at')->nullable();
+            $t->timestamps();
+            $t->unique(['challenge_id', 'user_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('challenge_participants');
+        Schema::dropIfExists('reading_challenges');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_10_000006_add_avatar_to_users_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        if (!Schema::hasColumn('users', 'avatar')) {
+            Schema::table('users', function (Blueprint $t) {
+                $t->string('avatar')->nullable()->after('nisn');
+            });
+        }
+    }
+
+    public function down(): void
+    {
+        if (Schema::hasColumn('users', 'avatar')) {
+            Schema::table('users', function (Blueprint $t) {
+                $t->dropColumn('avatar');
+            });
+        }
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_11_000001_create_book_favorites_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('book_favorites', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $t->timestamps();
+            $t->unique(['user_id', 'book_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_favorites');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_11_000002_create_user_settings_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('user_settings', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+            $t->unsignedTinyInteger('default_duration')->default(7);
+            $t->boolean('n_due')->default(true);
+            $t->boolean('n_reservation')->default(true);
+            $t->boolean('n_fines')->default(true);
+            $t->boolean('n_announcements')->default(true);
+            $t->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('user_settings');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_11_000003_create_notifications_table.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        if (Schema::hasTable('notifications')) { return; }
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('notifications');
+    }
+};
+
+################ C:\xampp\htdocs\Trafie-library-v2\database\migrations\2026_11_12_000001_create_reading_tables.php ################
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('reading_progress', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $t->string('status', 20)->default('Reading');
+            $t->unsignedInteger('current_page')->default(0);
+            $t->unsignedInteger('total_pages')->nullable();
+            $t->timestamp('started_at')->nullable();
+            $t->timestamp('last_activity_at')->nullable();
+            $t->timestamp('completion_requested_at')->nullable();
+            $t->timestamps();
+            $t->unique(['user_id', 'book_id']);
+        });
+
+        Schema::create('reading_logs', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $t->date('log_date');
+            $t->unsignedInteger('pages_read')->default(0);
+            $t->timestamps();
+            $t->unique(['user_id', 'book_id', 'log_date']);
+        });
+
+        Schema::create('reading_completions', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $t->foreignId('loan_id')->nullable()->constrained('loans')->nullOnDelete();
+            $t->unsignedTinyInteger('rating');
+            $t->text('reflection');
+            $t->timestamp('completed_at');
+            $t->string('status', 20)->default('Verified');
+            $t->timestamp('revoked_at')->nullable();
+            $t->timestamps();
+            $t->unique(['user_id', 'book_id']);
+        });
+
+        Schema::create('xp_transactions', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->integer('amount');
+            $t->string('reason', 40);
+            $t->string('ref', 60);
+            $t->string('note', 255)->nullable();
+            $t->timestamps();
+            $t->unique(['user_id', 'reason', 'ref']);
+        });
+
+        Schema::create('user_achievements', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $t->string('code', 40);
+            $t->timestamp('unlocked_at');
+            $t->timestamps();
+            $t->unique(['user_id', 'code']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('user_achievements');
+        Schema::dropIfExists('xp_transactions');
+        Schema::dropIfExists('reading_completions');
+        Schema::dropIfExists('reading_logs');
+        Schema::dropIfExists('reading_progress');
+    }
+};
+
+################ resources\views\components\admin-layout.blade.php ################
+@props(['title' => 'Dashboard'])
+@php
+    $__routes = \Illuminate\Support\Facades\Route::getRoutes();
+    $__names = array_keys($__routes->getRoutesByName());
+    $__ok = function ($n) use ($__routes) {
+        $r = $__routes->getByName($n);
+        return $r && ! str_contains($r->uri(), '{') && in_array('GET', $r->methods());
+    };
+    $__find = function (array $keys, array $avoid = []) use ($__names, $__ok) {
+        $bad = array_merge($avoid, ['.create', '.edit', '.show', '.store', '.update', '.destroy', '.export', '.pdf', '.print', '.approve', '.reject']);
+        foreach ([true, false] as $strict) {
+            foreach ($keys as $k) {
+                foreach ($__names as $n) {
+                    if (! str_starts_with($n, 'admin.') || ! str_contains($n, $k)) { continue; }
+                    $skip = false;
+                    foreach ($bad as $a) { if (str_contains($n, $a)) { $skip = true; break; } }
+                    if ($skip) { continue; }
+                    if ($strict && ! str_ends_with($n, '.index')) { continue; }
+                    if ($__ok($n)) { return $n; }
+                }
+            }
+        }
+        return null;
+    };
+    $__menu = [
+        ['Dashboard', 'home', ['dashboard'], []],
+        ['Manajemen Buku', 'book', ['books', 'buku'], ['copies', 'copy', 'eksemplar']],
+        ['Kategori Buku', 'grid', ['categories', 'kategori'], []],
+        ['Eksemplar Buku', 'layers', ['copies', 'copy', 'eksemplar'], []],
+        ['Manajemen Siswa', 'users', ['students', 'siswa', 'users'], []],
+        ['Peminjaman', 'bookmark', ['loans', 'peminjaman'], []],
+        ['Reservasi & Waiting List', 'clock', ['reservations', 'reservasi', 'waiting'], []],
+        ['Perpanjangan', 'refresh', ['extension', 'renewal', 'perpanjang'], []],
+        ['Pengembalian', 'undo', ['returns', 'pengembalian'], []],
+        ['Denda', 'coin', ['fines', 'denda'], []],
+        ['Pembayaran', 'card', ['payments', 'pembayaran'], []],
+        ['Ulasan & Rating', 'star', ['reviews', 'ulasan', 'ratings'], []],
+        ['Tantangan Membaca', 'award', ['challenges', 'tantangan'], []],
+        ['Pengumuman', 'megaphone', ['announcements', 'pengumuman'], []],
+        ['Laporan & Statistik', 'chart', ['reports', 'laporan', 'statistik'], []],
+        ['Kalender', 'calendar', ['calendar', 'kalender'], []],
+        ['Log Aktivitas', 'list', ['activity', 'logs', 'audit'], []],
+        ['Pengaturan', 'cog', ['settings', 'profile', 'account', 'akun'], []],
+    ];
+    $__items = [];
+    foreach ($__menu as [$__label, $__icon, $__keys, $__avoid]) {
+        if ($__label === 'Dashboard') {
+            $__r = \Illuminate\Support\Facades\Route::has('admin.dashboard') ? 'admin.dashboard' : $__find($__keys);
+            $__m = 'admin.dashboard';
+        } else {
+            $__r = $__find($__keys, $__avoid);
+            $__m = $__r ? preg_replace('/\.[^.]+$/', '.*', $__r) : null;
+        }
+        $__items[] = $__r
+            ? ['route' => $__r, 'match' => $__m, 'label' => $__label, 'icon' => $__icon]
+            : ['label' => $__label, 'icon' => $__icon, 'soon' => true];
+    }
+@endphp
+<x-shell role="Administrator" :title="$title" :items="$__items">
+    {{ $slot }}
+</x-shell>
+
+
+################ app\Http\Middleware\RoleMiddleware.php ################
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class RoleMiddleware
+{
+    public function handle(Request $request, Closure $next, string $role): Response
+    {
+        if (!$request->user() || $request->user()->role !== $role) {
+            abort(403, 'Kamu tidak punya akses ke halaman ini.');
+        }
+        return $next($request);
+    }
+}
+
+################ bootstrap\app.php ################
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias(['role' => \App\Http\Middleware\RoleMiddleware::class]);
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })->create();
+

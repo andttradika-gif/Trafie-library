@@ -1,0 +1,83 @@
+﻿=== FILE: app\Http\Controllers\LandingV15Controller.php (landing-trafie di baris 122) ===
+  52:                 } elseif (Schema::hasColumn('reviews', 'is_approved')) {
+  53:                     $q->where('is_approved', 1);
+  54:                     $reviewsOk = true;
+  55:                 }
+  56:                 if ($reviewsOk) {
+  57:                     $all = $q->get();
+  58:                     if ($all->count() > 0) {
+  59:                         $stats['satisfaction'] = (int) round($all->avg('rating') / 5 * 100);
+  60:                     }
+  61:                     if (Schema::hasColumn('reviews', 'book_id')) {
+  62:                         foreach ($all->groupBy('book_id') as $bid => $grp) {
+  63:                             $ratingByBook[$bid] = ['avg' => round($grp->avg('rating'), 1), 'n' => $grp->count()];
+  64:                         }
+  65:                     }
+  66:                     $textCol = $this->pick('reviews', ['comment', 'body', 'review', 'content', 'ulasan']);
+  67:                     foreach ($all->sortByDesc('id')->take(3) as $r) {
+  68:                         $name = 'Pembaca';
+  69:                         if (Schema::hasColumn('reviews', 'user_id') && Schema::hasTable('users')) {
+  70:                             $u = DB::table('users')->where('id', $r->user_id)->first();
+  71:                             if ($u && isset($u->name)) $name = $u->name;
+  72:                         }
+  73:                         $reviews[] = [
+  74:                             'name' => $name,
+  75:                             'text' => $textCol ? ($r->$textCol ?? '') : '',
+  76:                             'rating' => (int) $r->rating,
+  77:                         ];
+  78:                     }
+  79:                 }
+  80:             }
+  81: 
+  82:             // ---- buku
+  83:             if (Schema::hasTable('books')) {
+  84:                 $t = $this->pick('books', ['title', 'judul', 'name']);
+  85:                 $a = $this->pick('books', ['author', 'penulis']);
+  86:                 $c = $this->pick('books', ['cover', 'cover_path', 'cover_image', 'image', 'gambar', 'thumbnail']);
+  87:                 $k = $this->pick('books', ['category', 'kategori', 'genre']);
+  88:                 $stats['books'] = DB::table('books')->count();
+  89:                 foreach (DB::table('books')->orderByDesc('id')->limit(10)->get() as $b) {
+  90:                     $kat = $k ? $b->$k : null;
+  91:                     $books[] = [
+  92:                         'title' => $t ? $b->$t : 'Tanpa judul',
+  93:                         'author' => $a ? $b->$a : '',
+  94:                         'cover' => $c ? $this->coverUrl($b->$c) : null,
+  95:                         'category' => is_scalar($kat) && !is_numeric($kat) ? $kat : null,
+  96:                         'rating' => $ratingByBook[$b->id] ?? null,
+  97:                     ];
+  98:                 }
+  99:             }
+ 100: 
+ 101:             // ---- siswa & peminjaman
+ 102:             if (Schema::hasTable('users')) {
+ 103:                 $q = DB::table('users');
+ 104:                 if (Schema::hasColumn('users', 'role')) {
+ 105:                     $q->whereIn('role', ['siswa', 'student', 'user', 'member']);
+ 106:                 }
+ 107:                 $stats['students'] = $q->count();
+ 108:             }
+ 109:             if (Schema::hasTable('loans')) {
+ 110:                 $dc = $this->pick('loans', ['created_at', 'loan_date', 'borrowed_at']);
+ 111:                 $q = DB::table('loans');
+ 112:                 if ($dc) $q->whereMonth($dc, now()->month)->whereYear($dc, now()->year);
+ 113:                 $stats['loans'] = $q->count();
+ 114:             }
+ 115:         } catch (\Throwable $e) {
+ 116:             // landing tidak boleh error walau struktur tabel berbeda
+ 117:         }
+ 118: 
+ 119:         $catalog = $this->firstRoute(['catalog.index', 'katalog.index', 'books.index', 'student.books.index', 'siswa.books.index', 'katalog'], '/books');
+ 120:         $dashboard = $this->firstRoute(['dashboard'], '/dashboard');
+ 121: 
+ 122:         return view('landing-trafie', [
+ 123:             'books' => $books,
+ 124:             'reviews' => $reviews,
+ 125:             'stats' => $stats,
+ 126:             'catalog' => $catalog,
+ 127:             'dashboard' => $dashboard,
+ 128:             'loggedIn' => Auth::check(),
+ 129:             'loginUrl' => url('/login'),
+ 130:             'registerUrl' => url('/register'),
+ 131:         ]);
+ 132:     }
+

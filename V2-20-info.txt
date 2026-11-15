@@ -1,0 +1,178 @@
+=== V2-20 INFO ===
+Tanggal: 2026-11-08 04:43
+
+File yang cocok:
+  resources\views\components\student-layout.blade.php
+  resources\views\student\dashboard.blade.php
+
+Gambar di public\img:
+  public\img\landing\auth-edge.svg  (9 KB)
+  public\img\landing\auth-login-back.svg  (11 KB)
+  public\img\landing\auth-login-front.svg  (13 KB)
+  public\img\landing\auth-login.svg  (12 KB)
+  public\img\landing\auth-register-back.svg  (10 KB)
+  public\img\landing\auth-register-front.svg  (12 KB)
+  public\img\landing\auth-register.svg  (11 KB)
+  public\img\landing\BACA-SAYA.txt  (1 KB)
+  public\img\landing\castle.png  (500 KB)
+  public\img\landing\castle.svg  (15 KB)
+  public\img\landing\challenge.svg  (3 KB)
+  public\img\landing\footer.svg  (3 KB)
+  public\img\landing\hero.svg  (9 KB)
+  public\img\landing\logo.svg  (1 KB)
+  public\img\landing\lumi.svg  (3 KB)
+
+
+################ resources\views\components\student-layout.blade.php ################
+@props(['title' => 'Dashboard'])
+<x-shell role="Siswa" :title="$title" :items="[
+    ['route' => 'student.dashboard', 'match' => 'student.dashboard', 'label' => 'Dashboard', 'icon' => 'home'],
+    ['route' => 'student.books.index', 'match' => 'student.books.*', 'label' => 'Book Catalog', 'icon' => 'book'],
+    ['label' => 'Categories', 'icon' => 'grid', 'soon' => true],
+    ['label' => 'My Borrowings', 'icon' => 'bookmark', 'soon' => true],
+    ['label' => 'Reservations', 'icon' => 'clock', 'soon' => true],
+    ['label' => 'Reading Progress', 'icon' => 'trend', 'soon' => true],
+    ['label' => 'My Favorites', 'icon' => 'heart', 'soon' => true],
+    ['label' => 'Reading Galaxy', 'icon' => 'compass', 'soon' => true],
+    ['label' => 'Reading Wrapped', 'icon' => 'gift', 'soon' => true],
+    ['label' => 'Reading Challenges', 'icon' => 'award', 'soon' => true],
+    ['label' => 'Achievements', 'icon' => 'star', 'soon' => true],
+    ['label' => 'Notifications', 'icon' => 'bell', 'soon' => true],
+    ['label' => 'My Profile', 'icon' => 'user', 'soon' => true],
+    ['label' => 'Settings', 'icon' => 'cog', 'soon' => true],
+]">
+    {{ $slot }}
+</x-shell>
+
+################ resources\views\student\dashboard.blade.php ################
+@php
+    $rekom = \App\Models\Book::with('category')->withCount(['copies', 'copies as available_count' => fn ($c) => $c->where('status', 'Available')])->latest()->take(4)->get();
+    $grad = ['linear-gradient(135deg,#cfe8f7,#b9a8ee)','linear-gradient(135deg,#f7c8dc,#d9ccf5)','linear-gradient(135deg,#cfe5d6,#cfe8f7)','linear-gradient(135deg,#d9ccf5,#f7c8dc)'];
+    $img = fn ($f) => asset('images/ds/' . $f);
+@endphp
+<x-student-layout title="Dashboard">
+<div class="dz">
+
+    <div class="dz-hero" style="--hero-art: url('{{ $img('hero.png') }}')">
+        <div class="dz-hero-text">
+            <small>Selamat datang kembali,</small>
+            <h1>{{ Auth::user()->name }} <svg viewBox="0 0 24 24" width="20" height="20" fill="#d98ac0"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6z"/></svg></h1>
+            <p>Terus membaca, karena setiap buku adalah langkah menuju versi terbaik dari dirimu.</p>
+        </div>
+    </div>
+
+    <div class="dz-top">
+        <div class="dz-level">
+            <div class="dz-orb"><img src="{{ $img('crystal.png') }}" alt=""><b>Level 1</b><span>Baby Reader</span></div>
+            <div class="dz-xp">
+                <small>Reading XP</small>
+                <div class="num">0 <em>/ 200</em></div>
+                <div class="dz-bar"><i style="width:0%"></i></div>
+                <p>200 XP lagi untuk level berikutnya</p>
+                <div class="dz-badge">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff" fill-opacity=".9"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg>
+                    <div><small>Reader Badge</small><b>Baby Reader</b></div>
+                </div>
+            </div>
+            <img class="dz-flowers" src="{{ $img('flowers.png') }}" alt="">
+        </div>
+
+        <div class="dz-stat t-ice">
+            <span class="ic" style="color:#4b8fd6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+            <span class="t">Buku Selesai Dibaca</span><b>0</b><em>aktif di Fase 4</em>
+            <img class="art" src="{{ $img('s1.png') }}" alt="">
+        </div>
+        <div class="dz-stat t-sage">
+            <span class="ic" style="color:#4f9a76"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+            <span class="t">Sedang Dibaca</span><b>0</b><em>aktif di Fase 4</em>
+            <img class="art" src="{{ $img('s2.png') }}" alt="">
+        </div>
+        <div class="dz-stat t-amber">
+            <span class="ic" style="color:#d6a12c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg></span>
+            <span class="t">Reading XP</span><b>0</b><em>aktif di Fase 4</em>
+            <img class="art" src="{{ $img('s3.png') }}" alt="">
+        </div>
+        <div class="dz-stat t-pink">
+            <span class="ic" style="color:#d9558a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg></span>
+            <span class="t">Reading Streak</span><b>0 hari</b><em>aktif di Fase 4</em>
+            <img class="art" src="{{ $img('s4.png') }}" alt="">
+        </div>
+    </div>
+
+    <div class="dz-r3">
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Sedang Dibaca</h3></div>
+            <div class="dz-empty">Belum ada buku yang sedang dibaca. Fitur progres membaca aktif di Fase 4.</div>
+        </div>
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Rekomendasi Buku</h3><a href="{{ route('student.books.index') }}">Lihat Semua &rarr;</a></div>
+            @if($rekom->isEmpty())
+                <div class="dz-empty">Belum ada buku di katalog. Admin perlu menambahkan buku terlebih dahulu.</div>
+            @else
+                <div class="dz-minis">
+                    @foreach($rekom as $b)
+                    <a href="{{ route('student.books.show', $b) }}" class="dz-mini">
+                        <div class="cv" style="background: {{ $grad[$b->id % 4] }}">
+                            @if($b->cover_url)<img src="{{ $b->cover_url }}" alt="">@else<span>{{ $b->title }}</span>@endif
+                        </div>
+                        <h4>{{ $b->title }}</h4><p>{{ $b->author }}</p>
+                        <i>Lihat</i>
+                    </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Aktivitas Membaca Terbaru</h3></div>
+            <div class="dz-empty">Belum ada aktivitas. Aktivitasmu akan muncul di sini.</div>
+        </div>
+    </div>
+
+    <div class="dz-r3">
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Buku Favorit Saya</h3></div>
+            <div class="dz-empty">Belum ada buku favorit. Fitur favorit aktif di fase berikutnya.</div>
+        </div>
+        <div class="dz-mid">
+            <div class="dz-card">
+                <div class="dz-card-h"><h3>Tantangan Membaca</h3></div>
+                <div class="dz-empty">Belum ada tantangan aktif.</div>
+                <span class="dz-btn off">Lihat Detail</span>
+            </div>
+            <div class="dz-galaxy" style="--gal: url('{{ $img('galaxy.png') }}')">
+                <h3>Reading Galaxy</h3>
+                <p>Setiap buku yang selesai kamu baca akan menjadi bintang di galaksimu.</p>
+                <span class="dz-btn glass off">Lihat Galaxy</span>
+            </div>
+        </div>
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Deadline Peminjaman</h3></div>
+            <div class="dz-empty">Belum ada peminjaman aktif.</div>
+        </div>
+    </div>
+
+    <div class="dz-r5">
+        <div class="dz-card">
+            <div class="dz-card-h"><h3>Achievement Terbaru</h3></div>
+            <div class="dz-ach">
+                <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></i><b>First Bloom</b><small>Buku pertama</small></div>
+                <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></i><b>Bookworm</b><small>5 buku selesai</small></div>
+                <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg></i><b>Genre Explorer</b><small>3 genre berbeda</small></div>
+                <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20 4C9 4 4 9 4 16v4h4c7 0 12-5 12-16z"/><path d="M4 20L14 10"/></svg></i><b>Review Fairy</b><small>5 ulasan</small></div>
+                <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg></i><b>Reading Star</b><small>10 buku</small></div>
+            </div>
+        </div>
+        <div class="dz-quote">
+            <p>&ldquo;Buku bukan hanya membuka pikiran, tapi juga membuka alam semesta baru.&rdquo;</p>
+            <small>&mdash; Trafie-library &mdash;</small>
+        </div>
+        <div class="dz-lumi">
+            <img src="{{ $img('lumi.png') }}" alt="" class="face">
+            <h3>Lumi AI</h3>
+            <p>Your Reading Companion</p>
+            <div class="dz-lumi-in">Lumi segera hadir...</div>
+        </div>
+    </div>
+
+</div>
+</x-student-layout>

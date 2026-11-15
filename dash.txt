@@ -1,0 +1,364 @@
+
+=================== resources\views\student\dashboard.blade.php (diubah 11/10/2026 10:06:30) ===================
+@php
+    use Carbon\Carbon;
+    $img = fn ($f) => asset('images/ds/' . $f);
+    $grad = ['linear-gradient(135deg,#cfe8f7,#b9a8ee)','linear-gradient(135deg,#f7c8dc,#d9ccf5)','linear-gradient(135deg,#cfe5d6,#cfe8f7)','linear-gradient(135deg,#d9ccf5,#f7c8dc)'];
+    $rekom = \App\Models\Book::with('category')->withCount(['copies', 'copies as available_count' => fn ($c) => $c->where('status', 'Available')])->latest()->take(4)->get();
+
+    $myLoans = \App\Models\Loan::with('book.category')->where('user_id', Auth::id())->latest('id')->get();
+    $aktif = $myLoans->where('status', 'Borrowed')->values();
+    $returned = $myLoans->where('status', 'Returned');
+    $selesai = $returned->count();
+    $selesaiBulan = $returned->filter(fn ($l) => $l->updated_at && $l->updated_at->isCurrentMonth())->count();
+    $genreCount = $returned->map(fn ($l) => optional(optional($l->book)->category)->id)->filter()->unique()->count();
+    $deadline = $aktif->sortBy('due_date')->take(3);
+    $aktivitas = $myLoans->take(5);
+    $label = ['Pending' => 'Mengajukan pinjam', 'Borrowed' => 'Meminjam buku', 'Returned' => 'Mengembalikan buku', 'Rejected' => 'Permintaan ditolak'];
+    $ach = [
+        ['First Bloom', 'Buku pertama', 'heart', $selesai >= 1],
+        ['Bookworm', '5 buku selesai', 'book', $selesai >= 5],
+        ['Genre Explorer', '3 genre berbeda', 'comp', $genreCount >= 3],
+        ['Review Fairy', '5 ulasan', 'leaf', false],
+        ['Reading Star', '10 buku', 'star', $selesai >= 10],
+    ];
+    $achIcons = [
+        'heart' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+        'book' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+        'comp' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg>',
+        'leaf' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C9 4 4 9 4 16v4h4c7 0 12-5 12-16z"/><path d="M4 20L14 10"/></svg>',
+        'star' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg>',
+    ];
+    $gb = '<div class="sx-books">' . str_repeat('<div class="sx-bk gh"><div class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><span class="sk w60"></span><span class="sk w40"></span><i class="sk btn"></i></div>', 4) . '</div>';
+    $gt = '<div class="sx-tl gh">' . str_repeat('<div><span class="sk w70"></span><span class="sk w40"></span></div>', 4) . '</div>';
+    $gd = str_repeat('<div class="sx-dl gh"><span class="th"></span><div class="d"><span class="sk w70"></span><span class="sk w40"></span></div></div>', 3);
+    $cv = fn ($b) => $b ? ($b->cover_url ?? null) : null;
+@endphp
+@php $rd = \App\Services\Reading::summary(Auth::user()); @endphp
+<x-student-layout title="Dashboard">
+<style>
+/* ===== SX dashboard siswa ===== */
+.tl-sidebar{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(233,222,252,.5) 55%,rgba(250,214,234,.65))!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 0 0 1px rgba(255,255,255,.9),0 0 34px rgba(196,170,255,.5)}
+.tl-sidebar::after{height:44%!important;background:url('{{ $img('st-sidebar.svg') }}') center bottom/cover no-repeat!important;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 40%)!important;mask-image:linear-gradient(to bottom,transparent,#000 40%)!important;opacity:.95!important}
+.tl-sidebar .tl-link:not(.active){background:transparent!important;box-shadow:none!important;border-color:transparent!important;color:#3b2f63!important;font-weight:500;transition:background .25s,box-shadow .25s}
+.tl-sidebar .tl-link:not(.active) span{text-shadow:0 0 8px #fff,0 0 3px #fff,0 0 16px rgba(255,255,255,.95)}
+.tl-sidebar .tl-link svg{color:#7d62d6;filter:drop-shadow(0 0 5px rgba(255,255,255,.95))}
+.tl-sidebar .tl-link:not(.active):hover{background:rgba(255,255,255,.55)!important;box-shadow:0 0 0 1px rgba(255,255,255,.9),0 0 18px rgba(196,170,255,.6)!important}
+.tl-sidebar .tl-link.active{box-shadow:0 0 0 1px rgba(255,255,255,.9),0 0 22px rgba(167,139,250,.65),0 8px 18px rgba(139,92,246,.25)}
+.tl-sidebar .tl-logout{background:rgba(255,255,255,.55)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 0 0 1px rgba(255,255,255,.9),0 0 20px rgba(196,170,255,.55)}
+.tl-topbar{box-shadow:0 0 0 1px rgba(255,255,255,.95),0 0 34px rgba(196,170,255,.5)}
+.tl-search,.tl-pill{box-shadow:0 0 0 1px rgba(255,255,255,.95),0 0 18px rgba(196,170,255,.55)}
+.sx-wrap{container-type:inline-size;container-name:sxw;font-family:'Poppins',system-ui,sans-serif;color:#3b2f63;padding-bottom:2.5rem}
+.sx-wrap *{box-sizing:border-box}
+.sx{display:flex;flex-direction:column;gap:16px}
+.sx h3,.sx h1{font-family:'Playfair Display',Georgia,serif}
+.sx-card,.sx-hero,.sx-level,.sx-stat,.sx-gal,.sx-quote,.sx-lumi,.sx-mid>.sx-card{position:relative;overflow:hidden;border:1.5px solid rgba(255,255,255,.98);border-radius:22px;animation:sxBreath 5s ease-in-out infinite;--g1:rgba(196,170,255,.6);--g2:rgba(244,143,177,.5)}
+.sx-card{padding:16px 18px;background:rgba(255,255,255,.74);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.sx-stat:nth-child(2n),.sx-card:nth-child(2n){animation-delay:-1.7s}.sx-stat:nth-child(3n),.sx-card:nth-child(3n){animation-delay:-3.2s}
+@keyframes sxBreath{0%,100%{box-shadow:0 12px 30px rgba(140,110,200,.18),0 0 0 3px rgba(196,170,255,.18),0 0 30px var(--g1),inset 0 1px 0 #fff}50%{box-shadow:0 14px 34px rgba(140,110,200,.24),0 0 0 4px rgba(244,143,177,.2),0 0 46px var(--g2),inset 0 1px 0 #fff}}
+.sx-card:hover,.sx-stat:hover{animation:none;box-shadow:0 18px 42px rgba(140,110,200,.3),0 0 0 4px rgba(244,143,177,.26),0 0 52px rgba(244,143,177,.6),inset 0 1px 0 #fff}
+.sx-hero::before,.sx-level::before{pointer-events:none}
+.sx-hero{min-height:132px;padding:22px 30px;background:linear-gradient(100deg,#fff 0%,#f2eafd 42%,#e3eafc 100%)}
+.sx-hero::after{content:'';position:absolute;top:0;right:0;bottom:0;width:72%;background:var(--art) right center/cover no-repeat;-webkit-mask-image:linear-gradient(to right,transparent,#000 40%);mask-image:linear-gradient(to right,transparent,#000 40%)}
+.sx-hero .tx{position:relative;z-index:2;max-width:46%}
+.sx-hero small{font-size:13px;color:#6f6b8c}
+.sx-hero h1{margin:2px 0 8px;display:flex;align-items:center;gap:8px;font-size:28px;font-weight:600;line-height:1.1;color:#2d2a4a;text-shadow:0 0 16px rgba(167,139,250,.4)}
+.sx-hero p{margin:0;font-size:12px;line-height:1.6;color:#7b7796;max-width:330px}
+.sx-hero i.sh{position:absolute;top:-10%;bottom:-10%;width:70px;left:-140px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-20deg);animation:sxSweep 8s ease-in-out infinite;z-index:3;pointer-events:none}
+@keyframes sxSweep{0%,55%{left:-140px}100%{left:115%}}
+.sx-top{display:grid;gap:16px;grid-template-columns:minmax(0,2.5fr) repeat(4,minmax(0,1fr))}
+.sx-level{display:grid;grid-template-columns:112px 1fr;align-items:center;gap:16px;padding:18px 20px;min-height:204px;color:#fff;background:radial-gradient(260px 180px at 15% 15%,rgba(255,255,255,.3),transparent 70%),radial-gradient(240px 160px at 95% 100%,rgba(244,143,177,.55),transparent 70%),linear-gradient(120deg,#4f3fb8 0%,#7a63df 45%,#a98aea 75%,#e6b0da 100%);--g1:rgba(124,92,214,.7);--g2:rgba(244,143,177,.6)}
+.sx-level::before{content:'';position:absolute;inset:0;opacity:.8;background-image:radial-gradient(1.5px 1.5px at 30px 40px,#fff,transparent),radial-gradient(1px 1px at 130px 90px,#fff,transparent),radial-gradient(2px 2px at 210px 30px,rgba(255,255,255,.9),transparent),radial-gradient(1px 1px at 70px 150px,#fff,transparent),radial-gradient(1.5px 1.5px at 190px 140px,#fff,transparent);background-size:250px 170px}
+.sx-orb{position:relative;z-index:1;width:112px;height:112px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:12px;text-align:center;background:radial-gradient(circle at 40% 28%,rgba(255,255,255,.55),rgba(255,255,255,.1) 72%);border:2px solid rgba(255,255,255,.85);box-shadow:0 0 0 7px rgba(255,255,255,.14),0 0 34px rgba(255,255,255,.55),0 12px 28px rgba(40,20,90,.3)}
+.sx-orb::before{content:'';position:absolute;inset:-14px;border-radius:50%;border:1px dashed rgba(255,255,255,.55)}
+.sx-orb img{position:absolute;top:0;left:50%;width:82px;transform:translateX(-50%);filter:drop-shadow(0 0 12px rgba(255,255,255,.8))}
+.sx-orb b{position:relative;font-family:'Playfair Display',serif;font-size:12px;background:rgba(255,255,255,.92);color:#4b3a8f;padding:3px 14px;border-radius:12px;box-shadow:0 6px 14px rgba(40,20,90,.3)}
+.sx-orb span{position:relative;font-size:9px;opacity:.95;margin-top:2px}
+.sx-xp{position:relative;z-index:1;min-width:0}
+.sx-xp small{font-size:12px;opacity:.95}
+.sx-xp .num{font-family:'Playfair Display',serif;font-size:28px;line-height:1.1;margin:2px 0 8px;text-shadow:0 0 18px rgba(255,255,255,.55)}
+.sx-xp .num em{font-style:normal;font-size:16px;opacity:.85}
+.sx-bar{height:10px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden}
+.sx-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#fff,#ffd6ea);box-shadow:0 0 14px rgba(255,255,255,.8)}
+.sx-xp p{margin:8px 0 14px;font-size:11px;opacity:.95}
+.sx-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:16px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 20px rgba(255,255,255,.35)}
+.sx-badge small{display:block;font-size:9px;opacity:.9}.sx-badge b{font-size:12.5px}
+.sx-stat{padding:13px;min-height:204px}
+.sx-stat .ic{display:grid;place-items:center;width:36px;height:36px;margin-bottom:10px;border-radius:12px;background:rgba(255,255,255,.92);box-shadow:0 0 16px rgba(167,139,250,.4),0 4px 10px rgba(139,92,246,.1)}
+.sx-stat .ic svg{width:19px;height:19px}
+.sx-stat .t{display:block;font-size:11px;color:#4f4b6b;line-height:1.25;position:relative;z-index:2}
+.sx-stat b{display:block;margin-top:8px;font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:#2d2a4a;line-height:1.1;white-space:nowrap;position:relative;z-index:2;text-shadow:0 0 16px rgba(167,139,250,.45)}
+.sx-stat b small{font-size:12px;font-weight:600;margin-left:3px}
+.sx-stat em{display:block;margin-top:4px;font-style:normal;font-size:10px;color:#4cae8a;position:relative;z-index:2}
+.sx-stat em.m{color:#8b87a8}
+.sx-stat .art{position:absolute;right:-8px;bottom:-10px;width:84%;max-width:140px;height:auto;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(110,80,200,.25));transition:transform .4s}
+.sx-stat:hover .art{transform:translateY(-6px) scale(1.04)}
+.t-ice{background:linear-gradient(160deg,#d9eafa,#f4f9fd);--g1:rgba(111,182,232,.6)}.t-sage{background:linear-gradient(160deg,#d9efe1,#f4faf6);--g1:rgba(110,200,150,.55)}.t-amber{background:linear-gradient(160deg,#f6ead0,#fdf9ee);--g1:rgba(246,200,133,.65)}.t-pink{background:linear-gradient(160deg,#fad8e7,#fef4f8);--g1:rgba(244,143,177,.6)}
+.sx-r3{display:grid;gap:16px;grid-template-columns:minmax(0,1.5fr) minmax(0,1.5fr) minmax(0,1fr)}
+.sx-mid{display:grid;gap:16px;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+.sx-r5{display:grid;gap:16px;grid-template-columns:minmax(0,1.6fr) minmax(0,1.3fr) minmax(0,1fr)}
+.sx-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.sx-h h3{margin:0;font-size:15px;font-weight:600;color:#2d2a4a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 14px rgba(167,139,250,.35)}
+.sx-h h3::before{content:'';display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:2px;transform:rotate(45deg);background:linear-gradient(135deg,#a78bfa,#f48fb1);vertical-align:middle;box-shadow:0 0 8px rgba(167,139,250,.7)}
+.sx-h a{font-size:10.5px;font-weight:600;color:#6d3fc4;text-decoration:none;white-space:nowrap}
+.sx-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;font-size:11px;line-height:1.55;color:#8b87a8;padding:14px 10px;border:1px dashed #d9ccf5;border-radius:16px;background:rgba(250,247,255,.7)}
+.sx-empty img{width:92px;height:auto}
+.sx-books{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.sx-bk{display:flex;flex-direction:column;text-decoration:none;padding:6px;border-radius:16px;background:rgba(255,255,255,.85);border:1px solid #fff;box-shadow:0 6px 16px rgba(139,92,246,.1),0 0 14px rgba(196,170,255,.25);transition:transform .25s,box-shadow .25s}
+.sx-bk:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(139,92,246,.2),0 0 24px rgba(244,143,177,.45)}
+.sx-bk .cv{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-family:'Playfair Display',serif;font-weight:700;font-size:11px;line-height:1.2;color:#2d2a4a;box-shadow:0 6px 14px rgba(90,70,170,.25)}
+.sx-bk .cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sx-bk .tag{align-self:flex-start;margin:6px 0 0;font-size:8.5px;font-weight:600;color:#6d56c9;background:#ece6f8;padding:2px 7px;border-radius:8px}
+.sx-bk h4{margin:4px 0 0;font-size:11px;font-weight:600;color:#2d2a4a;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sx-bk p{margin:1px 0 6px;font-size:9.5px;color:#8b87a8;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sx-bk i{margin-top:auto;font-style:normal;text-align:center;font-size:10.5px;font-weight:600;padding:5px;border-radius:10px;color:#5b34a8;background:linear-gradient(90deg,rgba(217,204,245,.95),rgba(247,200,220,.95));box-shadow:0 0 12px rgba(167,139,250,.35)}
+.sx-pg{height:6px;border-radius:9px;background:#ece6f8;overflow:hidden;margin:2px 0 4px}
+.sx-pg b{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#a78bfa,#f48fb1);box-shadow:0 0 8px rgba(167,139,250,.7)}
+.sx-bk small{font-size:9px;color:#8b87a8;margin-bottom:2px}
+.sx-bk.gh{pointer-events:none;background:rgba(255,255,255,.6)}
+.sx-bk.gh .cv{background:linear-gradient(135deg,#e6defa,#fbdcec,#d8e8fa);background-size:200% 200%;animation:sxShim 6s ease-in-out infinite;color:#b8a6e6;box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 6px 14px rgba(167,139,250,.18)}
+.sx-bk.gh .cv svg{width:30%;height:auto;opacity:.85}
+@keyframes sxShim{50%{background-position:100% 100%}}
+.sk{display:block;height:7px;border-radius:6px;background:linear-gradient(90deg,#ece6f8,#f8e4ef);margin:6px 0 0}
+.sk.w70{width:70%}.sk.w60{width:60%}.sk.w40{width:40%;height:5px}
+.sx-bk.gh .sk.btn{height:18px;border-radius:9px;margin-top:8px;background:linear-gradient(90deg,#e4dafa,#f9d8e8)}
+.sx-tl.gh div .sk{margin:0 0 6px}
+.sx-dl.gh .th{background:linear-gradient(135deg,#e6defa,#fbdcec)}
+.sx-dl.gh::after{display:none}
+.sx-cap{margin:12px 0 0;text-align:center;font-size:10.5px;line-height:1.5;color:#8b87a8}
+.sx-tl{position:relative;padding-left:22px}
+.sx-tl::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;border-radius:2px;background:linear-gradient(#c9b3f5,#f4b6d2)}
+.sx-tl div{position:relative;padding:5px 0 9px}
+.sx-tl div::before{content:'';position:absolute;left:-22px;top:9px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #a78bfa;box-shadow:0 0 10px rgba(167,139,250,.8)}
+.sx-tl div:nth-child(even)::before{border-color:#f48fb1;box-shadow:0 0 10px rgba(244,143,177,.8)}
+.sx-tl b{display:block;font-size:11.5px;font-weight:600;color:#3b2f63}.sx-tl small{font-size:9.5px;color:#8b87a8}
+.sx-dl{display:flex;align-items:center;gap:10px;padding:8px;margin-bottom:8px;border-radius:14px;background:rgba(255,255,255,.85);border:1px solid #fff;box-shadow:0 4px 12px rgba(139,92,246,.08)}
+.sx-dl .th{width:30px;height:40px;border-radius:6px;flex:none;overflow:hidden;box-shadow:0 3px 8px rgba(90,70,170,.3)}
+.sx-dl .th img{width:100%;height:100%;object-fit:cover}
+.sx-dl b{display:block;font-size:11.5px;color:#2d2a4a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sx-dl small{font-size:10px;font-weight:600}
+.sx-dl .d{min-width:0;flex:1}
+.sx-dl .ok{color:#3da57f}.sx-dl .warn{color:#d68a2c}.sx-dl .bad{color:#e0489b}
+.sx-dl::after{content:'';width:9px;height:9px;border-radius:50%;flex:none;background:currentColor}
+.sx-dl.ok{color:#58c49a}.sx-dl.warn{color:#f0b24a}.sx-dl.bad{color:#f06fa0}
+.sx-dl.ok::after,.sx-dl.warn::after,.sx-dl.bad::after{box-shadow:0 0 10px currentColor}
+.sx-dl .d,.sx-dl b{color:inherit}.sx-dl b{color:#2d2a4a}
+.sx-btn{display:block;text-align:center;margin-top:12px;padding:9px;border-radius:13px;font-size:11px;font-weight:600;color:#5b34a8;background:linear-gradient(90deg,rgba(217,204,245,.95),rgba(207,232,247,.95));box-shadow:0 0 16px rgba(167,139,250,.35)}
+.sx-btn.off{opacity:.8}.sx-btn.glass{color:#fff;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);box-shadow:0 0 18px rgba(255,255,255,.3)}
+.sx-chal{display:flex;gap:10px;align-items:center}.sx-chal img{width:64px;height:auto;flex:none;filter:drop-shadow(0 0 12px rgba(167,139,250,.6))}
+.sx-gal{display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px;min-height:190px;color:#fff;background:linear-gradient(180deg,rgba(16,12,60,.35),rgba(16,12,60,.1) 45%,rgba(16,12,60,.75)),var(--gal) center/cover no-repeat,#1d2a5a;--g1:rgba(150,120,255,.8);--g2:rgba(255,150,210,.65)}
+.sx-gal h3{position:absolute;top:14px;left:18px;margin:0;font-size:15px;font-weight:600;color:#fff;text-shadow:0 0 14px rgba(255,255,255,.7)}
+.sx-gal p{margin:0;font-size:10.5px;line-height:1.55;opacity:.96;max-width:230px}
+.sx-ach{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.sx-ach div{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 4px;border-radius:16px;background:rgba(255,255,255,.8);border:1px solid #fff;box-shadow:0 5px 12px rgba(139,92,246,.07)}
+.sx-ach i{display:grid;place-items:center;width:42px;height:42px;margin-bottom:6px;border-radius:50%;color:#8b6fe0;background:linear-gradient(135deg,#efe6fb,#fbe0ee);box-shadow:0 0 16px rgba(167,139,250,.55)}
+.sx-ach i svg{width:20px;height:20px}
+.sx-ach .lock{opacity:.8}.sx-ach .lock i{box-shadow:0 0 10px rgba(167,139,250,.35)}
+.sx-ach b{font-size:10.5px;color:#4f4b6b}.sx-ach small{font-size:9px;color:#8b87a8}
+.sx-quote{display:flex;flex-direction:column;justify-content:center;text-align:center;padding:22px 26px;background:var(--art) center/cover no-repeat,linear-gradient(120deg,#efe6fb,#e4ecfb)}
+.sx-quote p{margin:0 0 8px;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;line-height:1.55;color:#4f4b6b;text-shadow:0 0 14px rgba(255,255,255,.9)}
+.sx-quote small{font-size:10.5px;color:#7b7796;font-style:italic}
+.sx-lumi{padding:16px 18px;background:linear-gradient(135deg,#dfeefb,#ece3fb 60%,#f8dfec)}
+.sx-lumi h3{margin:0;font-size:17px;font-weight:600;color:#2d2a4a}.sx-lumi p{margin:2px 0 16px;font-size:10.5px;color:#7b7796}
+.sx-lumi img{position:absolute;top:8px;right:12px;width:84px;filter:drop-shadow(0 8px 12px rgba(120,90,200,.3));animation:sxFloat 5s ease-in-out infinite}
+@keyframes sxFloat{50%{transform:translateY(-6px)}}
+.sx-lumi .in{padding:10px 16px;border-radius:99px;background:rgba(255,255,255,.9);border:1px solid rgba(217,204,245,.9);font-size:11px;color:#a8a3c2;box-shadow:0 0 18px rgba(167,139,250,.35)}
+@container sxw (max-width:860px){.sx-top{grid-template-columns:repeat(4,minmax(0,1fr))}.sx-level{grid-column:1/-1}.sx-r3{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-r3>.sx-card:nth-child(3){grid-column:1/-1}.sx-r5{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-r5>.sx-card{grid-column:1/-1}.sx-mid{grid-template-columns:1fr 1fr}}
+@container sxw (max-width:640px){.sx-top{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-r3,.sx-r5,.sx-mid{grid-template-columns:1fr}.sx-hero .tx{max-width:100%}.sx-level{grid-template-columns:1fr}.sx-books{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-ach{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){.sx-card,.sx-hero,.sx-level,.sx-stat,.sx-gal,.sx-quote,.sx-lumi,.sx-lumi img,.sx-hero i.sh{animation:none}}
+</style>
+<div class="sx-wrap"><div class="sx">
+
+    <div class="sx-hero" style="--art: url('{{ $img('hero.png') }}')">
+        <i class="sh"></i>
+        <div class="tx">
+            <small>Selamat datang kembali,</small>
+            <h1>{{ Auth::user()->name }} <svg viewBox="0 0 24 24" width="20" height="20" fill="#d98ac0"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6z"/></svg></h1>
+            <p>Terus membaca, karena setiap buku adalah langkah menuju versi terbaik dari dirimu.</p>
+        </div>
+    </div>
+
+    <div class="sx-top">
+        <div class="sx-level">
+            <div class="sx-orb"><img src="{{ $img('st-orb.svg') }}" alt=""><b>Level {{ $rd['lv']['level'] }}</b><span>{{ $rd['lv']['name'] }}</span></div>
+            <div class="sx-xp">
+                <small>Reading XP</small>
+                <div class="num">{{ $rd['xp'] }} <em>{{ $rd['lv']['next'] ? '/ ' . $rd['lv']['next'][2] : 'XP maks' }}</em></div>
+                <div class="sx-bar"><i style="width:3%"></i></div>
+                <p>{{ $rd['lv']['next'] ? $rd['lv']['to_next'] . ' XP lagi untuk level berikutnya' : 'Level tertinggi tercapai' }}</p>
+                <div class="sx-badge">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" fill-opacity=".95"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg>
+                    <div><small>Reader Badge</small><b>{{ $rd['lv']['name'] }}</b></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sx-stat t-ice">
+            <span class="ic" style="color:#4b8fd6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+            <span class="t">Buku Selesai Dibaca</span><b>{{ $selesai }}</b><em>+{{ $selesaiBulan }} bulan ini</em>
+            <img class="art" src="{{ $img('st-s1.svg') }}" alt="">
+        </div>
+        <div class="sx-stat t-sage">
+            <span class="ic" style="color:#4f9a76"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+            <span class="t">Sedang Dibaca</span><b>{{ $aktif->count() }}</b><em>{{ $aktif->count() ? 'sedang dipinjam' : 'belum ada' }}</em>
+            <img class="art" src="{{ $img('st-s2.svg') }}" alt="">
+        </div>
+        <div class="sx-stat t-amber">
+            <span class="ic" style="color:#d6a12c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg></span>
+            <span class="t">Reading XP</span><b>0</b><em class="m">aktif di Fase 4</em>
+            <img class="art" src="{{ $img('st-s3.svg') }}" alt="">
+        </div>
+        <div class="sx-stat t-pink">
+            <span class="ic" style="color:#d9558a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg></span>
+            <span class="t">Reading Streak</span><b>0<small>hari</small></b><em class="m">aktif di Fase 4</em>
+            <img class="art" src="{{ $img('st-s4.svg') }}" alt="">
+        </div>
+    </div>
+
+    <div class="sx-r3">
+        <div class="sx-card">
+            <div class="sx-h"><h3>Sedang Dibaca</h3></div>
+            @if($aktif->isEmpty())
+                {!! $gb !!}<p class="sx-cap">Belum ada buku yang sedang dipinjam.<br>Pilih buku di katalog untuk mulai membaca.</p>
+            @else
+                <div class="sx-books">
+                    @foreach($aktif->take(4) as $l)
+                    @php
+                        $b = $l->book;
+                        $due = $l->due_date ? Carbon::parse($l->due_date) : null;
+                        $start = $l->created_at ?? now();
+                        $span = $due ? max(1, $start->diffInDays($due)) : 1;
+                        $pct = $due ? min(100, max(4, round($start->diffInDays(now()) / $span * 100))) : 4;
+                    @endphp
+                    <a href="{{ $b ? route('student.books.show', $b) : '#' }}" class="sx-bk">
+                        <div class="cv" style="background: {{ $grad[($b->id ?? 0) % 4] }}">@if($cv($b))<img src="{{ $cv($b) }}" alt="">@else<span>{{ $b->title ?? 'Buku' }}</span>@endif</div>
+                        <h4>{{ $b->title ?? 'Buku' }}</h4><p>{{ $b->author ?? '' }}</p>
+                        <div class="sx-pg"><b style="width: {{ $pct }}%"></b></div>
+                        <small>{{ $due ? 'Jatuh tempo ' . $due->format('d M') : '' }}</small>
+                    </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        <div class="sx-card">
+            <div class="sx-h"><h3>Rekomendasi Buku</h3><a href="{{ route('student.books.index') }}">Lihat Semua &rarr;</a></div>
+            @if($rekom->isEmpty())
+                {!! $gb !!}<p class="sx-cap">Belum ada buku di katalog.<br>Admin perlu menambahkan buku terlebih dahulu.</p>
+            @else
+                <div class="sx-books">
+                    @foreach($rekom as $b)
+                    <a href="{{ route('student.books.show', $b) }}" class="sx-bk">
+                        <div class="cv" style="background: {{ $grad[$b->id % 4] }}">@if($b->cover_url)<img src="{{ $b->cover_url }}" alt="">@else<span>{{ $b->title }}</span>@endif</div>
+                        <span class="tag">{{ $b->category->name ?? 'Buku' }}</span>
+                        <h4>{{ $b->title }}</h4><p>{{ $b->author }}</p>
+                        <i>Pinjam</i>
+                    </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        <div class="sx-card">
+            <div class="sx-h"><h3>Aktivitas Membaca Terbaru</h3></div>
+            @if($aktivitas->isEmpty())
+                {!! $gt !!}<p class="sx-cap">Belum ada aktivitas.<br>Aktivitasmu akan muncul di sini.</p>
+            @else
+                <div class="sx-tl">
+                    @foreach($aktivitas as $a)
+                    <div><b>{{ $label[$a->status] ?? $a->status }}</b><small>{{ \Illuminate\Support\Str::limit($a->book->title ?? 'Buku', 28) }} &middot; {{ optional($a->updated_at)->diffForHumans() }}</small></div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="sx-r3">
+        <div class="sx-card">
+            <div class="sx-h"><h3>Buku Favorit Saya</h3></div>
+            {!! $gb !!}<p class="sx-cap">Belum ada buku favorit.<br>Fitur favorit aktif di fase berikutnya.</p>
+        </div>
+        <div class="sx-mid">
+            <div class="sx-card">
+                <div class="sx-h"><h3>Tantangan Membaca</h3></div>
+                <div class="sx-chal"><img src="{{ $img('st-chal.svg') }}" alt=""><div style="font-size:11px;color:#8b87a8;line-height:1.5">Belum ada tantangan aktif.</div></div>
+                <span class="sx-btn off">Lihat Detail</span>
+            </div>
+            <div class="sx-gal" style="--gal: url('{{ $img('st-galaxy.svg') }}')">
+                <h3>Reading Galaxy</h3>
+                <p>Setiap buku yang selesai kamu baca akan menjadi bintang di galaksimu.</p>
+                <span class="sx-btn glass off">Lihat Galaxy</span>
+            </div>
+        </div>
+        <div class="sx-card">
+            <div class="sx-h"><h3>Deadline Peminjaman</h3></div>
+            @if($deadline->isEmpty())
+                {!! $gd !!}<p class="sx-cap">Belum ada peminjaman aktif.</p>
+            @else
+                @foreach($deadline as $l)
+                @php
+                    $due = $l->due_date ? Carbon::parse($l->due_date)->startOfDay() : null;
+                    $sisa = $due ? (int) now()->startOfDay()->diffInDays($due, false) : null;
+                    $cls = $sisa === null ? 'ok' : ($sisa < 0 ? 'bad' : ($sisa <= 2 ? 'bad' : ($sisa <= 5 ? 'warn' : 'ok')));
+                    $txt = $sisa === null ? '-' : ($sisa < 0 ? 'Terlambat ' . abs($sisa) . ' hari' : ($sisa === 0 ? 'Jatuh tempo hari ini' : 'Jatuh tempo: ' . $sisa . ' hari lagi'));
+                @endphp
+                <div class="sx-dl {{ $cls }}">
+                    <span class="th" style="background: {{ $grad[($l->book->id ?? 0) % 4] }}">@if($cv($l->book))<img src="{{ $cv($l->book) }}" alt="">@endif</span>
+                    <div class="d"><b>{{ $l->book->title ?? 'Buku' }}</b><small class="{{ $cls }}">{{ $txt }}</small></div>
+                </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+
+    <div class="sx-r5">
+        <div class="sx-card">
+            <div class="sx-h"><h3>Achievement Terbaru</h3></div>
+            <div class="sx-ach">
+                @foreach($ach as $a)
+                <div class="{{ $a[3] ? '' : 'lock' }}"><i>{!! $achIcons[$a[2]] !!}</i><b>{{ $a[0] }}</b><small>{{ $a[1] }}</small></div>
+                @endforeach
+            </div>
+        </div>
+        <div class="sx-quote" style="--art: url('{{ $img('st-quote.svg') }}')">
+            <p>&ldquo;Buku bukan hanya membuka pikiran, tapi juga membuka alam semesta baru.&rdquo;</p>
+            <small>&mdash; Trafie-library &mdash;</small>
+        </div>
+        <div class="sx-lumi">
+            <img src="{{ $img('st-lumi.svg') }}" alt="">
+            <h3>Lumi AI</h3>
+            <p>Your Reading Companion</p>
+            <div class="in">Lumi segera hadir...</div>
+        </div>
+    </div>
+
+</div></div>
+</x-student-layout>
+partial: gloss.blade.php  11/10/2026 05:18:35
+partial: skin.blade.php  11/12/2026 05:41:18
+partial: statviz.blade.php  11/10/2026 17:04:40
+cadangan: admin-dashboard-fix.095826.bak  11/08/2026 09:52:32
+cadangan: dashboard-v2-10.040942.bak  11/08/2026 03:56:50
+cadangan: dashboard.blade.php.20261107-200344.bak  11/07/2026 20:00:38
+cadangan: dashboard.blade.php.20261107-202426.bak  11/07/2026 20:03:44
+cadangan: dashboard.blade.php.20261108-035650.bak  11/07/2026 20:24:26
+cadangan: dashboard.blade.php.20261108-041829.bak  11/08/2026 04:09:42
+cadangan: dashboard.blade.php.20261108-095232.bak  11/07/2026 20:24:26
+cadangan: dashboard.blade.php.b2.20261110-053920.bak  11/09/2026 04:37:48
+cadangan: dashboard.blade.php.b3.20261110-100629.bak  11/10/2026 05:39:20
+cadangan: dashboard.blade.php.v220.20261108-051757.bak  11/08/2026 04:18:29
+cadangan: dashboard.blade.php.v223.20261108-053343.bak  11/08/2026 04:18:29
+cadangan: dashboard.blade.php.v29.20261108-203339.bak  11/08/2026 09:58:26
+cadangan: dashboard.blade.php.v30.20261108-203723.bak  11/08/2026 20:33:40
+cadangan: dashboard.blade.php.v31.20261108-204608.bak  11/08/2026 20:37:23
+cadangan: dashboard.blade.php.v32.20261109-041239.bak  11/08/2026 20:46:08
+cadangan: dashboard.blade.php.v33.20261109-041539.bak  11/09/2026 04:12:39
+cadangan: dashboard.css.20261108-041829.bak  11/08/2026 04:12:05
+cadangan: dashboard.css.v220.20261108-051757.bak  11/08/2026 04:18:29
+cadangan: dashboard.css.v222.20261108-052459.bak  11/08/2026 05:21:14
+cadangan: dashboard.css.v223.20261108-053343.bak  11/08/2026 05:24:59
+cadangan: dashboard.css.v224.20261108-054247.bak  11/08/2026 05:33:43
+cadangan: dashboard.css.v33.20261109-050002.bak  11/08/2026 06:31:46
+cadangan: student-dashboard.blade.php.v34.20261109-042220.bak  11/08/2026 05:33:43
+cadangan: student-dashboard.blade.php.v34.20261109-043149.bak  11/09/2026 04:22:20
+cadangan: student-dashboard.blade.php.v35.20261109-043747.bak  11/09/2026 04:31:49

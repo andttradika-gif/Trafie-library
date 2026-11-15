@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 385 184" preserveAspectRatio="xMaxYMid slice">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ece1fa"/><stop offset=".6" stop-color="#e3dbf8"/><stop offset="1" stop-color="#f7dcee"/></linearGradient>
+<linearGradient id="cr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".5" stop-color="#cbbcf3" stop-opacity=".85"/><stop offset="1" stop-color="#9f8ae6" stop-opacity=".9"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b8"/><stop offset=".5" stop-color="#e8bf5a"/><stop offset="1" stop-color="#c99530"/></linearGradient>
+<radialGradient id="gl"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<g id="fl"><g fill="currentColor"><ellipse cy="-12" rx="8.5" ry="12"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(72)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(144)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(216)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(288)"/></g><circle r="4.6" fill="#f2cf6b"/></g>
+<path id="sp" d="M0-10Q1.2-1.2 10 0Q1.2 1.2 0 10Q-1.2 1.2-10 0Q-1.2-1.2 0-10Z" fill="#fff"/>
+</defs>
+<rect width="385" height="184" fill="url(#bg)"/>
+<circle cx="285" cy="95" r="95" fill="url(#gl)"/>
+<g stroke="#fff" stroke-opacity=".8">
+<polygon points="330,184 338,100 352,70 368,106 376,184" fill="url(#cr)"/>
+<polygon points="215,184 222,120 234,96 246,124 252,184" fill="url(#cr)"/>
+<polygon points="350,184 356,140 364,128 372,146 380,184" fill="url(#cr)"/>
+</g>
+<g transform="translate(284 0)">
+<path d="M-32 52C-52 52-52 88-28 90M32 52C52 52 52 88 28 90" fill="none" stroke="url(#gold)" stroke-width="5"/>
+<path d="M-32 44H32V82C32 108 16 124 0 126C-16 124-32 108-32 82Z" fill="url(#gold)" stroke="#fff3c4" stroke-width="1.5"/>
+<path d="M-22 52V82C-22 100-12 112-6 116" stroke="#fff" stroke-opacity=".6" stroke-width="3" fill="none"/>
+<use href="#sp" transform="translate(0 78) scale(1.5)"/>
+<rect x="-7" y="126" width="14" height="20" fill="url(#gold)"/>
+<rect x="-26" y="144" width="52" height="12" rx="3" fill="url(#gold)" stroke="#fff3c4"/>
+<rect x="-34" y="154" width="68" height="10" rx="3" fill="#c99530"/>
+</g>
+<use href="#fl" transform="translate(220 170) scale(.9)" style="color:#f4b6d4"/>
+<use href="#fl" transform="translate(262 176) scale(.75)" style="color:#fff"/>
+<use href="#fl" transform="translate(312 174) scale(.85)" style="color:#d3c4f4"/>
+<use href="#fl" transform="translate(350 168) scale(1)" style="color:#f9d0e4"/>
+<use href="#fl" transform="translate(180 178) scale(.7)" style="color:#fff"/>
+<use href="#sp" transform="translate(232 40) scale(.9)"/><use href="#sp" transform="translate(345 36)"/><use href="#sp" transform="translate(300 18) scale(.7)"/>
+</svg>

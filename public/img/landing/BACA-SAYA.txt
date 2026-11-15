@@ -1,0 +1,11 @@
+Taruh gambar ilustrasi di folder ini. Nama file harus persis (boleh .jpg, .png, atau .webp):
+
+hero        Latar hero (kastil, buku melayang, kristal, bunga). TANPA TEKS.
+            Ukuran saran 2400 x 800 px, sisi kiri sebaiknya agak terang karena teks ada di sana.
+challenge   Latar kartu Reading Challenge (piala, kristal, bunga). Saran 900 x 500 px.
+lumi        Maskot Lumi, PNG transparan. Saran 400 x 400 px.
+footer      Latar footer (bunga di kiri dan kanan). Saran 2400 x 300 px.
+logo        Logo kristal. PNG transparan. Saran 200 x 200 px.
+
+Kalau sebuah file tidak ada, halaman memakai gambar pengganti sederhana.
+Setelah menaruh gambar cukup refresh browser (Ctrl + F5), tidak perlu build ulang.

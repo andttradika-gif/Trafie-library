@@ -1,0 +1,138 @@
+﻿=== VIEW: resources\views\landing-trafie.blade.php (sekitar baris 471) ===
+ 456:         <div><h2>Statistik Perpustakaan</h2><p>Bersama kita membangun budaya membaca.</p></div>
+ 457:       </div>
+ 458:       <div class="stats">
+ 459:         <div class="stat glass-i"><div class="si" style="background:linear-gradient(150deg,#f8ecfb,#ebd3f3)"><svg viewBox="0 0 24 24" style="stroke:#b57ad0"><path d="M4 6h7a2 2 0 0 1 2 2v11a2 2 0 0 0-2-2H4zM20 6h-7v11h7z"/></svg></div><div><b>{{ $fmt($stats['books']) }}</b><small>Total Buku</small></div></div>
+ 460:         <div class="stat glass-i"><div class="si" style="background:linear-gradient(150deg,#e9f8f0,#cfeadb)"><svg viewBox="0 0 24 24" style="stroke:#5fb48a"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div><div><b>{{ $fmt($stats['students']) }}</b><small>Siswa Aktif</small></div></div>
+ 461:         <div class="stat glass-i"><div class="si" style="background:linear-gradient(150deg,#e9effd,#d1dcf8)"><svg viewBox="0 0 24 24" style="stroke:#6f8ad6"><path d="M4 6h7a2 2 0 0 1 2 2v11a2 2 0 0 0-2-2H4zM20 6h-7v11h7z"/></svg></div><div><b>{{ $fmt($stats['loans']) }}</b><small>Peminjaman Bulanan</small></div></div>
+ 462:         <div class="stat glass-i"><div class="si" style="background:linear-gradient(150deg,#e9f8f0,#cfeadb)"><svg viewBox="0 0 24 24" style="stroke:#5fb48a"><path d="M12 3l2.4 5.6L20 9l-4.4 3.8L17 19l-5-3-5 3 1.4-6.2L4 9l5.6-.4z"/></svg></div><div><b>{{ $stats['satisfaction'] !== null ? $stats['satisfaction'].'%' : '-' }}</b><small>Tingkat Kepuasan</small></div></div>
+ 463:       </div>
+ 464:     </div>
+ 465:   </section>
+ 466: 
+ 467:   <section class="row2">
+ 468:     <div class="card" id="reviews">
+ 469:       <div class="hd">
+ 470:         <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 9l-4.4 3.8L17 19l-5-3-5 3 1.4-6.2L4 9l5.6-.4z"/></svg></div>
+ 471:         <div><h2>Apa Kata Mereka?</h2><p>Pendapat para pembaca tentang Trafie-library.</p></div>
+ 472:       </div>
+ 473:       <div class="revs">
+ 474:         @forelse($reviews as $r)
+ 475:           <div class="rev glass-i">
+ 476:             <div class="u"><div class="av">{{ strtoupper(mb_substr($r['name'], 0, 1)) }}</div><div><b>{{ $r['name'] }}</b></div></div>
+ 477:             <p>&ldquo;{{ \Illuminate\Support\Str::limit($r['text'], 130) }}&rdquo;</p>
+ 478:             <div class="st">@for($i = 0; $i < max(0, min(5, $r['rating'])); $i++){!! $star !!}@endfor</div>
+ 479:           </div>
+ 480:         @empty
+ 481:           <div class="empty" style="grid-column:1/-1">Belum ada ulasan. Siswa bisa menulis ulasan setelah mengembalikan buku, dan ulasan tampil di sini setelah disetujui admin.</div>
+ 482:         @endforelse
+ 483:       </div>
+ 484:     </div>
+ 485: 
+ 486:     <div class="card promo ch">
+ 487:       @if($img('challenge'))<div class="art" style="background-image:url('{{ $img('challenge') }}')"></div>@endif
+ 488:       <div class="pc">
+ 489:         <h3>Reading Challenge</h3>
+ 490:         <p>Tantangan membaca untuk versi terbaik dirimu.</p>
+ 491:         <a href="{{ $catalog }}" class="btn btn-fill">Lihat Challenge &nbsp;&rarr;</a>
+ 492:       </div>
+ 493:     </div>
+ 494: 
+ 495:     <div class="card promo lu">
+ 496:       @if($img('lumi'))<img class="mascot" src="{{ $img('lumi') }}" alt="Lumi">@endif
+ 497:       <div class="bubble">Hai! Aku Lumi<br>Siap membantu rekomendasi buku untukmu! {!! $spark !!}</div>
+ 498:       <div class="pc">
+ 499:         <h3>Lumi AI</h3>
+ 500:         <div class="sub">Your Reading Companion</div>
+ 501:         <p>Tanya tentang buku, dapatkan rekomendasi yang sesuai dengan minat dan mood-mu!</p>
+ 502:         <a href="#" class="btn btn-fill" onclick="alert('Lumi AI segera hadir.');return false;">Chat with Lumi &nbsp;&rarr;</a>
+ 503:       </div>
+ 504:     </div>
+ 505:   </section>
+ 506: </div>
+ 507: 
+ 508: <footer class="foot" id="about">
+ 509:   @if($img('footer'))<div class="art" style="background-image:url('{{ $img('footer') }}')"></div>@endif
+ 510:   <div class="foot-in">
+ 511:     <div class="fl">
+=== VIEW: resources\views\welcome.blade.php (sekitar baris 432) ===
+ 417:             </div>
+ 418:             <div class="lp-stats">
+ 419:                 <div class="lp-stat"><span class="ib a"><svg class="ic" viewBox="0 0 24 24">{!! $ikon('book') !!}</svg></span><div><b>{{ number_format($totalBuku) }}</b><small>Total Buku</small></div></div>
+ 420:                 <div class="lp-stat"><span class="ib b"><svg class="ic" viewBox="0 0 24 24">{!! $ikon('users') !!}</svg></span><div><b>{{ number_format($totalSiswa) }}</b><small>Siswa Terdaftar</small></div></div>
+ 421:                 <div class="lp-stat"><span class="ib c"><svg class="ic" viewBox="0 0 24 24">{!! $ikon('swap') !!}</svg></span><div><b>{{ number_format($pinjamBulan) }}</b><small>Peminjaman Bulan Ini</small></div></div>
+ 422:                 <div class="lp-stat"><span class="ib d"><svg class="ic" viewBox="0 0 24 24">{!! $ikon('star') !!}</svg></span><div><b>{{ number_format($tersedia) }}</b><small>Eksemplar Tersedia</small></div></div>
+ 423:             </div>
+ 424:         </section>
+ 425:     </div>
+ 426: 
+ 427:     <div class="lp-row r2">
+ 428:         {{-- Ulasan --}}
+ 429:         <section class="lp-card" id="reviews">
+ 430:             <div class="lp-sh">
+ 431:                 <svg class="ic" viewBox="0 0 24 24">{!! $ikon('star') !!}</svg>
+ 432:                 <div><h2>Apa Kata Mereka?</h2><p>Pendapat para pembaca tentang Trafie-library.</p></div>
+ 433:             </div>
+ 434:             @if($ulasan->isEmpty())
+ 435:                 <p class="lp-empty">Belum ada ulasan. Setelah mengembalikan buku, siswa bisa menulis ulasan di halaman detail buku, dan ulasan yang disetujui admin akan tampil di sini.</p>
+ 436:             @else
+ 437:             <div class="lp-revs">
+ 438:                 @foreach($ulasan as $r)
+ 439:                     <div class="lp-rev">
+ 440:                         <div class="who">
+ 441:                             <span class="av">{{ strtoupper(mb_substr($r->user->name, 0, 1)) }}</span>
+ 442:                             <div><b>{{ $r->user->name }}</b><small>tentang "{{ \Illuminate\Support\Str::limit($r->book->title, 24) }}"</small></div>
+ 443:                         </div>
+ 444:                         <q>{{ \Illuminate\Support\Str::limit($r->body, 150) }}</q>
+ 445:                         <span class="st">{!! str_repeat('&#9733;', $r->rating) !!}</span>
+ 446:                     </div>
+ 447:                 @endforeach
+ 448:             </div>
+ 449:             @endif
+ 450:         </section>
+ 451: 
+ 452:         {{-- Reading Challenge (tampilan; fitur belum dibuat) --}}
+ 453:         <section class="lp-card lp-feat ch" @if($imgChallenge) style="background-image:url('{{ $imgChallenge }}')" @endif>
+ 454:             <h2>Reading Challenge</h2>
+ 455:             <p class="t">Tantangan membaca untuk versi terbaik dirimu.</p>
+ 456:             <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="lp-btn fill">Lihat Challenge &rarr;</a>
+ 457:             @unless($imgChallenge)
+ 458:             <div class="art">
+ 459:                 <svg viewBox="0 0 200 200" aria-hidden="true">
+ 460:                     <defs><linearGradient id="tr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe7a0"/><stop offset="1" stop-color="#e8b94f"/></linearGradient></defs>
+ 461:                     <polygon points="40,150 55,95 70,150" fill="#d9ccf5" stroke="#b9a8ee"/>
+ 462:                     <polygon points="150,160 165,100 180,160" fill="#f4c2da" stroke="#f4a6c8"/>
+ 463:                     <path d="M75 40h60v40a30 30 0 01-60 0z" fill="url(#tr)" stroke="#d9a63f" stroke-width="2"/>
+ 464:                     <path d="M75 52H58a14 14 0 0014 24M135 52h17a14 14 0 01-14 24" fill="none" stroke="#d9a63f" stroke-width="3"/>
+ 465:                     <rect x="97" y="108" width="16" height="22" fill="#e8b94f"/>
+ 466:                     <rect x="80" y="130" width="50" height="14" rx="3" fill="#d9a63f"/>
+ 467:                     <path d="M105 56l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z" fill="#fff" fill-opacity=".85"/>
+ 468:                 </svg>
+ 469:             </div>
+ 470:             @endunless
+ 471:         </section>
+ 472: 
+=== PEMAKAI REVIEW DI CONTROLLER/ROUTE ===
+app\Http\Controllers\Admin\ReviewBoardController.php:6  use App\Models\BookReview;
+app\Http\Controllers\Admin\ReviewBoardController.php:18  $reviews = BookReview::with(['user', 'book'])
+app\Http\Controllers\Admin\ReviewBoardController.php:31  'total'   => BookReview::count(),
+app\Http\Controllers\Admin\ReviewBoardController.php:32  'avg'     => round((float) BookReview::whereNotNull('approved_at')->avg('rating'), 1),
+app\Http\Controllers\Admin\ReviewBoardController.php:33  'pending' => BookReview::whereNull('approved_at')->count(),
+app\Http\Controllers\Admin\ReviewBoardController.php:34  'approved' => BookReview::whereNotNull('approved_at')->count(),
+app\Http\Controllers\Admin\ReviewBoardController.php:36  $dist = BookReview::whereNotNull('approved_at')->selectRaw('rating, count(*) as c')->groupBy('rating')->pluck('c', 'rating');
+app\Http\Controllers\Admin\ReviewBoardController.php:48  public function hide(BookReview $review)
+app\Http\Controllers\Admin\ReviewController.php:6  use App\Models\BookReview;
+app\Http\Controllers\Admin\ReviewController.php:12  $reviews = BookReview::with(['user', 'book'])
+app\Http\Controllers\Admin\ReviewController.php:17  $pending = BookReview::whereNull('approved_at')->count();
+app\Http\Controllers\Admin\ReviewController.php:22  public function approve(BookReview $review)
+app\Http\Controllers\Admin\ReviewController.php:31  public function destroy(BookReview $review)
+app\Http\Controllers\Admin\SocialController.php:11  $reviews = Review::with(['user', 'book'])->latest()->get();
+app\Http\Controllers\Student\OverviewController.php:7  use App\Models\BookReview;
+app\Http\Controllers\Student\OverviewController.php:21  'reviews'  => BookReview::where('user_id', $user->id)->count(),
+app\Http\Controllers\Student\RatingController.php:7  use App\Models\BookReview;
+app\Http\Controllers\Student\RatingController.php:28  $existing = BookReview::where('user_id', $uid)->where('book_id', $book->id)->first();
+app\Http\Controllers\Student\RatingController.php:33  BookReview::updateOrCreate(
+app\Http\Controllers\Student\RatingController.php:46  $deleted = BookReview::where('user_id', $request->user()->id)->where('book_id', $book->id)->delete();
+app\Http\Controllers\Student\ReviewController.php:7  use App\Models\BookReview;
+app\Http\Controllers\Student\ReviewController.php:31  BookReview::updateOrCreate(
+

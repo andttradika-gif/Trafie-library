@@ -1,0 +1,131 @@
+/* ===== TRAFIE-LIBRARY UI 2026 ("Aether") : bersih, tegas, modern ===== */
+html.tlu { --ink: #1f1b3d; --mut: #6f6b93; --line: #ebe7f6; --line2: #f2effa; --pri: #6d4aff; --pri2: #8a6bff; --soft: #f1edff; --bg: #f6f4fd; }
+html.tlu body { background: radial-gradient(900px 520px at 0% -6%, #e9e1ff 0%, transparent 62%), radial-gradient(800px 520px at 100% -4%, #ffe4f1 0%, transparent 60%), var(--bg) !important; background-attachment: fixed !important; }
+html.tlu body::before { display: none !important; }
+html.tlu .tlu-main, html.tlu .tlu-bar { font-family: 'Plus Jakarta Sans', 'Poppins', system-ui, sans-serif; color: var(--ink); }
+
+/* --- topbar & sidebar: tenang --- */
+html.tlu .tlu-bar { background: rgba(255,255,255,.8) !important; border-bottom: 1px solid var(--line) !important; box-shadow: none !important; backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); }
+html.tlu .tlu-hide { display: none !important; }
+html.tlu aside { background: rgba(255,255,255,.92) !important; border: 1px solid var(--line) !important; box-shadow: 0 16px 40px -24px rgba(60,40,140,.35) !important; backdrop-filter: blur(14px); }
+html.tlu aside::before, html.tlu aside::after { opacity: .12 !important; }
+html.tlu aside img[class*="art"], html.tlu aside [class*="sb-art"] { opacity: .16 !important; pointer-events: none; }
+html.tlu .tlu-nav { position: relative; border-radius: 12px !important; background: transparent !important; box-shadow: none !important; border: 0 !important; color: #5b5780 !important; text-shadow: none !important; font-weight: 500 !important; transition: background .15s ease, color .15s ease; }
+html.tlu .tlu-nav:hover { background: #f6f3ff !important; color: #3b2fb0 !important; transform: none !important; }
+html.tlu .tlu-nav > *:first-child:not(span:not([class])) { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+html.tlu .tlu-nav svg { color: #8a7fc4; }
+html.tlu .tlu-nav.on { background: var(--soft) !important; color: #4c2fe0 !important; font-weight: 700 !important; }
+html.tlu .tlu-nav.on svg { color: var(--pri); }
+html.tlu .tlu-nav.on::before { content: ''; position: absolute; left: -10px; top: 22%; bottom: 22%; width: 4px; border-radius: 4px; background: var(--pri); }
+
+/* --- kartu: putih bersih --- */
+html.tlu .tlu-card { background: #fff !important; background-image: none !important; border: 1px solid var(--line) !important; border-radius: 20px !important; backdrop-filter: none !important;
+  box-shadow: 0 1px 2px rgba(40,30,90,.04), 0 14px 34px -22px rgba(60,40,140,.28) !important; transition: box-shadow .2s ease, transform .2s ease; }
+html.tlu .tlu-card::before, html.tlu .tlu-card::after { display: none !important; }
+html.tlu .tlu-card .tlu-card { background: #faf9ff !important; box-shadow: none !important; border-color: var(--line2) !important; }
+html.tlu .tlu-card:hover { transform: none !important; }
+
+/* --- judul halaman (tanpa kartu) --- */
+html.tlu .tlu-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin: .2rem 0 1.3rem; padding: 0 .2rem; background: none; border: 0; box-shadow: none; }
+html.tlu .tlu-hero::after { display: none; }
+html.tlu .tlu-hero .crumb { display: flex; align-items: center; gap: .45rem; margin-bottom: .35rem; font-size: .72rem; font-weight: 500; color: #9a96bb; }
+html.tlu .tlu-hero .crumb svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+html.tlu .tlu-hero .crumb b { color: var(--pri); font-weight: 600; }
+html.tlu .tlu-hero h1 { margin: 0; font-family: inherit; font-size: 1.75rem; font-weight: 800; letter-spacing: -.025em; line-height: 1.15; color: var(--ink); background: none; -webkit-text-fill-color: var(--ink); }
+html.tlu .tlu-hero p { margin: .35rem 0 0; font-size: .86rem; color: var(--mut); }
+html.tlu .xp-hd { padding: 0 .2rem; margin-bottom: .3rem; background: none !important; border: 0 !important; box-shadow: none !important; }
+html.tlu .xp-hd h2 { font-family: inherit !important; font-size: 1.75rem !important; font-weight: 800; letter-spacing: -.025em; color: var(--ink) !important; background: none !important; -webkit-text-fill-color: var(--ink) !important; text-shadow: none !important; }
+
+/* --- tabel padat --- */
+html.tlu .tlu-main table { width: 100%; border-collapse: separate !important; border-spacing: 0 !important; background: transparent !important; }
+html.tlu .tlu-main table thead, html.tlu .tlu-main table thead tr { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+html.tlu .tlu-main table th { padding: .75rem 1rem !important; background: #faf9ff !important; background-image: none !important; border: 0 !important; border-top: 1px solid var(--line) !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; box-shadow: none !important;
+  font-size: .68rem !important; font-weight: 700 !important; letter-spacing: .06em; text-transform: uppercase; text-align: left; color: #8c88ad !important; white-space: nowrap; }
+html.tlu .tlu-main table th:first-child { border-left: 1px solid var(--line) !important; border-top-left-radius: 12px !important; border-bottom-left-radius: 12px !important; }
+html.tlu .tlu-main table th:last-child { border-right: 1px solid var(--line) !important; border-top-right-radius: 12px !important; border-bottom-right-radius: 12px !important; }
+html.tlu .tlu-main table td { padding: .9rem 1rem !important; background: transparent !important; background-image: none !important; border: 0 !important; border-bottom: 1px solid var(--line2) !important; border-radius: 0 !important; box-shadow: none !important; font-size: .84rem; color: #46426b; vertical-align: middle; }
+html.tlu .tlu-main table td b, html.tlu .tlu-main table td strong { font-weight: 700; color: var(--ink); }
+html.tlu .tlu-main table td small { display: block; margin-top: .1rem; font-size: .74rem; color: #9a96bb; }
+html.tlu .tlu-main table tbody tr { background: transparent !important; box-shadow: none !important; transition: background .15s ease; }
+html.tlu .tlu-main table tbody tr:hover td { background: #faf8ff !important; }
+html.tlu .tlu-main table tbody tr:last-child td { border-bottom: 0 !important; }
+html.tlu .tlu-main table td.r, html.tlu .tlu-main table th.r { text-align: right; }
+html.tlu .tlu-main table td[colspan] { padding: 2.6rem 1rem !important; text-align: center; color: var(--mut); }
+html.tlu .tlu-main table td[colspan]::before { content: ''; display: block; width: 44px; height: 44px; margin: 0 auto .8rem; border-radius: 14px; background: var(--soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236d4aff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7l9-4 9 4-9 4z'/%3E%3Cpath d='M3 12l9 4 9-4'/%3E%3Cpath d='M3 17l9 4 9-4'/%3E%3C/svg%3E") center / 22px no-repeat; }
+html.tlu .tlu-cell { display: flex; align-items: center; gap: .75rem; }
+html.tlu .tlu-av { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 12px; font-size: .72rem; font-weight: 700; color: #fff; letter-spacing: .02em; box-shadow: inset 0 -2px 4px rgba(0,0,0,.12); }
+html.tlu .tlu-acts { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+/* --- tombol --- */
+html.tlu .tlu-btn { display: inline-flex !important; align-items: center; justify-content: center; gap: .4rem; height: 36px; padding: 0 .95rem !important; margin: 0 !important; width: auto !important; min-width: 0 !important; border-radius: 11px !important; border: 1px solid transparent !important;
+  font-family: inherit; font-size: .78rem !important; font-weight: 600 !important; line-height: 1; text-decoration: none !important; text-shadow: none !important; white-space: nowrap; cursor: pointer; transition: transform .12s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; }
+html.tlu .tlu-btn:active { transform: scale(.97); }
+html.tlu .tlu-btn svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+html.tlu .tlu-btn.p { color: #fff !important; background: linear-gradient(180deg, #7d5cff, #6a46f5) !important; box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 8px 16px -8px rgba(109,74,255,.75) !important; }
+html.tlu .tlu-btn.p:hover { background: linear-gradient(180deg, #8a6bff, #7350fa) !important; box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 12px 20px -8px rgba(109,74,255,.85) !important; }
+html.tlu .tlu-btn.s { color: #4c2fe0 !important; background: var(--soft) !important; box-shadow: none !important; }
+html.tlu .tlu-btn.s:hover { background: #e7e0ff !important; }
+html.tlu .tlu-btn.d { color: #d03a63 !important; background: #fff1f5 !important; box-shadow: none !important; }
+html.tlu .tlu-btn.d:hover { background: #ffe3ec !important; }
+html.tlu .tlu-btn.g { color: #3b3567 !important; background: #fff !important; border-color: #e4dff3 !important; box-shadow: 0 1px 2px rgba(40,30,90,.05) !important; }
+html.tlu .tlu-btn.g:hover { border-color: #cfc6ee !important; background: #fcfbff !important; }
+
+/* --- tab gaya iOS --- */
+html.tlu .tlu-seg { display: inline-flex !important; flex-wrap: wrap; gap: 2px !important; padding: 4px !important; margin-bottom: 1rem; border-radius: 14px; background: #efebfb !important; border: 0 !important; box-shadow: none !important; }
+html.tlu .tlu-seg > * { height: 32px; padding: 0 1rem !important; margin: 0 !important; border-radius: 10px !important; border: 0 !important; background: transparent !important; box-shadow: none !important; display: inline-flex !important; align-items: center;
+  font-size: .78rem !important; font-weight: 600 !important; color: #7a76a0 !important; text-decoration: none !important; text-shadow: none !important; transition: all .15s ease; }
+html.tlu .tlu-seg > *:hover { color: #3b2fb0 !important; }
+html.tlu .tlu-seg > .on { color: var(--ink) !important; background: #fff !important; box-shadow: 0 1px 3px rgba(40,30,90,.14), 0 4px 10px -4px rgba(40,30,90,.12) !important; }
+
+/* --- isian --- */
+html.tlu .tlu-main input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), html.tlu .tlu-main select, html.tlu .tlu-main textarea {
+  height: 42px; padding: 0 .95rem; border-radius: 12px !important; border: 1px solid #e4dff3 !important; background-color: #fff !important; font-family: inherit; font-size: .86rem !important; color: var(--ink); outline: 0;
+  box-shadow: 0 1px 2px rgba(40,30,90,.04) !important; transition: border-color .15s ease, box-shadow .15s ease; }
+html.tlu .tlu-main textarea { height: auto; min-height: 96px; padding: .75rem .95rem; line-height: 1.55; }
+html.tlu .tlu-main input:focus, html.tlu .tlu-main select:focus, html.tlu .tlu-main textarea:focus { border-color: var(--pri) !important; box-shadow: 0 0 0 4px rgba(109,74,255,.14) !important; }
+html.tlu .tlu-main input::placeholder, html.tlu .tlu-main textarea::placeholder { color: #aaa6c8; }
+html.tlu .tlu-main label { font-size: .76rem; font-weight: 600; color: #5b5780; }
+
+/* --- lencana status --- */
+html.tlu .tlr-bd, html.tlu .tlu-bd { display: inline-flex !important; align-items: center; gap: .4rem; padding: .28rem .75rem !important; border-radius: 999px !important; font-size: .72rem !important; font-weight: 600 !important; white-space: nowrap; border: 0 !important; box-shadow: none !important; text-shadow: none !important; }
+html.tlu .tlr-bd::before, html.tlu .tlu-bd::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+html.tlu .tlr-bd-blue { color: #2f62d8 !important; background: #e8f0ff !important; }
+html.tlu .tlr-bd-green { color: #12805a !important; background: #e3f8ee !important; }
+html.tlu .tlr-bd-amber { color: #b0690a !important; background: #fff3dc !important; }
+html.tlu .tlr-bd-pink { color: #cc3a73 !important; background: #ffe8f1 !important; }
+html.tlu .tlr-bd-red { color: #d0343f !important; background: #ffe9ea !important; }
+html.tlu .tlr-bd-lav { color: #5a3fd6 !important; background: #efeaff !important; }
+
+/* --- kartu angka (bento) --- */
+html.tlu .xp-sum { gap: 1rem; }
+html.tlu .xp-s { border-radius: 20px !important; border: 1px solid var(--line) !important; background: #fff !important; backdrop-filter: none !important; box-shadow: 0 1px 2px rgba(40,30,90,.04), 0 14px 34px -22px rgba(60,40,140,.28) !important; }
+html.tlu .xp-s::before, html.tlu .xp-s::after, html.tlu .xp-card::before, html.tlu .xp-card::after { display: none !important; }
+html.tlu .xp-s small { font-size: .76rem; font-weight: 600; color: var(--mut); }
+html.tlu .xp-s b { font-size: 1.9rem !important; font-weight: 800; letter-spacing: -.03em; text-shadow: none !important; color: var(--ink); }
+html.tlu .xp-s.a, html.tlu .tlr-s1 { background: linear-gradient(135deg, #f1edff, #fff) !important; }
+html.tlu .xp-s.b, html.tlu .tlr-s2 { background: linear-gradient(135deg, #e6f8ef, #fff) !important; }
+html.tlu .xp-s.c, html.tlu .tlr-s3 { background: linear-gradient(135deg, #e8f1ff, #fff) !important; }
+html.tlu .xp-s.d, html.tlu .tlr-s4 { background: linear-gradient(135deg, #ffeaf2, #fff) !important; }
+html.tlu .xp-card { border-radius: 20px !important; background: #fff !important; backdrop-filter: none !important; border: 1px solid var(--line) !important; box-shadow: 0 1px 2px rgba(40,30,90,.04), 0 14px 34px -22px rgba(60,40,140,.28) !important; }
+html.tlu .xp-empty i { width: 44px !important; height: 44px !important; border: 0 !important; border-radius: 14px !important; background: var(--soft) !important; box-shadow: none !important; }
+html.tlu .xp-empty i::before { content: none; }
+
+/* --- laporan --- */
+html.tlu .tlr-scroll { overflow-x: auto; }
+html.tlu .tlr-bar { display: flex; align-items: center; gap: .8rem; margin: 0 0 .7rem; }
+html.tlu .tlr-bar input { flex: 1; max-width: 380px; }
+html.tlu .tlr-bar .count { font-size: .76rem; font-weight: 500; color: var(--mut); }
+html.tlu .tlr-chips { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; width: 100%; flex-basis: 100%; grid-column: 1 / -1; margin-top: .4rem; }
+html.tlu .tlr-chips .lb { font-size: .74rem; font-weight: 500; color: var(--mut); margin-right: .2rem; }
+html.tlu .tlr-chip { height: 30px; padding: 0 .85rem; border-radius: 999px; border: 1px solid #e4dff3; background: #fff; font: inherit; font-size: .74rem; font-weight: 600; color: #4c2fe0; cursor: pointer; transition: all .15s ease; }
+html.tlu .tlr-chip:hover { background: var(--soft); border-color: #cfc6ee; }
+html.tlu .tlr-pdf svg { margin-right: .1rem; }
+html.tlu .tlr-pdf.busy { opacity: .7; pointer-events: none; }
+.tlr-toast { position: fixed; left: 50%; bottom: 28px; z-index: 99999; transform: translateX(-50%); padding: .75rem 1.2rem; border-radius: 14px; font: 600 .82rem 'Plus Jakarta Sans', 'Poppins', sans-serif; color: #fff; background: #1f1b3d; box-shadow: 0 18px 34px -10px rgba(20,10,60,.6); transition: opacity .4s ease; }
+.tlr-toast.out { opacity: 0; }
+
+@media print {
+  aside, header, nav, .tlr-bar, .tlr-chips, form, #tllFab, #tllChat, .tlu-hero { display: none !important; }
+  html.tlu .tlu-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+}
+@media (prefers-reduced-motion: reduce) { html.tlu * { transition: none !important; } }

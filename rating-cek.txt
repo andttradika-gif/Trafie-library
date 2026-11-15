@@ -1,0 +1,211 @@
+﻿=== FILE: app\Http\Controllers\Student\RatingController.php ===
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\BookReview;
+use App\Models\Loan;
+use Illuminate\Http\Request;
+
+class RatingController extends Controller
+{
+    public function store(Request $request, Book $book)
+    {
+        $uid = $request->user()->id;
+
+        $data = $request->validate(
+            ['rating' => 'required|integer|between:1,5', 'comment' => 'nullable|string|max:1000'],
+            ['rating.required' => 'Pilih jumlah bintang dulu.', 'rating.between' => 'Rating harus 1 sampai 5 bintang.']
+        );
+
+        $pernahPinjam = Loan::where('user_id', $uid)->where('book_id', $book->id)->whereIn('status', ['Borrowed', 'Returned'])->exists();
+        if (!$pernahPinjam) {
+            return back()->with('error', 'Kamu hanya bisa memberi rating buku yang pernah kamu pinjam.');
+        }
+
+        $body = trim((string) ($data['comment'] ?? ''));
+        $existing = BookReview::where('user_id', $uid)->where('book_id', $book->id)->first();
+
+        // Tanpa komentar: langsung tampil. Dengan komentar baru atau berubah: menunggu persetujuan admin.
+        if ($body === '') {
+            $approved = $existing && $existing->approved_at ? $existing->approved_at : now();
+        } elseif ($existing && $existing->body === $body) {
+            $approved = $existing->approved_at;
+        } else {
+            $approved = null;
+        }
+
+        BookReview::updateOrCreate(
+            ['user_id' => $uid, 'book_id' => $book->id],
+            ['rating' => (int) $data['rating'], 'body' => $body, 'approved_at' => $approved]
+        );
+
+        $msg = $approved
+            ? 'Rating ' . (int) $data['rating'] . ' bintang tersimpan. Terima kasih!'
+            : 'Ulasanmu terkirim dan akan tampil setelah disetujui admin.';
+        return back()->with('success', $msg);
+    }
+
+    public function destroy(Request $request, Book $book)
+    {
+        $deleted = BookReview::where('user_id', $request->user()->id)->where('book_id', $book->id)->delete();
+        return back()->with($deleted ? 'success' : 'error', $deleted ? 'Ratingmu dihapus.' : 'Kamu belum memberi rating buku ini.');
+    }
+}
+=== FILE: app\Models\BookReview.php ===
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookReview extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'rating', 'body', 'approved_at'];
+
+    protected function casts(): array
+    {
+        return ['approved_at' => 'datetime'];
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->whereNotNull('approved_at');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+=== FILE: routes\rating.php ===
+<?php
+
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'role:student', 'throttle:30,1'])->prefix('student')->name('student.')->group(function () {
+    Route::post('/books/{book}/rating', [Student\RatingController::class, 'store'])->name('rate.store');
+    Route::delete('/books/{book}/rating', [Student\RatingController::class, 'destroy'])->name('rate.destroy');
+});
+=== FILE: resources\views\student\partials\rating.blade.php ===
+@isset($book)
+@if(\Illuminate\Support\Facades\Route::has('student.rate.store'))
+@php
+    $rtUid = \Illuminate\Support\Facades\Auth::id();
+    $rtBase = \App\Models\BookReview::where('book_id', $book->id)->whereNotNull('approved_at');
+    $rtCount = (clone $rtBase)->count();
+    $rtAvg = $rtCount ? round((float) (clone $rtBase)->avg('rating'), 1) : 0;
+    $rtDist = (clone $rtBase)->selectRaw('rating, count(*) as c')->groupBy('rating')->pluck('c', 'rating');
+    $rtMax = max(1, (int) $rtDist->max());
+    $rtMine = \App\Models\BookReview::where('book_id', $book->id)->where('user_id', $rtUid)->first();
+    $rtCan = \App\Models\Loan::where('user_id', $rtUid)->where('book_id', $book->id)->whereIn('status', ['Borrowed', 'Returned'])->exists();
+    $rtList = \App\Models\BookReview::with('user')->where('book_id', $book->id)->whereNotNull('approved_at')->where('body', '!=', '')->latest('id')->take(10)->get();
+    $rtFull = (int) floor($rtAvg);
+@endphp
+<style>
+.rt { margin-top: 1.4rem; padding: 1.5rem; border-radius: 26px; background: linear-gradient(150deg, rgba(255,255,255,.92), rgba(247,238,255,.78)); border: 1px solid #fff; box-shadow: 0 20px 48px rgba(139,92,246,.12); }
+.rt h3 { margin: 0 0 1rem; font-family: 'Playfair Display', serif; font-size: 1.25rem; color: #2d2a4a; }
+.rt-top { display: grid; gap: 1.6rem; grid-template-columns: 190px 1fr; align-items: center; margin-bottom: 1.3rem; }
+.rt-avg { text-align: center; padding: 1rem; border-radius: 22px; background: linear-gradient(135deg, rgba(217,204,245,.55), rgba(247,200,220,.55)); }
+.rt-avg b { display: block; font-family: 'Playfair Display', serif; font-size: 2.8rem; line-height: 1; color: #2d2a4a; }
+.rt-st { color: #f0a93b; letter-spacing: .1em; font-size: 1rem; }
+.rt-st .off { color: #e2dcf2; }
+.rt-avg small { display: block; margin-top: .3rem; font-size: .7rem; color: #7b7796; }
+.rt-row { display: grid; grid-template-columns: 34px 1fr 28px; gap: .6rem; align-items: center; padding: .2rem 0; font-size: .7rem; color: #5f5b7a; }
+.rt-row div { height: 8px; border-radius: 999px; background: #eee9fa; overflow: hidden; }
+.rt-row i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f6c885, #f08fb0); }
+.rt-row em { font-style: normal; font-weight: 600; text-align: right; }
+.rt-form { padding: 1.1rem; border-radius: 20px; background: rgba(250,247,255,.9); border: 1px solid rgba(217,204,245,.7); margin-bottom: 1.3rem; }
+.rt-form h4 { margin: 0 0 .5rem; font-size: .85rem; color: #5b34a8; }
+.rt-pick { display: inline-flex; flex-direction: row-reverse; gap: .15rem; margin-bottom: .6rem; }
+.rt-pick input { position: absolute; opacity: 0; pointer-events: none; }
+.rt-pick label { font-size: 2rem; line-height: 1; cursor: pointer; color: #ddd5ef; transition: color .15s ease, transform .15s ease; }
+.rt-pick label:hover, .rt-pick label:hover ~ label, .rt-pick input:checked ~ label { color: #f0a93b; }
+.rt-pick label:hover { transform: scale(1.15); }
+.rt-form textarea { width: 100%; min-height: 84px; padding: .7rem 1rem; border-radius: 14px; border: 1px solid rgba(205,188,245,.95); background: rgba(255,255,255,.92); font: 500 .8rem 'Poppins', sans-serif; color: #3b3858; resize: vertical; outline: 0; box-sizing: border-box; }
+.rt-form textarea:focus { border-color: #a78bfa; box-shadow: 0 0 0 4px rgba(167,139,250,.2); }
+.rt-btns { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-top: .7rem; }
+.rt-btn { height: 40px; padding: 0 1.4rem; border: 0; border-radius: 13px; cursor: pointer; font: 600 .78rem 'Poppins', sans-serif; color: #fff; background: linear-gradient(115deg, #9a80ee, #c58ae8 55%, #f29bc8); box-shadow: 0 10px 22px rgba(160,120,230,.38); }
+.rt-btn:hover { transform: translateY(-2px); }
+.rt-del { height: 40px; padding: 0 1.1rem; border-radius: 13px; cursor: pointer; font: 600 .74rem 'Poppins', sans-serif; color: #c93b64; background: #fff3f6; border: 1px solid #f6c3d3; }
+.rt-note { padding: 1rem; border-radius: 16px; background: rgba(255,243,214,.8); border: 1px solid #f1d9a4; font-size: .76rem; color: #8a5b12; margin-bottom: 1.3rem; }
+.rt-pend { display: inline-block; margin-left: .4rem; padding: .15rem .6rem; border-radius: 999px; font-size: .62rem; font-weight: 600; background: #fdf0cf; color: #a5741a; }
+.rt-item { display: flex; gap: .8rem; padding: .8rem 0; border-top: 1px solid rgba(217,204,245,.45); }
+.rt-av { flex: 0 0 38px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: .8rem; color: #5b34a8; background: linear-gradient(135deg, #f7c8dc, #d9ccf5); }
+.rt-item b { font-size: .8rem; color: #2d2a4a; }
+.rt-item small { color: #8b87a8; font-size: .66rem; margin-left: .4rem; }
+.rt-item p { margin: .25rem 0 0; font-size: .8rem; line-height: 1.6; color: #4b4868; white-space: pre-line; }
+@media (max-width: 700px) { .rt-top { grid-template-columns: 1fr; } }
+</style>
+
+<section class="rt" id="rating">
+    <h3>Rating &amp; Ulasan</h3>
+
+    <div class="rt-top">
+        <div class="rt-avg">
+            <b>{{ $rtCount ? number_format($rtAvg, 1) : '-' }}</b>
+            <div class="rt-st">{!! str_repeat('&#9733;', $rtFull) !!}<span class="off">{!! str_repeat('&#9733;', 5 - $rtFull) !!}</span></div>
+            <small>{{ $rtCount }} ulasan</small>
+        </div>
+        <div>
+            @foreach([5, 4, 3, 2, 1] as $s)
+                <div class="rt-row"><span>{{ $s }} &#9733;</span><div><i style="width: {{ round(($rtDist[$s] ?? 0) / $rtMax * 100) }}%"></i></div><em>{{ $rtDist[$s] ?? 0 }}</em></div>
+            @endforeach
+        </div>
+    </div>
+
+    @if($rtCan)
+        <div class="rt-form">
+            <h4>{{ $rtMine ? 'Ratingmu (bisa diubah)' : 'Beri rating buku ini' }}
+                @if($rtMine && !$rtMine->approved_at)<span class="rt-pend">Menunggu persetujuan admin</span>@endif
+            </h4>
+            <form method="POST" action="{{ route('student.rate.store', $book) }}">
+                @csrf
+                <div class="rt-pick">
+                    @for($s = 5; $s >= 1; $s--)
+                        <input type="radio" id="rt{{ $s }}" name="rating" value="{{ $s }}" @checked((int) old('rating', $rtMine->rating ?? 0) === $s) required>
+                        <label for="rt{{ $s }}" title="{{ $s }} bintang">&#9733;</label>
+                    @endfor
+                </div>
+                @error('rating')<div style="color:#c93b64;font-size:.72rem;margin-bottom:.4rem">{{ $message }}</div>@enderror
+                <textarea name="comment" maxlength="1000" placeholder="Tulis ulasan singkat (opsional)">{{ old('comment', $rtMine->body ?? '') }}</textarea>
+                @error('comment')<div style="color:#c93b64;font-size:.72rem">{{ $message }}</div>@enderror
+                <div class="rt-btns">
+                    <button class="rt-btn" type="submit">{{ $rtMine ? 'Perbarui Rating' : 'Kirim Rating' }}</button>
+                </div>
+            </form>
+            @if($rtMine)
+                <form method="POST" action="{{ route('student.rate.destroy', $book) }}" onsubmit="return confirm('Hapus ratingmu untuk buku ini?')" style="margin-top:.5rem">
+                    @csrf @method('DELETE')
+                    <button class="rt-del" type="submit">Hapus rating</button>
+                </form>
+            @endif
+        </div>
+    @else
+        <div class="rt-note">Kamu bisa memberi rating setelah meminjam buku ini. Ajukan pinjam dulu, lalu kembali ke halaman ini.</div>
+    @endif
+
+    @forelse($rtList as $r)
+        <div class="rt-item">
+            <div class="rt-av">{{ strtoupper(mb_substr($r->user->name ?? '?', 0, 1)) }}</div>
+            <div>
+                <b>{{ $r->user->name ?? 'Siswa' }}</b><small>{{ $r->created_at->format('d M Y') }}</small>
+                <div class="rt-st" style="font-size:.8rem">{!! str_repeat('&#9733;', (int) $r->rating) !!}<span class="off">{!! str_repeat('&#9733;', 5 - (int) $r->rating) !!}</span></div>
+                <p>{{ $r->body }}</p>
+            </div>
+        </div>
+    @empty
+        <div style="font-size:.76rem;color:#8b87a8">Belum ada ulasan tertulis untuk buku ini.</div>
+    @endforelse
+</section>
+@endif
+@endisset
+

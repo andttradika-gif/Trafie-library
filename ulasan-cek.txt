@@ -1,0 +1,62 @@
+﻿=== FILE: resources\views\student\books\show.blade.php ===
+  58:                 @endif
+  59:             </div>
+  60:         </div>
+  61:     </div>
+  62: 
+  63:     <div class="tl-card" style="margin-top:1.25rem">
+  64:         <h3 class="tl-serif" style="margin:0 0 .8rem;color:#2d2a4a">Ulasan Pembaca</h3>
+  65: 
+  66:         @forelse($reviews as $r)
+  67:             <div style="padding:.7rem 0;border-bottom:1px solid rgba(217,204,245,.4)">
+  68:                 <div class="tl-row" style="gap:.5rem">
+  69:                     <b style="font-size:.8rem;color:#2d2a4a">{{ $r->user->name }}</b>
+  70:                     <span style="color:#f5b83d;font-size:.8rem">{!! str_repeat('&#9733;', $r->rating) !!}</span>
+  71:                     <small style="color:#8b87a8">{{ $r->created_at->format('d M Y') }}</small>
+  72:                 </div>
+  73:                 <p style="margin:.3rem 0 0;font-size:.8rem;line-height:1.6;color:#4b4868">{{ $r->body }}</p>
+  74:             </div>
+  75:         @empty
+  76:             <p style="margin:0;font-size:.8rem;color:#8b87a8">Belum ada ulasan untuk buku ini.</p>
+  77:         @endforelse
+  78: 
+  79:         @if($canReview)
+  80:             <form method="POST" action="{{ route('student.reviews.store', $book) }}" style="margin-top:1.1rem">
+  81:                 @csrf
+  82:                 <b style="font-size:.8rem;color:#2d2a4a">{{ $mine ? 'Ubah ulasanmu' : 'Tulis ulasanmu' }}</b>
+  83:                 @if($mine && !$mine->approved_at)<br><small class="tl-fine">Ulasanmu sedang menunggu persetujuan admin.</small>@endif
+  84:                 <div class="tl-form-grid" style="margin-top:.6rem">
+  85:                     <div>
+  86:                         <label class="tl-label">Rating</label>
+  87:                         <select class="tl-input" name="rating">
+  88:                             @for($i = 5; $i >= 1; $i--)<option value="{{ $i }}" @selected(old('rating', $mine->rating ?? 5) == $i)>{{ $i }} bintang</option>@endfor
+  89:                         </select>
+  90:                     </div>
+  91:                     <div class="full">
+  92:                         <label class="tl-label">Ulasan (10 sampai 500 karakter)</label>
+  93:                         <textarea class="tl-input" name="body" rows="3" required>{{ old('body', $mine->body ?? '') }}</textarea>
+  94:                     </div>
+  95:                 </div>
+  96:                 <div style="margin-top:.9rem"><button class="tl-btn" type="submit">Kirim Ulasan</button></div>
+  97:             </form>
+  98:         @else
+  99:             <p style="margin:1rem 0 0;font-size:.74rem;color:#8b87a8">Kamu bisa menulis ulasan setelah mengembalikan buku ini.</p>
+ 100:         @endif
+ 101:     </div>
+ 102: 
+ 103:     @if($related->isNotEmpty())
+ 104:         <h3 class="tl-serif" style="margin:1.75rem 0 .75rem;color:#2d2a4a">Buku Terkait</h3>
+ 105:         <div class="tl-books">
+ 106:             @foreach($related as $b)
+ 107:             <a href="{{ route('student.books.show', $b) }}" class="tl-book">
+ 108:                 <div class="tl-cover" style="background: {{ $grad[$b->id % 4] }}">
+ 109:                     @if($b->cover_url)<img src="{{ $b->cover_url }}" alt="">@else<span>{{ $b->title }}</span>@endif
+ 110:                 </div>
+ 111:                 <h3>{{ $b->title }}</h3><p>{{ $b->author }}</p>
+ 112:             </a>
+ 113:             @endforeach
+ 114:         </div>
+ 115:     @endif
+ 116: @include('student.partials.rating')
+ 117: </x-student-layout>
+

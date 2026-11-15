@@ -1,0 +1,1992 @@
+
+=================== ROUTE LIST ===================
+
+  GET|HEAD  / ....................... landing.v15 ÔÇ║ LandingV15Controller@index
+  GET|HEAD  admin/books ....... admin.books.index ÔÇ║ Admin\BookController@index
+  POST      admin/books ....... admin.books.store ÔÇ║ Admin\BookController@store
+  GET|HEAD  admin/books-lookup admin.books.lookup ÔÇ║ Admin\BookController@lookÔÇª
+  GET|HEAD  admin/books/create admin.books.create ÔÇ║ Admin\BookController@creaÔÇª
+  PUT       admin/books/{book} admin.books.update ÔÇ║ Admin\BookController@updaÔÇª
+  DELETE    admin/books/{book} admin.books.destroy ÔÇ║ Admin\BookController@desÔÇª
+  GET|HEAD  admin/books/{book}/edit admin.books.edit ÔÇ║ Admin\BookController@eÔÇª
+  GET|HEAD  admin/categories admin.categories.index ÔÇ║ Admin\CategoryControlleÔÇª
+  POST      admin/categories admin.categories.store ÔÇ║ Admin\CategoryControlleÔÇª
+  PUT       admin/categories/{category} admin.categories.update ÔÇ║ Admin\CategÔÇª
+  DELETE    admin/categories/{category} admin.categories.destroy ÔÇ║ Admin\CateÔÇª
+  GET|HEAD  admin/categories/{category}/edit admin.categories.edit ÔÇ║ Admin\CaÔÇª
+  GET|HEAD  admin/dashboard .................................. admin.dashboard
+  GET|HEAD  admin/denda . admin.extra.fines ÔÇ║ Admin\AdminExtraController@fines
+  POST      admin/denda/{loan}/lunas admin.extra.fines.pay ÔÇ║ Admin\AdminExtraÔÇª
+  GET|HEAD  admin/eksemplar admin.extra.copies ÔÇ║ Admin\AdminExtraController@cÔÇª
+  GET|HEAD  admin/kalender admin.extra.calendar ÔÇ║ Admin\AdminExtraController@ÔÇª
+  GET|HEAD  admin/loans ....... admin.loans.index ÔÇ║ Admin\LoanController@index
+  PATCH     admin/loans/{loan}/approve admin.loans.approve ÔÇ║ Admin\LoanControÔÇª
+  PATCH     admin/loans/{loan}/fine-paid admin.loans.finepaid ÔÇ║ Admin\LoanConÔÇª
+  PATCH     admin/loans/{loan}/reject admin.loans.reject ÔÇ║ Admin\LoanControllÔÇª
+  PATCH     admin/loans/{loan}/return admin.loans.return ÔÇ║ Admin\LoanControllÔÇª
+  GET|HEAD  admin/log-aktivitas admin.extra.activity ÔÇ║ Admin\AdminExtraControÔÇª
+  GET|HEAD  admin/pembayaran admin.extra.payments ÔÇ║ Admin\AdminExtraControlleÔÇª
+  GET|HEAD  admin/pembayaran-denda admin.fines.index ÔÇ║ Admin\FinePaymentContrÔÇª
+  PUT       admin/pembayaran-denda/metode admin.fines.settings ÔÇ║ Admin\FinePaÔÇª
+  POST      admin/pembayaran-denda/{loan}/tunai admin.fines.cash ÔÇ║ Admin\FineÔÇª
+  PATCH     admin/pembayaran-denda/{payment}/tolak admin.fines.reject ÔÇ║ AdminÔÇª
+  PATCH     admin/pembayaran-denda/{payment}/verifikasi admin.fines.verify ÔÇ║ ÔÇª
+  GET|HEAD  admin/pengembalian admin.extra.returns ÔÇ║ Admin\AdminExtraControllÔÇª
+  GET|HEAD  admin/pengumuman admin.announcements.index ÔÇ║ Admin\AnnouncementCoÔÇª
+  POST      admin/pengumuman admin.announcements.store ÔÇ║ Admin\AnnouncementCoÔÇª
+  DELETE    admin/pengumuman/{announcement} admin.announcements.destroy ÔÇ║ AdmÔÇª
+  PATCH     admin/pengumuman/{announcement}/tampil admin.announcements.toggleÔÇª
+  GET|HEAD  admin/penyelesaian admin.completions.index ÔÇ║ Admin\CompletionContÔÇª
+  PATCH     admin/penyelesaian/{completion}/batalkan admin.completions.revokeÔÇª
+  GET|HEAD  admin/renewals admin.renewals.index ÔÇ║ Admin\RenewalController@indÔÇª
+  PATCH     admin/renewals/{renewal}/approve admin.renewals.approve ÔÇ║ Admin\RÔÇª
+  PATCH     admin/renewals/{renewal}/reject admin.renewals.reject ÔÇ║ Admin\RenÔÇª
+  GET|HEAD  admin/reports . admin.reports.index ÔÇ║ Admin\ReportController@index
+  GET|HEAD  admin/reports/export admin.reports.export ÔÇ║ Admin\ReportControlleÔÇª
+  GET|HEAD  admin/reservasi admin.reservations.index ÔÇ║ Admin\ReservationContrÔÇª
+  PATCH     admin/reservasi/{reservation}/batal admin.reservations.cancel ÔÇ║ AÔÇª
+  PATCH     admin/reservasi/{reservation}/siap admin.reservations.ready ÔÇ║ AdmÔÇª
+  GET|HEAD  admin/reviews . admin.reviews.index ÔÇ║ Admin\ReviewController@index
+  DELETE    admin/reviews/{review} admin.reviews.destroy ÔÇ║ Admin\ReviewControÔÇª
+  PATCH     admin/reviews/{review}/approve admin.reviews.approve ÔÇ║ Admin\ReviÔÇª
+  GET|HEAD  admin/students admin.students.index ÔÇ║ Admin\StudentController@indÔÇª
+  GET|HEAD  admin/students/{student} admin.students.show ÔÇ║ Admin\StudentContrÔÇª
+  PATCH     admin/students/{student}/reset-password admin.students.reset ÔÇ║ AdÔÇª
+  GET|HEAD  admin/tantangan admin.challenges.index ÔÇ║ Admin\ChallengeControlleÔÇª
+  POST      admin/tantangan admin.challenges.store ÔÇ║ Admin\ChallengeControlleÔÇª
+  DELETE    admin/tantangan/{challenge} admin.challenges.destroy ÔÇ║ Admin\ChalÔÇª
+  PATCH     admin/tantangan/{challenge}/status admin.challenges.toggle ÔÇ║ AdmiÔÇª
+  GET|HEAD  admin/ulasan-rating admin.reviewboard.index ÔÇ║ Admin\ReviewBoardCoÔÇª
+  PATCH     admin/ulasan-rating/{review}/sembunyikan admin.reviewboard.hide  ÔÇª
+  GET|HEAD  akun ....................... account.edit ÔÇ║ AccountController@edit
+  POST      akun/foto ............... account.avatar ÔÇ║ AvatarController@update
+  DELETE    akun/foto ....... account.avatar.delete ÔÇ║ AvatarController@destroy
+  PUT       akun/nama ............ account.name ÔÇ║ AccountController@updateName
+  PUT       akun/password account.password ÔÇ║ AccountController@updatePassword
+  GET|HEAD  confirm-password password.confirm ÔÇ║ Auth\ConfirmablePasswordContrÔÇª
+  POST      confirm-password ........ Auth\ConfirmablePasswordController@store
+  GET|HEAD  dashboard .......................... dashboard ÔÇ║ routes/web.php:14
+  POST      email/verification-notification verification.send ÔÇ║ Auth\EmailVerÔÇª
+  GET|HEAD  forgot-password password.request ÔÇ║ Auth\PasswordResetLinkControllÔÇª
+  POST      forgot-password password.email ÔÇ║ Auth\PasswordResetLinkControllerÔÇª
+  GET|HEAD  login ......... login ÔÇ║ Auth\AuthenticatedSessionController@create
+  POST      login .................. Auth\AuthenticatedSessionController@store
+  POST      logout ...... logout ÔÇ║ Auth\AuthenticatedSessionController@destroy
+  PUT       password ........ password.update ÔÇ║ Auth\PasswordController@update
+  GET|HEAD  profile .................... profile.edit ÔÇ║ ProfileController@edit
+  PATCH     profile ................ profile.update ÔÇ║ ProfileController@update
+  DELETE    profile .............. profile.destroy ÔÇ║ ProfileController@destroy
+  GET|HEAD  register ......... register ÔÇ║ Auth\RegisteredUserController@create
+  POST      register ..................... Auth\RegisteredUserController@store
+  POST      reset-password . password.store ÔÇ║ Auth\NewPasswordController@store
+  GET|HEAD  reset-password/{token} password.reset ÔÇ║ Auth\NewPasswordControlleÔÇª
+  GET|HEAD  student/achievements student.achievements.index ÔÇ║ Student\AchieveÔÇª
+  GET|HEAD  student/books . student.books.index ÔÇ║ Student\BookController@index
+  GET|HEAD  student/books/{book} student.books.show ÔÇ║ Student\BookController@ÔÇª
+  POST      student/books/{book}/pinjam student.loans.store ÔÇ║ Student\LoanConÔÇª
+  POST      student/books/{book}/rating student.rate.store ÔÇ║ Student\RatingCoÔÇª
+  DELETE    student/books/{book}/rating student.rate.destroy ÔÇ║ Student\RatingÔÇª
+  POST      student/books/{book}/reservasi student.reservations.store ÔÇ║ StudeÔÇª
+  POST      student/books/{book}/review student.reviews.store ÔÇ║ Student\RevieÔÇª
+  GET|HEAD  student/categories student.categories.index ÔÇ║ Student\CategoryConÔÇª
+  GET|HEAD  student/challenges student.challenges.index ÔÇ║ Student\ChallengeCoÔÇª
+  POST      student/challenges/{challenge}/ikut student.challenges.join ÔÇ║ StuÔÇª
+  GET|HEAD  student/dashboard .............................. student.dashboard
+  GET|HEAD  student/denda . student.fines.index ÔÇ║ Student\FineController@index
+  GET|HEAD  student/denda/{loan}/bayar student.fines.pay ÔÇ║ Student\FineControÔÇª
+  POST      student/denda/{loan}/bayar student.fines.store ÔÇ║ Student\FineContÔÇª
+  GET|HEAD  student/favorites student.favorites.index ÔÇ║ Student\FavoriteContrÔÇª
+  POST      student/favorites/{book} student.favorites.toggle ÔÇ║ Student\FavorÔÇª
+  GET|HEAD  student/galaxy student.galaxy.index ÔÇ║ Student\GalaxyController@inÔÇª
+  GET|HEAD  student/loans . student.loans.index ÔÇ║ Student\LoanController@index
+  PATCH     student/loans/{loan}/cancel student.loans.cancel ÔÇ║ Student\LoanCoÔÇª
+  POST      student/loans/{loan}/renew student.loans.renew ÔÇ║ Student\RenewalCÔÇª
+  GET|HEAD  student/notifications student.notifications.index ÔÇ║ Student\NotifÔÇª
+  POST      student/notifications/baca-semua student.notifications.readall ÔÇ║ ÔÇª
+  GET|HEAD  student/notifications/{id}/buka student.notifications.open ÔÇ║ StudÔÇª
+  GET|HEAD  student/pengaturan student.settings.edit ÔÇ║ Student\SettingControlÔÇª
+  PUT       student/pengaturan student.settings.update ÔÇ║ Student\SettingContrÔÇª
+  GET|HEAD  student/pengumuman student.announcements.index ÔÇ║ Student\AnnounceÔÇª
+  GET|HEAD  student/profil student.profile.show ÔÇ║ Student\OverviewController@ÔÇª
+  GET|HEAD  student/reading student.reading.index ÔÇ║ Student\ReadingControllerÔÇª
+  POST      student/reading student.reading.store ÔÇ║ Student\ReadingControllerÔÇª
+  PATCH     student/reading/{progress} student.reading.update ÔÇ║ Student\ReadiÔÇª
+  POST      student/reading/{progress}/selesai student.reading.complete ÔÇ║ StuÔÇª
+  GET|HEAD  student/reservations student.reservations.index ÔÇ║ Student\ReservaÔÇª
+  POST      student/reservations/{reservation}/ambil student.reservations.claÔÇª
+  PATCH     student/reservations/{reservation}/batal student.reservations.canÔÇª
+  GET|HEAD  student/wrapped student.wrapped.index ÔÇ║ Student\WrappedControllerÔÇª
+  POST      tl-live/lumi ............... tl.live.lumi ÔÇ║ Tl\LiveController@lumi
+  GET|HEAD  tl-live/notifs ......... tl.live.notifs ÔÇ║ Tl\LiveController@notifs
+  GET|HEAD  verify-email verification.notice ÔÇ║ Auth\EmailVerificationPromptCoÔÇª
+  GET|HEAD  verify-email/{id}/{hash} verification.verify ÔÇ║ Auth\VerifyEmailCoÔÇª
+
+                                                          Showing [119] routes
+
+
+=================== LOKASI MENU ===================
+resources\views\account\edit.blade.php:2: <x-dynamic-component :component="$layout" title="Akun Saya">
+resources\views\admin\dashboard.blade.php:92: // Kalender bulan ini
+resources\views\admin\dashboard.blade.php:381: <div class="ax-cal-h"><div><small>Kalender</small><h3>{{ $bulanId }}</h3></div><span class="yr">{{ now()->year }}</span></div>
+resources\views\admin\extra\activity.blade.php:5: <x-admin-layout title="Log Aktivitas">
+resources\views\admin\extra\activity.blade.php:7: <div class="xp-hd"><div><h2>Log Aktivitas</h2><p>Jejak aktivitas peminjaman terbaru di perpustakaan.</p></div></div>
+resources\views\admin\extra\calendar.blade.php:6: <x-admin-layout title="Kalender">
+resources\views\admin\extra\calendar.blade.php:9: <div><h2>Kalender</h2><p>Jatuh tempo pengembalian buku bulan ini: <b>{{ $jumlah }}</b> peminjaman.</p></div>
+resources\views\components\admin-layout.blade.php:41: ['Kalender', 'calendar', ['calendar', 'kalender'], []],
+resources\views\components\admin-layout.blade.php:42: ['Log Aktivitas', 'list', ['activity', 'logs', 'audit'], []],
+resources\views\components\admin-layout.blade.php:43: ['Pengaturan', 'cog', ['settings', 'profile', 'account', 'akun'], []],
+resources\views\components\shell.blade.php:79: ['Kalender', 'calendar', ['kalender'], 'extra.calendar'],
+resources\views\components\shell.blade.php:80: ['Log Aktivitas', 'log', ['log aktivitas', 'log'], 'extra.activity'],
+resources\views\components\shell.blade.php:82: ['Pengaturan', 'cog', ['pengaturan'], null],
+resources\views\components\shell.blade.php:83: ['Akun Saya', 'user', ['akun saya', 'akun'], null],
+resources\views\components\shell.blade.php:154: 'Laporan & Statistik' => 'Insight', 'Laporan' => 'Insight', 'Kalender' => 'Insight', 'Log Aktivitas' => 'Insight',
+resources\views\components\shell.blade.php:155: 'Pengaturan' => 'Akun', 'Akun Saya' => 'Akun',
+resources\views\student\settings\edit.blade.php:18: <button class="tl-btn" type="submit" style="margin-top:1.2rem">Simpan Pengaturan</button>
+routes\admin_extra.php:12: Route::get('kalender', [X::class, 'calendar'])->name('extra.calendar');
+routes\student-extra.php:27: Route::get('/pengaturan', [Student\SettingController::class, 'edit'])->name('settings.edit');
+routes\student-extra.php:28: Route::put('/pengaturan', [Student\SettingController::class, 'update'])->name('settings.update');
+app\Http\Controllers\Admin\AdminExtraController.php:13: * Halaman admin tambahan (V2-33): Eksemplar, Denda, Pembayaran, Pengembalian, Kalender, Log Aktivitas.
+app\Http\Controllers\Student\SettingController.php:28: return back()->with('success', 'Pengaturan disimpan.');
+
+=================== routes\admin_extra.php ===================
+<?php
+
+use App\Http\Controllers\Admin\AdminExtraController as X;
+use Illuminate\Support\Facades\Route;
+
+// Dimuat dari DALAM grup admin di routes/web.php (prefix, nama, dan middleware ikut grup itu).
+Route::get('eksemplar', [X::class, 'copies'])->name('extra.copies');
+Route::get('denda', [X::class, 'fines'])->name('extra.fines');
+Route::post('denda/{loan}/lunas', [X::class, 'payFine'])->name('extra.fines.pay');
+Route::get('pembayaran', [X::class, 'payments'])->name('extra.payments');
+Route::get('pengembalian', [X::class, 'returns'])->name('extra.returns');
+Route::get('kalender', [X::class, 'calendar'])->name('extra.calendar');
+Route::get('log-aktivitas', [X::class, 'activity'])->name('extra.activity');
+
+=================== routes\auth.php ===================
+<?php
+
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('guest')->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->name('password.email');
+
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+        ->name('password.reset');
+
+    Route::post('reset-password', [NewPasswordController::class, 'store'])
+        ->name('password.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('verify-email', EmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+        ->name('password.confirm');
+
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+
+    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+});
+
+
+=================== routes\console.php ===================
+<?php
+
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+
+\Illuminate\Support\Facades\Schedule::command('reservations:expire')->hourly();
+\Illuminate\Support\Facades\Schedule::command('loans:remind')->dailyAt('07:00');
+
+
+=================== routes\rating.php ===================
+<?php
+
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'role:student', 'throttle:30,1'])->prefix('student')->name('student.')->group(function () {
+    Route::post('/books/{book}/rating', [Student\RatingController::class, 'store'])->name('rate.store');
+    Route::delete('/books/{book}/rating', [Student\RatingController::class, 'destroy'])->name('rate.destroy');
+});
+
+=================== routes\reading.php ===================
+<?php
+
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/reading', [Student\ReadingController::class, 'index'])->name('reading.index');
+    Route::post('/reading', [Student\ReadingController::class, 'store'])->name('reading.store');
+    Route::patch('/reading/{progress}', [Student\ReadingController::class, 'update'])->name('reading.update');
+    Route::post('/reading/{progress}/selesai', [Student\ReadingController::class, 'complete'])->name('reading.complete');
+
+    Route::get('/achievements', [Student\AchievementController::class, 'index'])->name('achievements.index');
+    Route::get('/challenges', [Student\ChallengeController::class, 'index'])->name('challenges.index');
+    Route::post('/challenges/{challenge}/ikut', [Student\ChallengeController::class, 'join'])->name('challenges.join');
+    Route::get('/galaxy', [Student\GalaxyController::class, 'index'])->name('galaxy.index');
+    Route::get('/wrapped', [Student\WrappedController::class, 'index'])->name('wrapped.index');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/penyelesaian', [Admin\CompletionController::class, 'index'])->name('completions.index');
+    Route::patch('/penyelesaian/{completion}/batalkan', [Admin\CompletionController::class, 'revoke'])->name('completions.revoke');
+});
+
+=================== routes\student-extra.php ===================
+<?php
+
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/categories', [Student\CategoryController::class, 'index'])->name('categories.index');
+
+    Route::get('/reservations', [Student\ReservationController::class, 'index'])->name('reservations.index');
+    Route::post('/books/{book}/reservasi', [Student\ReservationController::class, 'store'])->name('reservations.store');
+    Route::patch('/reservations/{reservation}/batal', [Student\ReservationController::class, 'cancel'])->name('reservations.cancel');
+    Route::post('/reservations/{reservation}/ambil', [Student\ReservationController::class, 'claim'])->name('reservations.claim');
+
+    Route::get('/favorites', [Student\FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/{book}', [Student\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
+    Route::get('/denda', [Student\FineController::class, 'index'])->name('fines.index');
+    Route::get('/denda/{loan}/bayar', [Student\FineController::class, 'pay'])->name('fines.pay');
+    Route::post('/denda/{loan}/bayar', [Student\FineController::class, 'store'])->name('fines.store');
+
+    Route::get('/notifications', [Student\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}/buka', [Student\NotificationController::class, 'open'])->name('notifications.open');
+    Route::post('/notifications/baca-semua', [Student\NotificationController::class, 'readAll'])->name('notifications.readall');
+
+    Route::get('/pengumuman', [Student\AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/profil', [Student\OverviewController::class, 'show'])->name('profile.show');
+    Route::get('/pengaturan', [Student\SettingController::class, 'edit'])->name('settings.edit');
+    Route::put('/pengaturan', [Student\SettingController::class, 'update'])->name('settings.update');
+});
+
+=================== routes\tl_live.php ===================
+<?php
+
+use App\Http\Controllers\Tl\LiveController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'throttle:40,1'])->prefix('tl-live')->group(function () {
+    Route::post('lumi', [LiveController::class, 'lumi'])->name('tl.live.lumi');
+    Route::get('notifs', [LiveController::class, 'notifs'])->name('tl.live.notifs');
+});
+
+=================== routes\trafie.php ===================
+<?php
+
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\AvatarController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/reservasi', [Admin\ReservationController::class, 'index'])->name('reservations.index');
+    Route::patch('/reservasi/{reservation}/siap', [Admin\ReservationController::class, 'ready'])->name('reservations.ready');
+    Route::patch('/reservasi/{reservation}/batal', [Admin\ReservationController::class, 'cancel'])->name('reservations.cancel');
+
+    Route::get('/pembayaran-denda', [Admin\FinePaymentController::class, 'index'])->name('fines.index');
+    Route::put('/pembayaran-denda/metode', [Admin\FinePaymentController::class, 'settings'])->name('fines.settings');
+    Route::patch('/pembayaran-denda/{payment}/verifikasi', [Admin\FinePaymentController::class, 'verify'])->name('fines.verify');
+    Route::patch('/pembayaran-denda/{payment}/tolak', [Admin\FinePaymentController::class, 'reject'])->name('fines.reject');
+    Route::post('/pembayaran-denda/{loan}/tunai', [Admin\FinePaymentController::class, 'cash'])->name('fines.cash');
+
+    Route::get('/ulasan-rating', [Admin\ReviewBoardController::class, 'index'])->name('reviewboard.index');
+    Route::patch('/ulasan-rating/{review}/sembunyikan', [Admin\ReviewBoardController::class, 'hide'])->name('reviewboard.hide');
+
+    Route::get('/tantangan', [Admin\ChallengeController::class, 'index'])->name('challenges.index');
+    Route::post('/tantangan', [Admin\ChallengeController::class, 'store'])->name('challenges.store');
+    Route::patch('/tantangan/{challenge}/status', [Admin\ChallengeController::class, 'toggle'])->name('challenges.toggle');
+    Route::delete('/tantangan/{challenge}', [Admin\ChallengeController::class, 'destroy'])->name('challenges.destroy');
+
+    Route::get('/pengumuman', [Admin\AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::post('/pengumuman', [Admin\AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::patch('/pengumuman/{announcement}/tampil', [Admin\AnnouncementController::class, 'toggle'])->name('announcements.toggle');
+    Route::delete('/pengumuman/{announcement}', [Admin\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/akun/foto', [AvatarController::class, 'update'])->name('account.avatar');
+    Route::delete('/akun/foto', [AvatarController::class, 'destroy'])->name('account.avatar.delete');
+});
+
+=================== routes\web.php ===================
+<?php
+
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return Auth::user()->role === 'admin'
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('student.dashboard');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/akun', [AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/akun/nama', [AccountController::class, 'updateName'])->name('account.name');
+    Route::put('/akun/password', [AccountController::class, 'updatePassword'])->name('account.password');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        require base_path('routes/admin_extra.php');
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+    Route::get('/categories', [Admin\CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [Admin\CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [Admin\CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    Route::get('/books', [Admin\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [Admin\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [Admin\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [Admin\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [Admin\BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [Admin\BookController::class, 'destroy'])->name('books.destroy');
+
+    Route::get('/loans', [Admin\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/approve', [Admin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::patch('/loans/{loan}/reject', [Admin\LoanController::class, 'reject'])->name('loans.reject');
+    Route::patch('/loans/{loan}/return', [Admin\LoanController::class, 'returnBook'])->name('loans.return');
+    Route::patch('/loans/{loan}/fine-paid', [Admin\LoanController::class, 'finePaid'])->name('loans.finepaid');
+
+    Route::get('/renewals', [Admin\RenewalController::class, 'index'])->name('renewals.index');
+    Route::patch('/renewals/{renewal}/approve', [Admin\RenewalController::class, 'approve'])->name('renewals.approve');
+    Route::patch('/renewals/{renewal}/reject', [Admin\RenewalController::class, 'reject'])->name('renewals.reject');
+
+    Route::get('/reviews', [Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('/reviews/{review}/approve', [Admin\ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('/students', [Admin\StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/{student}', [Admin\StudentController::class, 'show'])->name('students.show');
+    Route::patch('/students/{student}/reset-password', [Admin\StudentController::class, 'resetPassword'])->name('students.reset');
+
+    Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [Admin\ReportController::class, 'export'])->name('reports.export');
+});
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::view('/dashboard', 'student.dashboard')->name('dashboard');
+
+    Route::get('/books', [Student\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/{book}', [Student\BookController::class, 'show'])->name('books.show');
+    Route::post('/books/{book}/review', [Student\ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::post('/books/{book}/pinjam', [Student\LoanController::class, 'store'])->name('loans.store');
+    Route::get('/loans', [Student\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/cancel', [Student\LoanController::class, 'cancel'])->name('loans.cancel');
+    Route::post('/loans/{loan}/renew', [Student\RenewalController::class, 'store'])->name('loans.renew');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/books-lookup', [\App\Http\Controllers\Admin\BookController::class, 'lookup'])->middleware('throttle:30,1')->name('books.lookup');
+});
+
+require __DIR__ . '/auth.php';
+
+// V2-15: landing page Trafie-library (didaftarkan terakhir, jadi menimpa route '/' lama)
+Route::get('/', [\App\Http\Controllers\LandingV15Controller::class, 'index'])->name('landing.v15');
+
+require __DIR__ . '/trafie.php';
+require __DIR__ . '/student-extra.php';
+require __DIR__ . '/reading.php';
+
+require base_path('routes/tl_live.php');
+require __DIR__ . '/rating.php';
+
+
+=================== resources\views\components\admin-layout.blade.php ===================
+@props(['title' => 'Dashboard'])
+@php
+    $__routes = \Illuminate\Support\Facades\Route::getRoutes();
+    $__names = array_keys($__routes->getRoutesByName());
+    $__ok = function ($n) use ($__routes) {
+        $r = $__routes->getByName($n);
+        return $r && ! str_contains($r->uri(), '{') && in_array('GET', $r->methods());
+    };
+    $__find = function (array $keys, array $avoid = []) use ($__names, $__ok) {
+        $bad = array_merge($avoid, ['.create', '.edit', '.show', '.store', '.update', '.destroy', '.export', '.pdf', '.print', '.approve', '.reject']);
+        foreach ([true, false] as $strict) {
+            foreach ($keys as $k) {
+                foreach ($__names as $n) {
+                    if (! str_starts_with($n, 'admin.') || ! str_contains($n, $k)) { continue; }
+                    $skip = false;
+                    foreach ($bad as $a) { if (str_contains($n, $a)) { $skip = true; break; } }
+                    if ($skip) { continue; }
+                    if ($strict && ! str_ends_with($n, '.index')) { continue; }
+                    if ($__ok($n)) { return $n; }
+                }
+            }
+        }
+        return null;
+    };
+    $__menu = [
+        ['Dashboard', 'home', ['dashboard'], []],
+        ['Manajemen Buku', 'book', ['books', 'buku'], ['copies', 'copy', 'eksemplar']],
+        ['Kategori Buku', 'grid', ['categories', 'kategori'], []],
+        ['Eksemplar Buku', 'layers', ['copies', 'copy', 'eksemplar'], []],
+        ['Manajemen Siswa', 'users', ['students', 'siswa', 'users'], []],
+        ['Peminjaman', 'bookmark', ['loans', 'peminjaman'], []],
+        ['Reservasi & Waiting List', 'clock', ['reservations', 'reservasi', 'waiting'], []],
+        ['Perpanjangan', 'refresh', ['extension', 'renewal', 'perpanjang'], []],
+        ['Pengembalian', 'undo', ['returns', 'pengembalian'], []],
+        ['Denda', 'coin', ['fines', 'denda'], []],
+        ['Pembayaran', 'card', ['payments', 'pembayaran'], []],
+        ['Ulasan & Rating', 'star', ['reviews', 'ulasan', 'ratings'], []],
+        ['Tantangan Membaca', 'award', ['challenges', 'tantangan'], []],
+        ['Pengumuman', 'megaphone', ['announcements', 'pengumuman'], []],
+        ['Laporan & Statistik', 'chart', ['reports', 'laporan', 'statistik'], []],
+        ['Kalender', 'calendar', ['calendar', 'kalender'], []],
+        ['Log Aktivitas', 'list', ['activity', 'logs', 'audit'], []],
+        ['Pengaturan', 'cog', ['settings', 'profile', 'account', 'akun'], []],
+    ];
+    $__items = [];
+    foreach ($__menu as [$__label, $__icon, $__keys, $__avoid]) {
+        if ($__label === 'Dashboard') {
+            $__r = \Illuminate\Support\Facades\Route::has('admin.dashboard') ? 'admin.dashboard' : $__find($__keys);
+            $__m = 'admin.dashboard';
+        } else {
+            $__r = $__find($__keys, $__avoid);
+            $__m = $__r ? preg_replace('/\.[^.]+$/', '.*', $__r) : null;
+        }
+        $__items[] = $__r
+            ? ['route' => $__r, 'match' => $__m, 'label' => $__label, 'icon' => $__icon]
+            : ['label' => $__label, 'icon' => $__icon, 'soon' => true];
+    }
+@endphp
+<x-shell role="Administrator" :title="$title" :items="$__items">
+    {{ $slot }}
+</x-shell>
+
+
+=================== resources\views\components\application-logo.blade.php ===================
+<svg viewBox="0 0 316 316" xmlns="http://www.w3.org/2000/svg" {{ $attributes }}>
+    <path d="M305.8 81.125C305.77 80.995 305.69 80.885 305.65 80.755C305.56 80.525 305.49 80.285 305.37 80.075C305.29 79.935 305.17 79.815 305.07 79.685C304.94 79.515 304.83 79.325 304.68 79.175C304.55 79.045 304.39 78.955 304.25 78.845C304.09 78.715 303.95 78.575 303.77 78.475L251.32 48.275C249.97 47.495 248.31 47.495 246.96 48.275L194.51 78.475C194.33 78.575 194.19 78.725 194.03 78.845C193.89 78.955 193.73 79.045 193.6 79.175C193.45 79.325 193.34 79.515 193.21 79.685C193.11 79.815 192.99 79.935 192.91 80.075C192.79 80.285 192.71 80.525 192.63 80.755C192.58 80.875 192.51 80.995 192.48 81.125C192.38 81.495 192.33 81.875 192.33 82.265V139.625L148.62 164.795V52.575C148.62 52.185 148.57 51.805 148.47 51.435C148.44 51.305 148.36 51.195 148.32 51.065C148.23 50.835 148.16 50.595 148.04 50.385C147.96 50.245 147.84 50.125 147.74 49.995C147.61 49.825 147.5 49.635 147.35 49.485C147.22 49.355 147.06 49.265 146.92 49.155C146.76 49.025 146.62 48.885 146.44 48.785L93.99 18.585C92.64 17.805 90.98 17.805 89.63 18.585L37.18 48.785C37 48.885 36.86 49.035 36.7 49.155C36.56 49.265 36.4 49.355 36.27 49.485C36.12 49.635 36.01 49.825 35.88 49.995C35.78 50.125 35.66 50.245 35.58 50.385C35.46 50.595 35.38 50.835 35.3 51.065C35.25 51.185 35.18 51.305 35.15 51.435C35.05 51.805 35 52.185 35 52.575V232.235C35 233.795 35.84 235.245 37.19 236.025L142.1 296.425C142.33 296.555 142.58 296.635 142.82 296.725C142.93 296.765 143.04 296.835 143.16 296.865C143.53 296.965 143.9 297.015 144.28 297.015C144.66 297.015 145.03 296.965 145.4 296.865C145.5 296.835 145.59 296.775 145.69 296.745C145.95 296.655 146.21 296.565 146.45 296.435L251.36 236.035C252.72 235.255 253.55 233.815 253.55 232.245V174.885L303.81 145.945C305.17 145.165 306 143.725 306 142.155V82.265C305.95 81.875 305.89 81.495 305.8 81.125ZM144.2 227.205L100.57 202.515L146.39 176.135L196.66 147.195L240.33 172.335L208.29 190.625L144.2 227.205ZM244.75 114.995V164.795L226.39 154.225L201.03 139.625V89.825L219.39 100.395L244.75 114.995ZM249.12 57.105L292.81 82.265L249.12 107.425L205.43 82.265L249.12 57.105ZM114.49 184.425L96.13 194.995V85.305L121.49 70.705L139.85 60.135V169.815L114.49 184.425ZM91.76 27.425L135.45 52.585L91.76 77.745L48.07 52.585L91.76 27.425ZM43.67 60.135L62.03 70.705L87.39 85.305V202.545V202.555V202.565C87.39 202.735 87.44 202.895 87.46 203.055C87.49 203.265 87.49 203.485 87.55 203.695V203.705C87.6 203.875 87.69 204.035 87.76 204.195C87.84 204.375 87.89 204.575 87.99 204.745C87.99 204.745 87.99 204.755 88 204.755C88.09 204.905 88.22 205.035 88.33 205.175C88.45 205.335 88.55 205.495 88.69 205.635L88.7 205.645C88.82 205.765 88.98 205.855 89.12 205.965C89.28 206.085 89.42 206.225 89.59 206.325C89.6 206.325 89.6 206.325 89.61 206.335C89.62 206.335 89.62 206.345 89.63 206.345L139.87 234.775V285.065L43.67 229.705V60.135ZM244.75 229.705L148.58 285.075V234.775L219.8 194.115L244.75 179.875V229.705ZM297.2 139.625L253.49 164.795V114.995L278.85 100.395L297.21 89.825V139.625H297.2Z"/>
+</svg>
+
+
+=================== resources\views\components\auth-session-status.blade.php ===================
+@props(['status'])
+
+@if ($status)
+    <div {{ $attributes->merge(['class' => 'font-medium text-sm text-green-600']) }}>
+        {{ $status }}
+    </div>
+@endif
+
+
+=================== resources\views\components\danger-button.blade.php ===================
+<button {{ $attributes->merge(['type' => 'submit', 'class' => 'inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150']) }}>
+    {{ $slot }}
+</button>
+
+
+=================== resources\views\components\dropdown-link.blade.php ===================
+<a {{ $attributes->merge(['class' => 'block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out']) }}>{{ $slot }}</a>
+
+
+=================== resources\views\components\dropdown.blade.php ===================
+@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white'])
+
+@php
+$alignmentClasses = match ($align) {
+    'left' => 'ltr:origin-top-left rtl:origin-top-right start-0',
+    'top' => 'origin-top',
+    default => 'ltr:origin-top-right rtl:origin-top-left end-0',
+};
+
+$width = match ($width) {
+    '48' => 'w-48',
+    default => $width,
+};
+@endphp
+
+<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
+    <div @click="open = ! open">
+        {{ $trigger }}
+    </div>
+
+    <div x-show="open"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="absolute z-50 mt-2 {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }}"
+            style="display: none;"
+            @click="open = false">
+        <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
+            {{ $content }}
+        </div>
+    </div>
+</div>
+
+
+=================== resources\views\components\input-error.blade.php ===================
+@props(['messages'])
+
+@if ($messages)
+    <ul {{ $attributes->merge(['class' => 'text-sm text-red-600 space-y-1']) }}>
+        @foreach ((array) $messages as $message)
+            <li>{{ $message }}</li>
+        @endforeach
+    </ul>
+@endif
+
+
+=================== resources\views\components\input-label.blade.php ===================
+@props(['value'])
+
+<label {{ $attributes->merge(['class' => 'block font-medium text-sm text-gray-700']) }}>
+    {{ $value ?? $slot }}
+</label>
+
+
+=================== resources\views\components\modal.blade.php ===================
+@props([
+    'name',
+    'show' => false,
+    'maxWidth' => '2xl'
+])
+
+@php
+$maxWidth = [
+    'sm' => 'sm:max-w-sm',
+    'md' => 'sm:max-w-md',
+    'lg' => 'sm:max-w-lg',
+    'xl' => 'sm:max-w-xl',
+    '2xl' => 'sm:max-w-2xl',
+][$maxWidth];
+@endphp
+
+<div
+    x-data="{
+        show: @js($show),
+        focusables() {
+            // All focusable element types...
+            let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
+            return [...$el.querySelectorAll(selector)]
+                // All non-disabled elements...
+                .filter(el => ! el.hasAttribute('disabled'))
+        },
+        firstFocusable() { return this.focusables()[0] },
+        lastFocusable() { return this.focusables().slice(-1)[0] },
+        nextFocusable() { return this.focusables()[this.nextFocusableIndex()] || this.firstFocusable() },
+        prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
+        nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
+        prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) -1 },
+    }"
+    x-init="$watch('show', value => {
+        if (value) {
+            document.body.classList.add('overflow-y-hidden');
+            {{ $attributes->has('focusable') ? 'setTimeout(() => firstFocusable().focus(), 100)' : '' }}
+        } else {
+            document.body.classList.remove('overflow-y-hidden');
+        }
+    })"
+    x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
+    x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
+    x-on:close.stop="show = false"
+    x-on:keydown.escape.window="show = false"
+    x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
+    x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
+    x-show="show"
+    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    style="display: {{ $show ? 'block' : 'none' }};"
+>
+    <div
+        x-show="show"
+        class="fixed inset-0 transform transition-all"
+        x-on:click="show = false"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+    >
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <div
+        x-show="show"
+        class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    >
+        {{ $slot }}
+    </div>
+</div>
+
+
+=================== resources\views\components\nav-link.blade.php ===================
+@props(['active'])
+
+@php
+$classes = ($active ?? false)
+            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
+            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
+@endphp
+
+<a {{ $attributes->merge(['class' => $classes]) }}>
+    {{ $slot }}
+</a>
+
+
+=================== resources\views\components\primary-button.blade.php ===================
+<button {{ $attributes->merge(['type' => 'submit', 'class' => 'tl-btn']) }}>
+    {{ $slot }}
+</button>
+
+=================== resources\views\components\responsive-nav-link.blade.php ===================
+@props(['active'])
+
+@php
+$classes = ($active ?? false)
+            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-indigo-400 text-start text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
+            : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out';
+@endphp
+
+<a {{ $attributes->merge(['class' => $classes]) }}>
+    {{ $slot }}
+</a>
+
+
+=================== resources\views\components\secondary-button.blade.php ===================
+<button {{ $attributes->merge(['type' => 'button', 'class' => 'inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150']) }}>
+    {{ $slot }}
+</button>
+
+
+=================== resources\views\components\shell.blade.php ===================
+@props(['items' => [], 'role' => 'Siswa', 'title' => 'Dashboard'])
+@php
+    $ic = [
+        'home' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+        'book' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+        'grid' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+        'bookmark' => '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+        'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'trend' => '<path d="M22 7l-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+        'heart' => '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
+        'compass' => '<circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/>',
+        'gift' => '<path d="M20 12v9H4v-9"/><rect x="2" y="7" width="20" height="5" rx="1"/><path d="M12 21V7"/><path d="M12 7H8a2.5 2.5 0 0 1 0-5c3 0 4 5 4 5z"/><path d="M12 7h4a2.5 2.5 0 0 0 0-5c-3 0-4 5-4 5z"/>',
+        'award' => '<circle cx="12" cy="8" r="6"/><path d="M8.2 13.5L7 22l5-3 5 3-1.2-8.5"/>',
+        'star' => '<path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/>',
+        'bell' => '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+        'user' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+        'cog' => '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+        'sun' => '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+        'chev' => '<path d="M6 9l6 6 6-6"/>',
+        'dot' => '<circle cx="12" cy="12" r="9"/>',
+        'layers' => '<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+
+        'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+
+        'refresh' => '<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M3 21v-5h5"/>',
+
+        'undo' => '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+
+        'coin' => '<circle cx="12" cy="12" r="9"/><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.4 0-2.5.8-2.5 2s1.1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2A2.5 2 0 0 1 9.5 15"/><path d="M12 6v1.5M12 16.5V18"/>',
+
+        'card' => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
+
+        'megaphone' => '<path d="M3 11v2a1 1 0 0 0 1 1h2l7 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/>',
+
+        'chart' => '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+
+        'calendar' => '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+
+        'list' => '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+        'refresh' => '<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/><path d="M3 21v-5h5"/>',
+        'chart' => '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>',
+        'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    ];
+    $art = fn ($f) => file_exists(public_path('images/ds/' . $f)) ? asset('images/ds/' . $f) : null;
+    $sbArt = $art('sbart.webp');
+    $logo = $art('logo.webp');
+    // ===== tl-admin-merge : menu admin lengkap sesuai desain =====
+    $ic += [
+        'layers' => '<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+        'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+        'refresh' => '<path d="M21 12a9 9 0 0 0-15.5-6.2L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 15.5 6.2L21 16"/><path d="M21 21v-5h-5"/>',
+        'ret' => '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+        'coin' => '<circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.4-.9-1.4-1.4-2.5-1.4-1.4 0-2.5.8-2.5 1.9s1 1.6 2.5 2 2.5.9 2.5 2-1.1 1.9-2.5 1.9c-1.2 0-2.2-.5-2.6-1.5"/><path d="M12 6.5v1.3M12 16.2v1.3"/>',
+        'card' => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
+        'mega' => '<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>',
+        'chart' => '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+        'calendar' => '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
+        'log' => '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+    ];
+    if ($role !== 'Siswa') {
+        try {
+            // [label, ikon, nama lama yang dikenali, nama route halaman baru (opsional)]
+            $rancang = [
+                ['Dashboard', 'home', ['dashboard'], null],
+                ['Manajemen Buku', 'book', ['manajemen buku', 'buku'], null],
+                ['Kategori Buku', 'grid', ['kategori buku', 'kategori'], null],
+                ['Eksemplar Buku', 'layers', ['eksemplar buku', 'eksemplar'], 'extra.copies'],
+                ['Manajemen Siswa', 'users', ['manajemen siswa', 'daftar siswa', 'siswa'], null],
+                ['Peminjaman', 'bookmark', ['peminjaman'], null],
+                ['Reservasi & Waiting List', 'clock', ['reservasi & waiting list', 'reservasi'], null],
+                ['Perpanjangan', 'refresh', ['perpanjangan'], null],
+                ['Pengembalian', 'ret', ['pengembalian'], 'extra.returns'],
+                ['Denda', 'coin', ['denda'], 'extra.fines'],
+                ['Pembayaran', 'card', ['pembayaran'], 'extra.payments'],
+                ['Ulasan & Rating', 'star', ['ulasan & rating', 'ulasan'], null],
+                ['Tantangan Membaca', 'award', ['tantangan membaca', 'tantangan'], null],
+                ['Pengumuman', 'mega', ['pengumuman'], null],
+                ['Laporan & Statistik', 'chart', ['laporan & statistik', 'laporan'], null],
+                ['Kalender', 'calendar', ['kalender'], 'extra.calendar'],
+                ['Log Aktivitas', 'log', ['log aktivitas', 'log'], 'extra.activity'],
+                null,
+                ['Pengaturan', 'cog', ['pengaturan'], null],
+                ['Akun Saya', 'user', ['akun saya', 'akun'], null],
+            ];
+            $sisa = $items;
+            $baru = [];
+            foreach ($rancang as $r) {
+                if ($r === null) {
+                    $baru[] = ['divider' => true];
+                    continue;
+                }
+                $hit = null;
+                foreach ($sisa as $k => $it) {
+                    if (!empty($it['divider'])) { continue; }
+                    if (in_array(mb_strtolower(trim((string) ($it['label'] ?? ''))), $r[2], true)) { $hit = $k; break; }
+                }
+                $rt = null;
+                if (!empty($r[3])) {
+                    foreach (['admin.' . $r[3], $r[3]] as $nm) {
+                        if (\Illuminate\Support\Facades\Route::has($nm)) { $rt = $nm; break; }
+                    }
+                }
+                if ($hit !== null) {
+                    $it = $sisa[$hit];
+                    unset($sisa[$hit]);
+                    $it['label'] = $r[0];
+                    $it['icon'] = $r[1];
+                    $baru[] = $it;
+                } elseif ($rt !== null) {
+                    $baru[] = ['route' => $rt, 'match' => $rt, 'label' => $r[0], 'icon' => $r[1]];
+                } else {
+                    $baru[] = ['label' => $r[0], 'icon' => $r[1], 'soon' => true];
+                }
+            }
+            foreach ($sisa as $it) { $baru[] = $it; }
+            $items = $baru;
+        } catch (\Throwable $e) {
+            // jika gagal, menu bawaan tetap dipakai
+        }
+    }
+@endphp
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $role }} | {{ config('app.name') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700|playfair-display:400,600,700,400i,600i" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/trafie-theme.css') }}?v={{ @filemtime(public_path('css/trafie-theme.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tl-live.css') }}?v={{ filemtime(public_path('css/tl-live.css')) }}">
+    <script src="{{ asset('js/tl-live.js') }}?v={{ filemtime(public_path('js/tl-live.js')) }}" defer></script>
+    <!-- trafie-icon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=3">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <meta name="theme-color" content="#a78bfa">
+    <!-- /trafie-icon -->
+    <link rel="stylesheet" href="{{ asset('css/tl-ui.css') }}?v={{ filemtime(public_path('css/tl-ui.css')) }}">
+    <script src="{{ asset('js/tl-ui.js') }}?v={{ filemtime(public_path('js/tl-ui.js')) }}" defer></script>
+    <script src="{{ asset('js/tl-report.js') }}?v={{ filemtime(public_path('js/tl-report.js')) }}" defer></script>
+</head>
+<body class="tl-body-bg">
+<div class="tl-shell">
+    @php
+    $nvArt = file_exists(public_path('images/ds/sidebar.png')) ? asset('images/ds/sidebar.png') : null;
+    $nvGroups = [
+        'Dashboard' => 'Utama', 'Manajemen Buku' => 'Utama', 'Kategori Buku' => 'Utama', 'Eksemplar Buku' => 'Utama', 'Manajemen Siswa' => 'Utama', 'Daftar Siswa' => 'Utama',
+        'Peminjaman' => 'Sirkulasi', 'Reservasi & Waiting List' => 'Sirkulasi', 'Perpanjangan' => 'Sirkulasi', 'Pengembalian' => 'Sirkulasi', 'Denda' => 'Sirkulasi', 'Pembayaran' => 'Sirkulasi',
+        'Ulasan & Rating' => 'Komunitas', 'Ulasan' => 'Komunitas', 'Tantangan Membaca' => 'Komunitas', 'Pengumuman' => 'Komunitas',
+        'Laporan & Statistik' => 'Insight', 'Laporan' => 'Insight', 'Kalender' => 'Insight', 'Log Aktivitas' => 'Insight',
+        'Pengaturan' => 'Akun', 'Akun Saya' => 'Akun',
+        'Book Catalog' => 'Jelajah', 'Categories' => 'Jelajah',
+        'My Borrowings' => 'Pinjaman', 'Reservations' => 'Pinjaman',
+        'Reading Progress' => 'Membaca', 'My Favorites' => 'Membaca', 'Reading Galaxy' => 'Membaca', 'Reading Wrapped' => 'Membaca', 'Reading Challenges' => 'Membaca', 'Achievements' => 'Membaca',
+        'Notifications' => 'Akun', 'My Profile' => 'Akun', 'Settings' => 'Akun',
+    ];
+    $nvPrev = null;
+@endphp
+<aside class="nv" @if($nvArt) style="--sb-art: url('{{ $nvArt }}')" @endif>
+    <div class="nv-aurora"></div><div class="nv-frost"></div><div class="nv-art"></div>
+    <svg class="nv-shards" viewBox="0 0 150 230" aria-hidden="true"><defs><linearGradient id="nvs1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".6" stop-color="#cfe3ff" stop-opacity=".7"/><stop offset="1" stop-color="#b8a4ff" stop-opacity=".75"/></linearGradient><linearGradient id="nvs2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe0f0" stop-opacity=".95"/><stop offset="1" stop-color="#e29bd8" stop-opacity=".7"/></linearGradient></defs><polygon points="108,60 132,120 124,230 92,230 88,120" fill="url(#nvs1)"/><polygon points="108,60 132,120 108,128" fill="#fff" opacity=".7"/><path d="M108 60 L108 230" stroke="#fff" stroke-opacity=".6" stroke-width=".8"/><polygon points="58,120 76,160 70,230 46,230 42,160" fill="url(#nvs2)"/><polygon points="58,120 76,160 58,166" fill="#fff" opacity=".65"/><polygon points="136,150 150,180 150,230 128,230 124,182" fill="url(#nvs1)" opacity=".85"/></svg>
+    <i class="nv-st" style="left:18%;top:9%;animation-delay:.2s;width:9px;height:9px"></i><i class="nv-st" style="left:86%;top:16%;animation-delay:1.1s"></i><i class="nv-st" style="left:70%;top:38%;animation-delay:2s;width:8px;height:8px"></i><i class="nv-st" style="left:10%;top:52%;animation-delay:.7s;width:10px;height:10px"></i><i class="nv-st" style="left:90%;top:60%;animation-delay:1.6s;width:9px;height:9px"></i>
+
+    <div class="nv-brand">
+        <span class="nv-logo"><img src="{{ asset('images/ds/logo-lotus.svg') }}" alt=""></span>
+        <div><h1>Trafie-library</h1><p>Where Every Book Blooms Into a Universe</p></div>
+    </div>
+
+    <nav class="nv-nav">
+        @foreach($items as $it)
+            @php
+                $lb = $it['label'] ?? '';
+                $grp = $nvGroups[$lb] ?? $nvPrev;
+                $showGrp = $grp && $grp !== $nvPrev;
+                $nvPrev = $grp;
+                $svg = $ic[$it['icon'] ?? 'dot'] ?? ($ic['dot'] ?? '<circle cx="12" cy="12" r="9"/>');
+                $href = null;
+                if (empty($it['soon'])) {
+                    if (!empty($it['url'])) { $href = $it['url']; }
+                    elseif (!empty($it['route']) && \Illuminate\Support\Facades\Route::has($it['route'])) { $href = route($it['route'], $it['params'] ?? []); }
+                }
+                $on = !empty($it['active']) || (!empty($it['match']) && request()->routeIs($it['match']));
+            @endphp
+            @if($showGrp)<div class="nv-grp">{{ $grp }}</div>@endif
+            @if($href)
+                <a href="{{ $href }}" class="nv-i {{ $on ? 'on' : '' }}"><span class="nv-ic"><svg viewBox="0 0 24 24">{!! $svg !!}</svg></span><span class="t">{{ $lb }}</span></a>
+            @else
+                <span class="nv-i" title="Segera hadir"><span class="nv-ic"><svg viewBox="0 0 24 24">{!! $svg !!}</svg></span><span class="t">{{ $lb }}</span></span>
+            @endif
+        @endforeach
+    </nav>
+
+    <form method="POST" action="{{ route('logout') }}" class="nv-out">
+        @csrf
+        <button type="submit"><span class="nv-ic"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>Logout</button>
+    </form>
+</aside>
+
+    <div class="tl-content">
+        <header class="tl-topbar">
+            @if($role === 'Siswa')
+                <form class="tl-search" method="GET" action="{{ route('student.books.index') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#8b87a8" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <input type="text" name="q" placeholder="Cari buku, penulis, atau kategori...">
+                </form>
+            @else
+                <div class="judul">{{ $title }}</div>
+            @endif
+            <span class="tl-pill"><i></i>Pastel Dream<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $ic['chev'] !!}</svg></span>
+            <span class="tl-iconbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $ic['sun'] !!}</svg></span>
+            <span class="tl-iconbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $ic['bell'] !!}</svg></span>
+            <span class="tl-vr"></span>
+            <div class="tl-user">
+                <div class="tl-avatar">@if(Auth::user()->avatar_url)<img src="{{ Auth::user()->avatar_url }}" alt="" style="width:100%;height:100%;object-fit:cover">@else{{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}@endif</div>
+                <div><b>{{ Auth::user()->name }}</b><small>{{ $role }}</small></div>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $ic['chev'] !!}</svg>
+            </div>
+        </header>
+        <main class="tl-main">
+            @if(session('success'))<div class="tl-alert ok">{{ session('success') }}</div>@endif
+            @if(session('error'))<div class="tl-alert err">{{ session('error') }}</div>@endif
+            @if($errors->any())
+                <div class="tl-alert err"><b>Belum tersimpan:</b>
+                    <ul>@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+                </div>
+            @endif
+            {{ $slot }}
+        </main>
+    </div>
+</div>
+@include('partials.gloss')
+@include('partials.skin')
+@include('partials.statviz')
+</body>
+</html>
+
+=================== resources\views\components\student-layout.blade.php ===================
+@props(['title' => 'Dashboard'])
+@php
+    use Illuminate\Support\Facades\Route;
+    $mk = fn ($route, $match, $label, $icon) => Route::has($route)
+        ? ['route' => $route, 'match' => $match, 'label' => $label, 'icon' => $icon]
+        : ['label' => $label, 'icon' => $icon, 'soon' => true];
+    $menu = [
+        $mk('student.dashboard', 'student.dashboard', 'Dashboard', 'home'),
+        $mk('student.books.index', 'student.books.*', 'Book Catalog', 'book'),
+        $mk('student.categories.index', 'student.categories.*', 'Categories', 'grid'),
+        $mk('student.loans.index', 'student.loans.*', 'My Borrowings', 'bookmark'),
+        $mk('student.reservations.index', 'student.reservations.*', 'Reservations', 'clock'),
+        $mk('student.fines.index', 'student.fines.*', 'Pembayaran Denda', 'coin'),
+        $mk('student.reading.index', 'student.reading.*', 'Reading Progress', 'trend'),
+        $mk('student.favorites.index', 'student.favorites.*', 'My Favorites', 'heart'),
+        $mk('student.galaxy.index', 'student.galaxy.*', 'Reading Galaxy', 'compass'),
+        $mk('student.wrapped.index', 'student.wrapped.*', 'Reading Wrapped', 'gift'),
+        $mk('student.challenges.index', 'student.challenges.*', 'Reading Challenges', 'award'),
+        $mk('student.achievements.index', 'student.achievements.*', 'Achievements', 'star'),
+        $mk('student.notifications.index', 'student.notifications.*', 'Notifications', 'bell'),
+        $mk('student.announcements.index', 'student.announcements.*', 'Pengumuman', 'mega'),
+        $mk('student.profile.show', 'student.profile.*', 'My Profile', 'user'),
+        $mk('student.settings.edit', 'student.settings.*', 'Settings', 'cog'),
+    ];
+@endphp
+<x-shell role="Siswa" :title="$title" :items="$menu">
+    {{ $slot }}
+</x-shell>
+
+=================== resources\views\components\text-input.blade.php ===================
+@props(['disabled' => false])
+
+<input @disabled($disabled) {{ $attributes->merge(['class' => 'tl-input']) }}>
+
+=================== resources\views\layouts\app.blade.php ===================
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <title>{{ config('app.name', 'Laravel') }}</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- trafie-icon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=3">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <meta name="theme-color" content="#a78bfa">
+    <!-- /trafie-icon -->
+</head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.navigation')
+
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
+        </div>
+    @include('partials.gloss')
+@include('partials.skin')
+@include('partials.statviz')
+</body>
+</html>
+
+
+=================== resources\views\layouts\guest.blade.php ===================
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700|playfair-display:400,600,700" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- trafie-icon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=3">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=3">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <meta name="theme-color" content="#a78bfa">
+    <!-- /trafie-icon -->
+</head>
+<body class="tl-body-bg">
+    <div class="tl-auth-wrap">
+        <div class="tl-auth">
+            <div class="tl-auth-brand">
+                <svg width="46" height="46" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                    <defs><linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe8f7"/><stop offset=".5" stop-color="#d9ccf5"/><stop offset="1" stop-color="#f7c8dc"/></linearGradient></defs>
+                    <polygon points="32,4 46,24 32,60 18,24" fill="url(#gA)" stroke="#a78bfa" stroke-width="1.5" stroke-linejoin="round"/>
+                    <polygon points="32,4 46,24 18,24" fill="#fff" fill-opacity=".45"/>
+                    <path d="M32 4 L32 60 M18 24 L46 24" stroke="#fff" stroke-opacity=".7"/>
+                </svg>
+                <h1>Trafie-library</h1>
+                <p>Where Every Book Blooms Into a Universe</p>
+            </div>
+            {{ $slot }}
+        </div>
+    </div>
+@include('partials.gloss')
+@include('partials.skin')
+@include('partials.statviz')
+</body>
+</html>
+
+=================== resources\views\layouts\navigation.blade.php ===================
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    <!-- Primary Navigation Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <!-- Logo -->
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
+            <!-- Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <div>{{ Auth::user()->name }}</div>
+
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <x-dropdown-link :href="route('profile.edit')">
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
+
+                        <!-- Authentication -->
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                this.closest('form').submit();">
+                                {{ __('Log Out') }}
+                            </x-dropdown-link>
+                        </form>
+                    </x-slot>
+                </x-dropdown>
+            </div>
+
+            <!-- Hamburger -->
+            <div class="-me-2 flex items-center sm:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Responsive Navigation Menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <!-- Responsive Settings Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="px-4">
+                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('profile.edit')">
+                    {{ __('Profile') }}
+                </x-responsive-nav-link>
+
+                <!-- Authentication -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+=================== resources\views\account\edit.blade.php ===================
+@php $user = Auth::user(); $layout = $user->role === 'admin' ? 'admin-layout' : 'student-layout'; @endphp
+<x-dynamic-component :component="$layout" title="Akun Saya">
+    <div class="pg-grid2">
+        <div class="tl-card" style="text-align:center">
+            <h3 class="pg-h">Foto Profil</h3>
+            <div class="pg-avatar" style="margin:1rem auto">
+                @if($user->avatar_url)<img src="{{ $user->avatar_url }}" alt="">@else<span>{{ strtoupper(mb_substr($user->name, 0, 1)) }}</span>@endif
+            </div>
+            <form method="POST" action="{{ route('account.avatar') }}" enctype="multipart/form-data">
+                @csrf
+                <input class="tl-input" type="file" name="avatar" accept="image/*" required>
+                <p class="pg-sub" style="margin:.5rem 0 .8rem">JPG, PNG, atau WEBP. Maksimal 2 MB.</p>
+                <button class="tl-btn" type="submit">Unggah Foto</button>
+            </form>
+            @if($user->avatar)
+                <form method="POST" action="{{ route('account.avatar.delete') }}" style="margin-top:.7rem" onsubmit="return confirm('Hapus foto profil?')">@csrf @method('DELETE')<button class="tl-btn-danger" type="submit">Hapus Foto</button></form>
+            @endif
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.1rem">
+            <div class="tl-card">
+                <h3 class="pg-h">Data Akun</h3>
+                <form method="POST" action="{{ route('account.name') }}">
+                    @csrf @method('PUT')
+                    <div class="tl-form-grid">
+                        <div class="full"><label class="tl-label">Nama lengkap</label><input class="tl-input" name="name" value="{{ old('name', $user->name) }}" required maxlength="255"></div>
+                        <div><label class="tl-label">Email</label><input class="tl-input" value="{{ $user->email }}" disabled></div>
+                        <div><label class="tl-label">{{ $user->role === 'admin' ? 'Peran' : 'NISN' }}</label><input class="tl-input" value="{{ $user->role === 'admin' ? 'Administrator' : $user->nisn }}" disabled></div>
+                    </div>
+                    <button class="tl-btn" type="submit" style="margin-top:1rem">Simpan Nama</button>
+                </form>
+            </div>
+            <div class="tl-card">
+                <h3 class="pg-h">Ganti Password</h3>
+                <form method="POST" action="{{ route('account.password') }}">
+                    @csrf @method('PUT')
+                    <div class="tl-form-grid">
+                        <div class="full"><label class="tl-label">Password saat ini</label><input class="tl-input" type="password" name="current_password" required autocomplete="current-password"></div>
+                        <div><label class="tl-label">Password baru (min. 8 karakter)</label><input class="tl-input" type="password" name="password" required autocomplete="new-password"></div>
+                        <div><label class="tl-label">Ulangi password baru</label><input class="tl-input" type="password" name="password_confirmation" required autocomplete="new-password"></div>
+                    </div>
+                    <button class="tl-btn" type="submit" style="margin-top:1rem">Ganti Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-dynamic-component>
+
+=================== resources\views\admin\announcements\index.blade.php ===================
+<x-admin-layout title="Pengumuman">
+    <div class="tl-card" style="margin-bottom:1.1rem">
+        <h3 class="pg-h">Buat Pengumuman</h3>
+        <form method="POST" action="{{ route('admin.announcements.store') }}">
+            @csrf
+            <div class="tl-form-grid">
+                <div class="full"><label class="tl-label">Judul *</label><input class="tl-input" name="title" value="{{ old('title') }}" required maxlength="150"></div>
+                <div class="full"><label class="tl-label">Isi *</label><textarea class="tl-input" name="body" rows="3" required maxlength="2000">{{ old('body') }}</textarea></div>
+                <div>
+                    <label class="tl-label">Jenis *</label>
+                    <select class="tl-input" name="type">@foreach(\App\Models\Announcement::TYPES as $k => $v)<option value="{{ $k }}" @selected(old('type') === $k)>{{ $v }}</option>@endforeach</select>
+                </div>
+                <div><label class="tl-label">Tayang sampai (opsional)</label><input class="tl-input" type="date" name="ends_on" value="{{ old('ends_on') }}"></div>
+                <div class="full"><label style="font-size:.78rem"><input type="checkbox" name="is_pinned" value="1" @checked(old('is_pinned'))> Sematkan di bagian atas</label></div>
+            </div>
+            <button class="tl-btn" type="submit" style="margin-top:1rem">Terbitkan</button>
+        </form>
+    </div>
+
+    <div class="tl-card" style="overflow-x:auto">
+        <table class="tl-table">
+            <thead><tr><th>Pengumuman</th><th>Jenis</th><th>Tayang</th><th>Status</th><th style="width:190px">Aksi</th></tr></thead>
+            <tbody>
+            @forelse($items as $a)
+                <tr>
+                    <td>@if($a->is_pinned)<span class="pg-b pg-b-claimed">Disematkan</span> @endif<b>{{ $a->title }}</b><br><small>{{ \Illuminate\Support\Str::limit($a->body, 90) }}</small></td>
+                    <td><span class="tl-badge">{{ \App\Models\Announcement::TYPES[$a->type] ?? $a->type }}</span></td>
+                    <td>{{ $a->published_at ? $a->published_at->format('d M Y') : '-' }}<br><small>{{ $a->ends_on ? 'sampai ' . $a->ends_on->format('d M Y') : 'tanpa batas' }}</small></td>
+                    <td><span class="pg-b {{ $a->is_active ? 'pg-b-verified' : 'pg-b-closed' }}">{{ $a->is_active ? 'Tampil' : 'Disembunyikan' }}</span></td>
+                    <td>
+                        <div class="pg-actions">
+                            <form method="POST" action="{{ route('admin.announcements.toggle', $a) }}">@csrf @method('PATCH')<button class="pg-btn" type="submit">{{ $a->is_active ? 'Sembunyikan' : 'Tampilkan' }}</button></form>
+                            <form method="POST" action="{{ route('admin.announcements.destroy', $a) }}" onsubmit="return confirm('Hapus pengumuman ini?')">@csrf @method('DELETE')<button class="tl-btn-danger" type="submit">Hapus</button></form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="5" class="tl-empty">Belum ada pengumuman.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-admin-layout>
+
+=================== resources\views\admin\challenges\index.blade.php ===================
+<x-admin-layout title="Tantangan Membaca">
+    <div class="tl-card" style="margin-bottom:1.1rem">
+        <h3 class="pg-h">Buat Tantangan Baru</h3>
+        <p class="pg-sub">Siswa yang bergabung dan menyelesaikan target buku (terverifikasi) mendapat XP dan badge.</p>
+        <form method="POST" action="{{ route('admin.challenges.store') }}">
+            @csrf
+            <div class="tl-form-grid">
+                <div class="full"><label class="tl-label">Judul *</label><input class="tl-input" name="title" value="{{ old('title') }}" required maxlength="150"></div>
+                <div class="full"><label class="tl-label">Deskripsi</label><textarea class="tl-input" name="description" rows="2" maxlength="1000">{{ old('description') }}</textarea></div>
+                <div><label class="tl-label">Mulai *</label><input class="tl-input" type="date" name="starts_on" value="{{ old('starts_on', date('Y-m-d')) }}" required></div>
+                <div><label class="tl-label">Selesai *</label><input class="tl-input" type="date" name="ends_on" value="{{ old('ends_on', date('Y-m-d', strtotime('+30 days'))) }}" required></div>
+                <div><label class="tl-label">Target jumlah buku *</label><input class="tl-input" type="number" name="target_books" min="1" max="100" value="{{ old('target_books', 3) }}" required></div>
+                <div>
+                    <label class="tl-label">Target kategori (opsional)</label>
+                    <select class="tl-input" name="category_id"><option value="">Semua kategori</option>@foreach($categories as $c)<option value="{{ $c->id }}" @selected(old('category_id') == $c->id)>{{ $c->name }}</option>@endforeach</select>
+                </div>
+                <div><label class="tl-label">Reward XP *</label><input class="tl-input" type="number" name="reward_xp" min="0" max="1000" value="{{ old('reward_xp', 50) }}" required></div>
+                <div><label class="tl-label">Nama badge</label><input class="tl-input" name="badge_name" value="{{ old('badge_name') }}" maxlength="60" placeholder="Contoh: Summer Reader"></div>
+            </div>
+            <button class="tl-btn" type="submit" style="margin-top:1rem">Terbitkan Tantangan</button>
+        </form>
+    </div>
+
+    <div class="tl-card" style="overflow-x:auto">
+        <table class="tl-table">
+            <thead><tr><th>Tantangan</th><th>Periode</th><th>Target</th><th>Reward</th><th>Peserta</th><th>Status</th><th style="width:170px">Aksi</th></tr></thead>
+            <tbody>
+            @forelse($challenges as $c)
+                <tr>
+                    <td><b>{{ $c->title }}</b><br><small>{{ \Illuminate\Support\Str::limit($c->description, 70) }}</small></td>
+                    <td>{{ $c->starts_on->format('d M') }} - {{ $c->ends_on->format('d M Y') }}</td>
+                    <td>{{ $c->target_books }} buku<br><small>{{ $c->category->name ?? 'Semua kategori' }}</small></td>
+                    <td>{{ $c->reward_xp }} XP<br><small>{{ $c->badge_name }}</small></td>
+                    <td>{{ $c->participants_count }}</td>
+                    <td><span class="pg-b pg-b-{{ strtolower($c->status) }}">{{ \App\Models\ReadingChallenge::LABELS[$c->status] ?? $c->status }}</span></td>
+                    <td>
+                        <div class="pg-actions">
+                            <form method="POST" action="{{ route('admin.challenges.toggle', $c) }}">@csrf @method('PATCH')<button class="pg-btn" type="submit">{{ $c->status === 'Active' ? 'Tutup' : 'Aktifkan' }}</button></form>
+                            <form method="POST" action="{{ route('admin.challenges.destroy', $c) }}" onsubmit="return confirm('Hapus tantangan ini beserta pesertanya?')">@csrf @method('DELETE')<button class="tl-btn-danger" type="submit">Hapus</button></form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="7" class="tl-empty">Belum ada tantangan. Buat yang pertama di atas.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-admin-layout>
+
+=================== resources\views\admin\extra\payments.blade.php ===================
+@php $rp = fn ($n) => 'Rp ' . number_format((int) $n, 0, ',', '.'); @endphp
+<x-admin-layout title="Pembayaran">
+<div class="xp">
+    <div class="xp-hd"><div><h2>Pembayaran</h2><p>Riwayat pembayaran denda yang sudah diterima.</p></div></div>
+    <div class="xp-sum">
+        <div class="xp-s b"><small>Total Diterima</small><b>{{ $rp($total) }}</b></div>
+        <div class="xp-s a"><small>Jumlah Transaksi</small><b>{{ number_format($count) }}</b></div>
+    </div>
+    <div class="xp-card">
+        @if($rows->count())
+        <table class="xp-t">
+            <thead><tr><th>Tanggal Bayar</th><th>Siswa</th><th>Buku</th><th class="r">Jumlah</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach($rows as $l)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($l->fine_paid_at)->format('d/m/Y H:i') }}</td>
+                    <td><b>{{ $l->user->name ?? '-' }}</b></td>
+                    <td>{{ $l->book->title ?? '-' }}</td>
+                    <td class="r"><b>{{ $rp($l->fine_amount) }}</b></td>
+                    <td><span class="bd ok">Lunas</span></td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+        <div class="xp-pg">@if($rows->previousPageUrl())<a href="{{ $rows->previousPageUrl() }}">&larr; Sebelumnya</a>@endif @if($rows->nextPageUrl())<a href="{{ $rows->nextPageUrl() }}">Berikutnya &rarr;</a>@endif</div>
+        @else
+        <div class="xp-empty"><i></i><p>Belum ada pembayaran denda.</p></div>
+        @endif
+    </div>
+</div>
+</x-admin-layout>
+
+=================== resources\views\admin\reviews\index.blade.php ===================
+<x-admin-layout title="Ulasan Buku">
+    <p style="margin:0 0 1rem;font-size:.78rem;color:#7b7796">Ulasan baru tidak tampil di landing page sebelum kamu setujui. Menunggu persetujuan: <b>{{ $pending }}</b>.</p>
+
+    <div class="tl-card" style="overflow-x:auto">
+        <table class="tl-table">
+            <thead><tr><th>Siswa</th><th>Buku</th><th>Rating</th><th>Ulasan</th><th>Status</th><th style="width:150px">Aksi</th></tr></thead>
+            <tbody>
+            @forelse($reviews as $r)
+                <tr>
+                    <td><b>{{ $r->user->name }}</b><br><small>NISN {{ $r->user->nisn ?: '-' }}</small></td>
+                    <td>{{ $r->book->title }}</td>
+                    <td><span style="color:#f5b83d;letter-spacing:1px">{!! str_repeat('&#9733;', $r->rating) !!}</span><small style="color:#c9c5dd">{!! str_repeat('&#9733;', 5 - $r->rating) !!}</small></td>
+                    <td style="max-width:320px">{{ $r->body }}</td>
+                    <td>
+                        @if($r->approved_at)<span class="tl-st st-returned">Tampil</span>@else<span class="tl-st st-pending">Menunggu</span>@endif
+                    </td>
+                    <td>
+                        <div class="tl-row" style="gap:.4rem">
+                            @unless($r->approved_at)
+                                <form method="POST" action="{{ route('admin.reviews.approve', $r) }}">@csrf @method('PATCH')<button class="tl-btn-ok" type="submit">Setujui</button></form>
+                            @endunless
+                            <form method="POST" action="{{ route('admin.reviews.destroy', $r) }}" onsubmit="return confirm('Hapus ulasan ini?')">@csrf @method('DELETE')<button class="tl-btn-danger" type="submit">Hapus</button></form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="6" class="tl-empty">Belum ada ulasan dari siswa.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:1rem">{{ $reviews->links() }}</div>
+</x-admin-layout>
+
+=================== resources\views\student\settings\edit.blade.php ===================
+<x-student-layout title="Settings">
+    <form method="POST" action="{{ route('student.settings.update') }}" class="tl-card" style="max-width:640px">
+        @csrf @method('PUT')
+        <h3 class="pg-h">Peminjaman</h3>
+        <label class="tl-label">Durasi pinjam bawaan</label>
+        <div class="st-choices" style="margin-bottom:1.2rem">
+            @foreach([3, 7, 10] as $d)
+                <label class="st-choice"><input type="radio" name="default_duration" value="{{ $d }}" @checked((int) old('default_duration', $s->default_duration) === $d)><span><b>{{ $d }} hari</b></span></label>
+            @endforeach
+        </div>
+
+        <h3 class="pg-h">Notifikasi</h3>
+        <p class="pg-sub">Notifikasi peminjaman disetujui atau ditolak selalu dikirim. Sisanya bisa kamu atur.</p>
+        <label class="st-switch"><input type="checkbox" name="n_due" value="1" @checked(old('n_due', $s->n_due))><span>Pengingat jatuh tempo dan keterlambatan</span></label>
+        <label class="st-switch"><input type="checkbox" name="n_reservation" value="1" @checked(old('n_reservation', $s->n_reservation))><span>Reservasi siap atau kedaluwarsa</span></label>
+        <label class="st-switch"><input type="checkbox" name="n_fines" value="1" @checked(old('n_fines', $s->n_fines))><span>Denda dan status pembayaran</span></label>
+        <label class="st-switch"><input type="checkbox" name="n_announcements" value="1" @checked(old('n_announcements', $s->n_announcements))><span>Pengumuman baru</span></label>
+        <button class="tl-btn" type="submit" style="margin-top:1.2rem">Simpan Pengaturan</button>
+    </form>
+</x-student-layout>
+
+=================== app\Http\Controllers\AccountController.php ===================
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
+
+class AccountController extends Controller
+{
+    public function edit(Request $request)
+    {
+        return view('account.edit', ['user' => $request->user()]);
+    }
+
+    public function updateName(Request $request)
+    {
+        $data = $request->validate(['name' => 'required|string|max:255']);
+        $request->user()->update(['name' => $data['name']]);
+        return back()->with('success', 'Nama diperbarui.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $data = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'confirmed', Password::min(8)],
+        ]);
+        $request->user()->update(['password' => $data['password']]);
+        return back()->with('success', 'Password berhasil diganti.');
+    }
+}
+
+=================== app\Http\Controllers\ProfileController.php ===================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+
+class ProfileController extends Controller
+{
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): View
+    {
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+}
+
+
+=================== app\Http\Controllers\Admin\AnnouncementController.php ===================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Announcement;
+use Illuminate\Http\Request;
+
+class AnnouncementController extends Controller
+{
+    public function index()
+    {
+        $items = Announcement::orderByDesc('is_pinned')->latest('id')->get();
+        return view('admin.announcements.index', compact('items'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title'   => 'required|string|max:150',
+            'body'    => 'required|string|max:2000',
+            'type'    => 'required|in:info,penting,event',
+            'ends_on' => 'nullable|date|after_or_equal:today',
+        ]);
+        $data['is_pinned'] = $request->boolean('is_pinned');
+        $data['is_active'] = true;
+        $data['published_at'] = now();
+        $data['created_by'] = $request->user()->id;
+        Announcement::create($data);
+        return back()->with('success', 'Pengumuman diterbitkan.');
+    }
+
+    public function toggle(Announcement $announcement)
+    {
+        $announcement->update(['is_active' => !$announcement->is_active]);
+        return back()->with('success', $announcement->is_active ? 'Pengumuman ditampilkan.' : 'Pengumuman disembunyikan.');
+    }
+
+    public function destroy(Announcement $announcement)
+    {
+        $announcement->delete();
+        return back()->with('success', 'Pengumuman dihapus.');
+    }
+}
+
+=================== app\Http\Controllers\Admin\ChallengeController.php ===================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\ReadingChallenge;
+use Illuminate\Http\Request;
+
+class ChallengeController extends Controller
+{
+    public function index()
+    {
+        $challenges = ReadingChallenge::with('category')->withCount('participants')->latest('id')->get();
+        $categories = Category::orderBy('name')->get();
+        return view('admin.challenges.index', compact('challenges', 'categories'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title'        => 'required|string|max:150',
+            'description'  => 'nullable|string|max:1000',
+            'starts_on'    => 'required|date',
+            'ends_on'      => 'required|date|after_or_equal:starts_on',
+            'target_books' => 'required|integer|min:1|max:100',
+            'category_id'  => 'nullable|exists:categories,id',
+            'reward_xp'    => 'required|integer|min:0|max:1000',
+            'badge_name'   => 'nullable|string|max:60',
+        ]);
+        $data['status'] = 'Active';
+        $data['created_by'] = $request->user()->id;
+        ReadingChallenge::create($data);
+        return back()->with('success', 'Tantangan "' . $data['title'] . '" diterbitkan.');
+    }
+
+    public function toggle(ReadingChallenge $challenge)
+    {
+        $challenge->update(['status' => $challenge->status === 'Active' ? 'Closed' : 'Active']);
+        return back()->with('success', 'Status tantangan diperbarui.');
+    }
+
+    public function destroy(ReadingChallenge $challenge)
+    {
+        $challenge->delete();
+        return back()->with('success', 'Tantangan dihapus.');
+    }
+}
+
+=================== app\Http\Controllers\Admin\FinePaymentController.php ===================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\FinePayment;
+use App\Models\Loan;
+use App\Models\Setting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+class FinePaymentController extends Controller
+{
+    public static function methodSettings(): array
+    {
+        return [
+            'cash_note'        => Setting::read('pay.cash_note', 'Bayar langsung ke petugas perpustakaan pada jam layanan.'),
+            'ewallet_provider' => Setting::read('pay.ewallet_provider', ''),
+            'ewallet_number'   => Setting::read('pay.ewallet_number', ''),
+            'ewallet_holder'   => Setting::read('pay.ewallet_holder', ''),
+            'qris_image'       => Setting::read('pay.qris_image', ''),
+            'qris_note'        => Setting::read('pay.qris_note', ''),
+        ];
+    }
+
+    public function index()
+    {
+        $base = Loan::where('status', 'Returned')->where('fine_amount', '>', 0);
+        $stats = [
+            'total'   => (int) (clone $base)->sum('fine_amount'),
+            'paid'    => (int) (clone $base)->whereNotNull('fine_paid_at')->sum('fine_amount'),
+            'unpaid'  => (int) (clone $base)->whereNull('fine_paid_at')->sum('fine_amount'),
+            'pending' => FinePayment::where('status', 'Pending')->count(),
+        ];
+
+        $set = self::methodSettings();
+        $pending = FinePayment::with(['loan.book', 'user'])->where('status', 'Pending')->latest('id')->get();
+        $unpaid = Loan::with(['user', 'book'])->where('status', 'Returned')->where('fine_amount', '>', 0)->whereNull('fine_paid_at')->latest('returned_at')->get();
+        $pendingLoanIds = $pending->pluck('loan_id')->all();
+        $history = FinePayment::with(['loan.book', 'user', 'verifier'])->whereIn('status', ['Verified', 'Rejected'])->latest('id')->take(15)->get();
+        $running = Loan::with(['user', 'book'])->where('status', 'Borrowed')->whereDate('due_date', '<', today())->get();
+
+        return view('admin.fines.index', compact('stats', 'set', 'pending', 'unpaid', 'pendingLoanIds', 'history', 'running'));
+    }
+
+    public function settings(Request $request)
+    {
+        $data = $request->validate([
+            'cash_note'        => 'nullable|string|max:255',
+            'ewallet_provider' => 'nullable|in:DANA,OVO,GoPay,ShopeePay,LinkAja',
+            'ewallet_number'   => 'nullable|regex:/^[0-9]{8,16}$/',
+            'ewallet_holder'   => 'nullable|string|max:100',
+            'qris_note'        => 'nullable|string|max:255',
+            'qris'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], ['ewallet_number.regex' => 'Nomor e-wallet harus 8 sampai 16 digit angka.']);
+
+        foreach (['cash_note', 'ewallet_provider', 'ewallet_number', 'ewallet_holder', 'qris_note'] as $k) {
+            Setting::put('pay.' . $k, $data[$k] ?? '');
+        }
+
+        if ($request->hasFile('qris')) {
+            $old = Setting::read('pay.qris_image');
+            if ($old) { Storage::disk('public')->delete($old); }
+            Setting::put('pay.qris_image', $request->file('qris')->store('payment', 'public'));
+        }
+
+        return back()->with('success', 'Metode pembayaran disimpan.');
+    }
+
+    public function verify(Request $request, FinePayment $payment)
+    {
+        $adminId = $request->user()->id;
+        $error = DB::transaction(function () use ($payment, $adminId) {
+            $p = FinePayment::lockForUpdate()->find($payment->id);
+            if (!$p || $p->status !== 'Pending') { return 'Pembayaran ini sudah diproses.'; }
+            $loan = Loan::lockForUpdate()->find($p->loan_id);
+            if (!$loan || $loan->fine_paid_at) { return 'Denda ini sudah lunas.'; }
+            $p->update(['status' => 'Verified', 'verified_by' => $adminId, 'verified_at' => now()]);
+            $loan->update(['fine_paid_at' => now()]);
+            FinePayment::where('loan_id', $loan->id)->where('status', 'Pending')->where('id', '!=', $p->id)
+                ->update(['status' => 'Rejected', 'reject_reason' => 'Denda sudah lunas lewat pembayaran lain.']);
+            return null;
+        });
+        return $error ? back()->with('error', $error) : back()->with('success', 'Pembayaran diverifikasi, denda lunas.');
+    }
+
+    public function reject(Request $request, FinePayment $payment)
+    {
+        $data = $request->validate(['reason' => 'required|string|max:255']);
+        if ($payment->status !== 'Pending') { return back()->with('error', 'Pembayaran ini sudah diproses.'); }
+        $payment->update(['status' => 'Rejected', 'reject_reason' => $data['reason'], 'verified_by' => $request->user()->id, 'verified_at' => now()]);
+        return back()->with('success', 'Pembayaran ditolak. Siswa bisa mengirim ulang.');
+    }
+
+    public function cash(Request $request, Loan $loan)
+    {
+        $adminId = $request->user()->id;
+        $error = DB::transaction(function () use ($loan, $adminId) {
+            $l = Loan::lockForUpdate()->find($loan->id);
+            if (!$l || $l->status !== 'Returned' || $l->fine_amount <= 0 || $l->fine_paid_at) { return 'Tidak ada denda yang perlu dibayar.'; }
+            FinePayment::where('loan_id', $l->id)->where('status', 'Pending')->update(['status' => 'Rejected', 'reject_reason' => 'Dibayar tunai di perpustakaan.']);
+            FinePayment::create([
+                'loan_id' => $l->id, 'user_id' => $l->user_id, 'amount' => $l->fine_amount, 'method' => 'cash',
+                'status' => 'Verified', 'verified_by' => $adminId, 'verified_at' => now(), 'note' => 'Dicatat petugas',
+            ]);
+            $l->update(['fine_paid_at' => now()]);
+            return null;
+        });
+        return $error ? back()->with('error', $error) : back()->with('success', 'Pembayaran tunai dicatat, denda lunas.');
+    }
+}
+
+=================== app\Http\Controllers\Admin\ReviewBoardController.php ===================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\BookReview;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class ReviewBoardController extends Controller
+{
+    public function index(Request $request)
+    {
+        $status = (string) $request->query('status', '');
+        $rating = (int) $request->query('rating', 0);
+        $q = trim((string) $request->query('q', ''));
+
+        $reviews = BookReview::with(['user', 'book'])
+            ->when($status === 'pending', fn ($x) => $x->whereNull('approved_at'))
+            ->when($status === 'approved', fn ($x) => $x->whereNotNull('approved_at'))
+            ->when($rating >= 1 && $rating <= 5, fn ($x) => $x->where('rating', $rating))
+            ->when($q !== '', fn ($x) => $x->where(function ($w) use ($q) {
+                $w->whereHas('book', fn ($b) => $b->where('title', 'like', "%$q%"))
+                  ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%$q%"))
+                  ->orWhere('body', 'like', "%$q%");
+            }))
+            ->orderByRaw('approved_at is null desc')->latest('id')
+            ->paginate(12)->withQueryString();
+
+        $stats = [
+            'total'   => BookReview::count(),
+            'avg'     => round((float) BookReview::whereNotNull('approved_at')->avg('rating'), 1),
+            'pending' => BookReview::whereNull('approved_at')->count(),
+            'approved' => BookReview::whereNotNull('approved_at')->count(),
+        ];
+        $dist = BookReview::whereNotNull('approved_at')->selectRaw('rating, count(*) as c')->groupBy('rating')->pluck('c', 'rating');
+        $distMax = max(1, (int) $dist->max());
+
+        $top = DB::table('book_reviews')->join('books', 'books.id', '=', 'book_reviews.book_id')
+            ->whereNotNull('book_reviews.approved_at')
+            ->select('books.title', 'books.author', DB::raw('AVG(book_reviews.rating) as avg_rating'), DB::raw('COUNT(*) as total'))
+            ->groupBy('books.id', 'books.title', 'books.author')
+            ->orderByDesc('avg_rating')->orderByDesc('total')->take(5)->get();
+
+        return view('admin.reviewboard.index', compact('reviews', 'stats', 'dist', 'distMax', 'top', 'status', 'rating', 'q'));
+    }
+
+    public function hide(BookReview $review)
+    {
+        if (!$review->approved_at) { return back()->with('error', 'Ulasan ini memang belum tampil.'); }
+        $review->update(['approved_at' => null]);
+        return back()->with('success', 'Ulasan disembunyikan dari publik.');
+    }
+}
+
+=================== app\Http\Controllers\Admin\ReviewController.php ===================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\BookReview;
+
+class ReviewController extends Controller
+{
+    public function index()
+    {
+        $reviews = BookReview::with(['user', 'book'])
+            ->orderByRaw('approved_at is null desc')
+            ->latest('id')
+            ->paginate(15);
+
+        $pending = BookReview::whereNull('approved_at')->count();
+
+        return view('admin.reviews.index', compact('reviews', 'pending'));
+    }
+
+    public function approve(BookReview $review)
+    {
+        if ($review->approved_at) {
+            return back()->with('error', 'Ulasan ini sudah disetujui.');
+        }
+        $review->update(['approved_at' => now()]);
+        return back()->with('success', 'Ulasan disetujui dan tampil di publik.');
+    }
+
+    public function destroy(BookReview $review)
+    {
+        $review->delete();
+        return back()->with('success', 'Ulasan dihapus.');
+    }
+}
+
+=================== app\Http\Controllers\Student\AnnouncementController.php ===================
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\Announcement;
+
+class AnnouncementController extends Controller
+{
+    public function index()
+    {
+        $items = Announcement::live()->orderByDesc('is_pinned')->latest('id')->get();
+        return view('student.announcements.index', compact('items'));
+    }
+}
+
+=================== app\Http\Controllers\Student\ChallengeController.php ===================
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\ReadingChallenge;
+use App\Services\Reading;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class ChallengeController extends Controller
+{
+    public function index(Request $request)
+    {
+        $uid = $request->user()->id;
+        $rows = ReadingChallenge::with('category')->latest('id')->get();
+        $mine = DB::table('challenge_participants')->where('user_id', $uid)->get()->keyBy('challenge_id');
+        $progress = [];
+        foreach ($rows as $c) {
+            if (isset($mine[$c->id])) { $progress[$c->id] = Reading::challengeCount($uid, $c, $mine[$c->id]->joined_at); }
+        }
+        return view('student.challenges.index', compact('rows', 'mine', 'progress'));
+    }
+
+    public function join(Request $request, ReadingChallenge $challenge)
+    {
+        $uid = $request->user()->id;
+        if ($challenge->status !== 'Active' || $challenge->ends_on->copy()->endOfDay()->isPast()) {
+            return back()->with('error', 'Tantangan ini sudah ditutup.');
+        }
+        $exists = DB::table('challenge_participants')->where('challenge_id', $challenge->id)->where('user_id', $uid)->exists();
+        if ($exists) { return back()->with('error', 'Kamu sudah bergabung di tantangan ini.'); }
+        DB::table('challenge_participants')->insert(['challenge_id' => $challenge->id, 'user_id' => $uid, 'joined_at' => now(), 'created_at' => now(), 'updated_at' => now()]);
+        Reading::evaluateChallenges($request->user());
+        return back()->with('success', 'Kamu bergabung di "' . $challenge->title . '". Buku yang kamu selesaikan mulai hari ini ikut dihitung.');
+    }
+}
+
+=================== app\Http\Controllers\Student\ReviewController.php ===================
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\BookReview;
+use App\Models\Loan;
+use Illuminate\Http\Request;
+
+class ReviewController extends Controller
+{
+    public function store(Request $request, Book $book)
+    {
+        $data = $request->validate([
+            'rating' => 'required|integer|between:1,5',
+            'body'   => 'required|string|min:10|max:500',
+        ]);
+        $user = $request->user();
+
+        $pernahKembalikan = Loan::where('user_id', $user->id)
+            ->where('book_id', $book->id)
+            ->where('status', 'Returned')
+            ->exists();
+
+        if (!$pernahKembalikan) {
+            return back()->with('error', 'Kamu bisa menulis ulasan setelah mengembalikan buku ini.');
+        }
+
+        // Kirim ulang = ubah ulasan, dan persetujuan admin diulang
+        BookReview::updateOrCreate(
+            ['user_id' => $user->id, 'book_id' => $book->id],
+            ['rating' => (int) $data['rating'], 'body' => $data['body'], 'approved_at' => null]
+        );
+
+        return back()->with('success', 'Ulasan terkirim. Ulasan tampil di publik setelah disetujui admin.');
+    }
+}
+
+=================== app\Http\Controllers\Student\SettingController.php ===================
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\UserSetting;
+use Illuminate\Http\Request;
+
+class SettingController extends Controller
+{
+    public function edit(Request $request)
+    {
+        $s = UserSetting::forUser($request->user()->id);
+        return view('student.settings.edit', compact('s'));
+    }
+
+    public function update(Request $request)
+    {
+        $data = $request->validate(['default_duration' => 'required|in:3,7,10']);
+        $s = UserSetting::forUser($request->user()->id);
+        $s->fill([
+            'default_duration' => (int) $data['default_duration'],
+            'n_due'           => $request->boolean('n_due'),
+            'n_reservation'   => $request->boolean('n_reservation'),
+            'n_fines'         => $request->boolean('n_fines'),
+            'n_announcements' => $request->boolean('n_announcements'),
+        ])->save();
+        return back()->with('success', 'Pengaturan disimpan.');
+    }
+}
+
+=================== CSS MENU ===================
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:44:.tl-sidebar {
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:45:    width: 260px; flex-shrink: 0; display: flex; flex-direction: column;
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:46:    background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(236,227,253,.70) 55%, rgba(252,228,238,.65));
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:47:    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:48:    border-right: 1px solid rgba(255,255,255,.85);
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:54:.tl-nav { flex: 1; overflow-y: auto; padding: .5rem .9rem 1rem; display: flex; flex-direction: column; gap: .2rem; }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:55:.tl-link {
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:56:    display: flex; align-items: center; gap: .75rem; padding: .62rem 1rem; border-radius: 14px;
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:57:    font-size: .8rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: all .2s ease;
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:58:}
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:59:.tl-link:hover { background: rgba(255,255,255,.75); color: var(--accent); }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:60:.tl-link.active { background: linear-gradient(90deg, rgba(247,200,220,.75), rgba(217,204,245,.75)); color: #5b34a8; font-weight: 600; box-shadow: 0 6px 16px rgba(167,139,250,.18); }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:61:.tl-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:62:.tl-divider { height: 1px; margin: .6rem .5rem; background: linear-gradient(90deg, transparent, rgba(167,139,250,.35), transparent); }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:63:.tl-logout { display: flex; width: 100%; align-items: center; gap: .75rem; padding: .62rem 1rem; border-radius: 14px; border: 0; background: transparent; font-family: inherit; font-size: .8rem; font-weight: 600; color: #e0556f; cursor: pointer; }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:64:.tl-logout:hover { background: rgba(254,226,226,.7); }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:65:.tl-logout svg { width: 17px; height: 17px; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:66:
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:67:.tl-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:68:.tl-topbar {
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:69:    height: 68px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:110:@media (max-width: 800px) { .tl-sidebar { display: none; } .tl-main { padding: 1rem; } }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:111:/* ===== V2-8: tabel, form, katalog ===== */
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:112:.tl-alert { border-radius: 16px; padding: .8rem 1rem; margin-bottom: 1rem; font-size: .8rem; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:113:.tl-alert ul { margin: .3rem 0 0 1.1rem; list-style: disc; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:114:.tl-alert.ok { background: rgba(207,229,214,.8); color: #2f6b4f; border: 1px solid #b7d8c4; }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:125:.tl-link-plain { font-size: .78rem; font-weight: 600; color: #6d3fc4; text-decoration: none; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:126:.tl-thumb { width: 38px; height: 54px; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:127:.tl-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:128:.tl-label { display: block; font-size: .68rem; font-weight: 600; color: #5f5b7a; margin-bottom: .3rem; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:129:.tl-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:186:    .tl-sidebar { display: flex; position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; transform: translateX(-105%); transition: transform .25s ease; background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(236,227,253,.97) 55%, rgba(252,228,238,.97)); }
+> C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:187:    .tl-open .tl-sidebar { transform: none; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:188:    .tl-open .tl-backdrop { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(45,42,74,.35); }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:189:    .tl-topbar { padding: 0 1rem; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:190:    .tl-hero { padding: 1.4rem 1.25rem; }
+  C:\xampp\htdocs\Trafie-library-v2\resources\css\app.css:191:    .tl-hero h1 { font-size: 1.5rem; }

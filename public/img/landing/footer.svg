@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 144" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7e3f1"/><stop offset=".25" stop-color="#efe6fb"/><stop offset=".75" stop-color="#ece6fb"/><stop offset="1" stop-color="#f7e0ef"/></linearGradient>
+<linearGradient id="cr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".5" stop-color="#cbbcf3" stop-opacity=".85"/><stop offset="1" stop-color="#9f8ae6" stop-opacity=".9"/></linearGradient>
+<filter id="bl"><feGaussianBlur stdDeviation="18"/></filter>
+<g id="fl"><g fill="currentColor"><ellipse cy="-12" rx="8.5" ry="12"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(72)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(144)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(216)"/><ellipse cy="-12" rx="8.5" ry="12" transform="rotate(288)"/></g><circle r="4.6" fill="#f2cf6b"/></g>
+<path id="lf" d="M0-16C9-7 9 7 0 16C-9 7-9-7 0-16Z" fill="#bfe3cc"/>
+</defs>
+<rect width="1536" height="144" fill="url(#bg)"/>
+<g filter="url(#bl)"><ellipse cx="100" cy="90" rx="200" ry="50" fill="#f6c6e0" opacity=".7"/><ellipse cx="1440" cy="90" rx="200" ry="50" fill="#f6c6e0" opacity=".7"/><ellipse cx="768" cy="40" rx="400" ry="40" fill="#fff" opacity=".6"/></g>
+<g stroke="#fff" stroke-opacity=".8">
+<polygon points="228,144 238,70 256,36 274,76 284,144" fill="url(#cr)"/>
+<polygon points="286,144 294,100 304,86 314,106 320,144" fill="url(#cr)"/>
+<polygon points="1250,144 1258,100 1270,84 1282,104 1290,144" fill="url(#cr)"/>
+</g>
+<use href="#lf" transform="translate(40 110) rotate(-40)"/><use href="#lf" transform="translate(150 130) rotate(40)"/><use href="#lf" transform="translate(1400 120) rotate(30)"/><use href="#lf" transform="translate(1500 100) rotate(-40)"/>
+<use href="#fl" transform="translate(30 90) scale(1.1)" style="color:#f4b6d4"/>
+<use href="#fl" transform="translate(84 126) scale(.95)" style="color:#fff"/>
+<use href="#fl" transform="translate(140 108) scale(.8)" style="color:#d3c4f4"/>
+<use href="#fl" transform="translate(190 132) scale(.9)" style="color:#f9d0e4"/>
+<use href="#fl" transform="translate(20 30) scale(.8)" style="color:#fff"/>
+<use href="#fl" transform="translate(1340 128) scale(.9)" style="color:#fff"/>
+<use href="#fl" transform="translate(1396 104) scale(.8)" style="color:#d3c4f4"/>
+<use href="#fl" transform="translate(1450 126) scale(1.1)" style="color:#f4b6d4"/>
+<use href="#fl" transform="translate(1506 84) scale(1)" style="color:#f9d0e4"/>
+<use href="#fl" transform="translate(1520 30) scale(.8)" style="color:#fff"/>
+</svg>

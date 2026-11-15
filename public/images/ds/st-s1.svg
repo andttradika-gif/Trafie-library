@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 110"><defs><radialGradient id="gl"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><path id="sp" d="M0-7Q.9-.9 7 0Q.9.9 0 7Q-.9.9-7 0Q-.9-.9 0-7Z" fill="#fff"/><g id="fl"><g fill="currentColor"><ellipse cy="-6" rx="4.2" ry="6"/><ellipse cy="-6" rx="4.2" ry="6" transform="rotate(72)"/><ellipse cy="-6" rx="4.2" ry="6" transform="rotate(144)"/><ellipse cy="-6" rx="4.2" ry="6" transform="rotate(216)"/><ellipse cy="-6" rx="4.2" ry="6" transform="rotate(288)"/></g><g fill="#fff" opacity=".45"><ellipse cy="-7.5" rx="1.8" ry="3.6"/><ellipse cy="-7.5" rx="1.8" ry="3.6" transform="rotate(72)"/><ellipse cy="-7.5" rx="1.8" ry="3.6" transform="rotate(144)"/><ellipse cy="-7.5" rx="1.8" ry="3.6" transform="rotate(216)"/><ellipse cy="-7.5" rx="1.8" ry="3.6" transform="rotate(288)"/></g><circle r="2.4" fill="#f2cf6b"/><circle r="1" fill="#fff3b0"/></g><path id="lf" d="M0 0C6-5 7-15 0-22C-7-15-6-5 0 0Z" fill="#b9e0c8" stroke="#8fc9a4" stroke-width=".5"/>
+<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e5daf8"/></linearGradient>
+<linearGradient id="pg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e5daf8"/></linearGradient>
+<linearGradient id="cv" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b9a0ec"/><stop offset=".5" stop-color="#cdb8f4"/><stop offset="1" stop-color="#a98fe6"/></linearGradient>
+<filter id="b"><feGaussianBlur stdDeviation="2.2"/></filter></defs>
+<ellipse cx="70" cy="98" rx="54" ry="6" fill="#6d5cc0" opacity=".2" filter="url(#b)"/>
+<circle cx="70" cy="56" r="48" fill="url(#gl)"/>
+<path d="M8 72Q70 98 132 72L128 86Q70 110 12 86Z" fill="url(#cv)"/>
+<path d="M12 70C30 62 54 64 70 80V94C54 78 30 76 12 84Z" fill="#c7b2f0"/>
+<path d="M128 70C110 62 86 64 70 80V94C86 78 110 76 128 84Z" fill="#b8a0ea"/>
+<path d="M70 80C54 64 30 60 12 66V40C30 34 54 38 70 52Z" fill="url(#pg)" stroke="#d6caf4" stroke-width="1"/>
+<path d="M70 80C86 64 110 60 128 66V40C110 34 86 38 70 52Z" fill="url(#pg2)" stroke="#d6caf4" stroke-width="1"/>
+<path d="M20 48C34 44 50 47 63 57M20 55C34 51 50 54 63 64M20 62C32 59 44 61 55 68" stroke="#d9cdf2" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<path d="M120 48C106 44 90 47 77 57M120 55C106 51 90 54 77 64" stroke="#d9cdf2" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<path d="M70 52V80" stroke="#cdbff0" stroke-width="1.2"/>
+<circle cx="70" cy="44" r="16" fill="url(#gl)"/>
+<use href="#sp" transform="translate(70 36) scale(1.5)"/><use href="#sp" transform="translate(48 30) scale(.8)"/><use href="#sp" transform="translate(94 26) scale(1)"/><use href="#sp" transform="translate(112 44) scale(.7)"/>
+<use href="#lf" transform="translate(118 80) rotate(50)"/><use href="#lf" transform="translate(126 74) rotate(80)"/>
+<use href="#fl" transform="translate(124 70) scale(1.5)" style="color:#f6b8d4"/><use href="#fl" transform="translate(112 78) scale(1)" style="color:#fff"/><use href="#fl" transform="translate(16 76) scale(1.1)" style="color:#d3c4f4"/>
+</svg>

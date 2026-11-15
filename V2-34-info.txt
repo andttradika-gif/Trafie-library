@@ -1,0 +1,923 @@
+
+=================================================================
+FILE: composer.json
+=================================================================
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/breeze": "^2.4",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.24",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.50"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
+
+
+=================================================================
+FILE: routes\web.php
+=================================================================
+<?php
+
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return Auth::user()->role === 'admin'
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('student.dashboard');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/akun', [AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/akun/nama', [AccountController::class, 'updateName'])->name('account.name');
+    Route::put('/akun/password', [AccountController::class, 'updatePassword'])->name('account.password');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        require base_path('routes/admin_extra.php');
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+    Route::get('/categories', [Admin\CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [Admin\CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [Admin\CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    Route::get('/books', [Admin\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [Admin\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [Admin\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [Admin\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [Admin\BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [Admin\BookController::class, 'destroy'])->name('books.destroy');
+
+    Route::get('/loans', [Admin\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/approve', [Admin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::patch('/loans/{loan}/reject', [Admin\LoanController::class, 'reject'])->name('loans.reject');
+    Route::patch('/loans/{loan}/return', [Admin\LoanController::class, 'returnBook'])->name('loans.return');
+    Route::patch('/loans/{loan}/fine-paid', [Admin\LoanController::class, 'finePaid'])->name('loans.finepaid');
+
+    Route::get('/renewals', [Admin\RenewalController::class, 'index'])->name('renewals.index');
+    Route::patch('/renewals/{renewal}/approve', [Admin\RenewalController::class, 'approve'])->name('renewals.approve');
+    Route::patch('/renewals/{renewal}/reject', [Admin\RenewalController::class, 'reject'])->name('renewals.reject');
+
+    Route::get('/reviews', [Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('/reviews/{review}/approve', [Admin\ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('/students', [Admin\StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/{student}', [Admin\StudentController::class, 'show'])->name('students.show');
+    Route::patch('/students/{student}/reset-password', [Admin\StudentController::class, 'resetPassword'])->name('students.reset');
+
+    Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [Admin\ReportController::class, 'export'])->name('reports.export');
+});
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::view('/dashboard', 'student.dashboard')->name('dashboard');
+
+    Route::get('/books', [Student\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/{book}', [Student\BookController::class, 'show'])->name('books.show');
+    Route::post('/books/{book}/review', [Student\ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::post('/books/{book}/pinjam', [Student\LoanController::class, 'store'])->name('loans.store');
+    Route::get('/loans', [Student\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/cancel', [Student\LoanController::class, 'cancel'])->name('loans.cancel');
+    Route::post('/loans/{loan}/renew', [Student\RenewalController::class, 'store'])->name('loans.renew');
+});
+
+require __DIR__ . '/auth.php';
+
+// V2-15: landing page Trafie-library (didaftarkan terakhir, jadi menimpa route '/' lama)
+Route::get('/', [\App\Http\Controllers\LandingV15Controller::class, 'index'])->name('landing.v15');
+
+
+=================================================================
+FILE: routes\admin_extra.php
+=================================================================
+<?php
+
+use App\Http\Controllers\Admin\AdminExtraController as X;
+use Illuminate\Support\Facades\Route;
+
+// Dimuat dari DALAM grup admin di routes/web.php (prefix, nama, dan middleware ikut grup itu).
+Route::get('eksemplar', [X::class, 'copies'])->name('extra.copies');
+Route::get('denda', [X::class, 'fines'])->name('extra.fines');
+Route::post('denda/{loan}/lunas', [X::class, 'payFine'])->name('extra.fines.pay');
+Route::get('pembayaran', [X::class, 'payments'])->name('extra.payments');
+Route::get('pengembalian', [X::class, 'returns'])->name('extra.returns');
+Route::get('kalender', [X::class, 'calendar'])->name('extra.calendar');
+Route::get('log-aktivitas', [X::class, 'activity'])->name('extra.activity');
+
+=================================================================
+FILE: app\Models\Book.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Book extends Model
+{
+    protected $fillable = [
+        'isbn', 'title', 'slug', 'cover', 'author', 'publisher', 'publication_year',
+        'pages', 'description', 'category_id', 'language', 'shelf_location',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function copies()
+    {
+        return $this->hasMany(BookCopy::class);
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(BookReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(BookReview::class)->whereNotNull('approved_at');
+    }
+
+    public function getCoverUrlAttribute(): ?string
+    {
+        return $this->cover ? asset('storage/' . $this->cover) : null;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+}
+
+=================================================================
+FILE: app\Models\BookCopy.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookCopy extends Model
+{
+    protected $fillable = ['book_id', 'copy_code', 'condition', 'procurement_date', 'status'];
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+
+=================================================================
+FILE: app\Models\Category.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $fillable = ['name', 'slug', 'description'];
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
+}
+
+=================================================================
+FILE: database\migrations\2026_11_08_000002_create_categories_table.php
+=================================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('categories');
+    }
+};
+
+=================================================================
+FILE: database\migrations\2026_11_08_000003_create_books_table.php
+=================================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('isbn', 20)->nullable()->unique();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('cover')->nullable();
+            $table->string('author');
+            $table->string('publisher');
+            $table->unsignedSmallInteger('publication_year');
+            $table->unsignedInteger('pages')->nullable();
+            $table->text('description')->nullable();
+            $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
+            $table->string('language', 50)->default('Indonesia');
+            $table->string('shelf_location', 50)->nullable();
+            $table->timestamps();
+            $table->index('title');
+            $table->index('author');
+        });
+
+        Schema::create('book_copies', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->string('copy_code')->unique();
+            $table->string('condition', 30)->default('Bagus');
+            $table->date('procurement_date')->nullable();
+            $table->string('status', 30)->default('Available');
+            $table->timestamps();
+            $table->index('status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_copies');
+        Schema::dropIfExists('books');
+    }
+};
+
+=================================================================
+FILE: database\migrations\2026_11_08_000007_create_book_reviews_table.php
+=================================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('book_reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->unsignedTinyInteger('rating');
+            $table->string('body', 500);
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamps();
+            $table->unique(['user_id', 'book_id']);
+            $table->index('approved_at');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_reviews');
+    }
+};
+
+=================================================================
+FILE: app\Http\Controllers\Admin\BookController.php
+=================================================================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\BookCopy;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
+class BookController extends Controller
+{
+    public function index(Request $request)
+    {
+        $q = trim((string) $request->query('q'));
+        $books = Book::with('category')
+            ->withCount(['copies', 'copies as available_count' => fn ($c) => $c->where('status', 'Available')])
+            ->when($q !== '', fn ($query) => $query->where(function ($w) use ($q) {
+                $w->where('title', 'like', "%$q%")->orWhere('author', 'like', "%$q%")->orWhere('isbn', 'like', "%$q%");
+            }))
+            ->latest()->paginate(10)->withQueryString();
+
+        return view('admin.books.index', compact('books', 'q'));
+    }
+
+    public function create()
+    {
+        return view('admin.books.create', ['categories' => Category::orderBy('name')->get()]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title'            => 'required|string|max:255',
+            'author'           => 'required|string|max:255',
+            'publisher'        => 'required|string|max:255',
+            'publication_year' => 'required|integer|between:1900,2100',
+            'category_id'      => 'required|exists:categories,id',
+            'copies'           => 'required|integer|min:1|max:200',
+            'isbn'             => 'nullable|string|max:20|unique:books,isbn',
+            'pages'            => 'nullable|integer|min:1|max:20000',
+            'language'         => 'nullable|string|max:50',
+            'shelf_location'   => 'nullable|string|max:50',
+            'description'      => 'nullable|string',
+            'cover'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $base = Str::slug($data['title']) ?: 'buku';
+        $slug = $base;
+        $n = 2;
+        while (Book::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $n++;
+        }
+
+        $coverPath = $request->hasFile('cover') ? $request->file('cover')->store('covers', 'public') : null;
+
+        $book = DB::transaction(function () use ($data, $slug, $coverPath) {
+            $book = Book::create([
+                'isbn' => $data['isbn'] ?? null,
+                'title' => $data['title'],
+                'slug' => $slug,
+                'cover' => $coverPath,
+                'author' => $data['author'],
+                'publisher' => $data['publisher'],
+                'publication_year' => $data['publication_year'],
+                'pages' => $data['pages'] ?? null,
+                'description' => $data['description'] ?? null,
+                'category_id' => $data['category_id'],
+                'language' => $data['language'] ?: 'Indonesia',
+                'shelf_location' => $data['shelf_location'] ?? null,
+            ]);
+
+            for ($i = 1; $i <= $data['copies']; $i++) {
+                BookCopy::create([
+                    'book_id' => $book->id,
+                    'copy_code' => 'TL-' . str_pad($book->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($i, 3, '0', STR_PAD_LEFT),
+                    'condition' => 'Bagus',
+                    'procurement_date' => now()->toDateString(),
+                    'status' => 'Available',
+                ]);
+            }
+            return $book;
+        });
+
+        return redirect()->route('admin.books.index')
+            ->with('success', 'Buku "' . $book->title . '" dengan ' . $data['copies'] . ' eksemplar ditambahkan.');
+    }
+
+    public function edit(Book $book)
+    {
+        $book->loadCount(['copies', 'copies as available_count' => fn ($c) => $c->where('status', 'Available')]);
+        return view('admin.books.edit', ['book' => $book, 'categories' => Category::orderBy('name')->get()]);
+    }
+
+    public function update(Request $request, Book $book)
+    {
+        $data = $request->validate([
+            'title'            => 'required|string|max:255',
+            'author'           => 'required|string|max:255',
+            'publisher'        => 'required|string|max:255',
+            'publication_year' => 'required|integer|between:1900,2100',
+            'category_id'      => 'required|exists:categories,id',
+            'add_copies'       => 'nullable|integer|min:0|max:200',
+            'isbn'             => ['nullable', 'string', 'max:20', Rule::unique('books', 'isbn')->ignore($book->id)],
+            'pages'            => 'nullable|integer|min:1|max:20000',
+            'language'         => 'nullable|string|max:50',
+            'shelf_location'   => 'nullable|string|max:50',
+            'description'      => 'nullable|string',
+            'cover'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $coverPath = $book->cover;
+        if ($request->hasFile('cover')) {
+            if ($book->cover) {
+                Storage::disk('public')->delete($book->cover);
+            }
+            $coverPath = $request->file('cover')->store('covers', 'public');
+        } elseif ($request->boolean('remove_cover') && $book->cover) {
+            Storage::disk('public')->delete($book->cover);
+            $coverPath = null;
+        }
+
+        DB::transaction(function () use ($data, $book, $coverPath) {
+            // slug tidak diubah supaya tautan lama tetap berlaku
+            $book->update([
+                'isbn' => $data['isbn'] ?? null,
+                'title' => $data['title'],
+                'cover' => $coverPath,
+                'author' => $data['author'],
+                'publisher' => $data['publisher'],
+                'publication_year' => $data['publication_year'],
+                'pages' => $data['pages'] ?? null,
+                'description' => $data['description'] ?? null,
+                'category_id' => $data['category_id'],
+                'language' => $data['language'] ?: 'Indonesia',
+                'shelf_location' => $data['shelf_location'] ?? null,
+            ]);
+
+            $add = (int) ($data['add_copies'] ?? 0);
+            $n = $book->copies()->count();
+            for ($i = 0; $i < $add; $i++) {
+                do {
+                    $n++;
+                    $code = 'TL-' . str_pad($book->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($n, 3, '0', STR_PAD_LEFT);
+                } while (BookCopy::where('copy_code', $code)->exists());
+
+                BookCopy::create([
+                    'book_id' => $book->id,
+                    'copy_code' => $code,
+                    'condition' => 'Bagus',
+                    'procurement_date' => now()->toDateString(),
+                    'status' => 'Available',
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.books.index')->with('success', 'Buku "' . $book->title . '" diperbarui.');
+    }
+
+    public function destroy(Book $book)
+    {
+        if ($book->cover) {
+            Storage::disk('public')->delete($book->cover);
+        }
+        $book->delete();
+        return redirect()->route('admin.books.index')->with('success', 'Buku dihapus.');
+    }
+}
+
+=================================================================
+FILE: app\Http\Controllers\Admin\CategoryController.php
+=================================================================
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
+class CategoryController extends Controller
+{
+    public function index()
+    {
+        $categories = Category::withCount('books')->orderBy('name')->get();
+        return view('admin.categories.index', compact('categories'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name'        => 'required|string|max:100|unique:categories,name',
+            'description' => 'nullable|string|max:255',
+        ]);
+        $data['slug'] = Str::slug($data['name']);
+
+        if (Category::where('slug', $data['slug'])->exists()) {
+            return back()->withErrors(['name' => 'Nama kategori terlalu mirip dengan yang sudah ada.'])->withInput();
+        }
+
+        Category::create($data);
+        return back()->with('success', 'Kategori "' . $data['name'] . '" ditambahkan.');
+    }
+
+    public function edit(Category $category)
+    {
+        return view('admin.categories.edit', compact('category'));
+    }
+
+    public function update(Request $request, Category $category)
+    {
+        $data = $request->validate([
+            'name'        => ['required', 'string', 'max:100', Rule::unique('categories', 'name')->ignore($category->id)],
+            'description' => 'nullable|string|max:255',
+        ]);
+        $slug = Str::slug($data['name']);
+
+        if (Category::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+            return back()->withErrors(['name' => 'Nama kategori terlalu mirip dengan yang sudah ada.'])->withInput();
+        }
+
+        $category->update(['name' => $data['name'], 'description' => $data['description'] ?? null, 'slug' => $slug]);
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori diperbarui.');
+    }
+
+    public function destroy(Category $category)
+    {
+        if ($category->books()->exists()) {
+            return back()->with('error', 'Kategori masih memiliki buku, tidak bisa dihapus.');
+        }
+        $category->delete();
+        return back()->with('success', 'Kategori dihapus.');
+    }
+}
+
+=================================================================
+FILE: app\Http\Controllers\Student\BookController.php
+=================================================================
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\Category;
+use Illuminate\Http\Request;
+
+class BookController extends Controller
+{
+    private function withStock()
+    {
+        return Book::with('category')
+            ->withCount(['copies', 'copies as available_count' => fn ($c) => $c->where('status', 'Available')]);
+    }
+
+    public function index(Request $request)
+    {
+        $q = trim((string) $request->query('q'));
+        $cat = $request->query('kategori');
+        $sort = $request->query('urut', 'terbaru');
+
+        $query = $this->withStock()
+            ->when($q !== '', fn ($x) => $x->where(function ($w) use ($q) {
+                $w->where('title', 'like', "%$q%")->orWhere('author', 'like', "%$q%")->orWhere('publisher', 'like', "%$q%");
+            }))
+            ->when($cat, fn ($x) => $x->whereHas('category', fn ($c) => $c->where('slug', $cat)));
+
+        $query = match ($sort) {
+            'judul' => $query->orderBy('title'),
+            'tersedia' => $query->orderByDesc('available_count'),
+            default => $query->latest(),
+        };
+
+        return view('student.books.index', [
+            'books' => $query->paginate(12)->withQueryString(),
+            'categories' => Category::withCount('books')->orderBy('name')->get(),
+            'q' => $q, 'cat' => $cat, 'sort' => $sort,
+        ]);
+    }
+
+    public function show(Book $book)
+    {
+        $book = $this->withStock()->findOrFail($book->id);
+        $related = $this->withStock()->where('category_id', $book->category_id)->where('id', '!=', $book->id)->latest()->take(4)->get();
+        return view('student.books.show', compact('book', 'related'));
+    }
+}
+
+=================================================================
+FILE: resources\views\admin\books\create.blade.php
+=================================================================
+<x-admin-layout title="Tambah Buku">
+    <div class="tl-card">
+        <form method="POST" action="{{ route('admin.books.store') }}" enctype="multipart/form-data">
+            @csrf
+            <div class="tl-form-grid">
+                <div class="full"><label class="tl-label">Judul *</label><input class="tl-input" name="title" value="{{ old('title') }}" required></div>
+                <div><label class="tl-label">Penulis *</label><input class="tl-input" name="author" value="{{ old('author') }}" required></div>
+                <div><label class="tl-label">Penerbit *</label><input class="tl-input" name="publisher" value="{{ old('publisher') }}" required></div>
+                <div><label class="tl-label">Tahun Terbit *</label><input class="tl-input" type="number" name="publication_year" value="{{ old('publication_year', date('Y')) }}" required></div>
+                <div>
+                    <label class="tl-label">Kategori *</label>
+                    <select class="tl-input" name="category_id" required>
+                        @foreach($categories as $c)<option value="{{ $c->id }}" @selected(old('category_id') == $c->id)>{{ $c->name }}</option>@endforeach
+                    </select>
+                </div>
+                <div><label class="tl-label">Jumlah Eksemplar *</label><input class="tl-input" type="number" name="copies" min="1" max="200" value="{{ old('copies', 1) }}" required></div>
+                <div><label class="tl-label">ISBN</label><input class="tl-input" name="isbn" value="{{ old('isbn') }}"></div>
+                <div><label class="tl-label">Jumlah Halaman</label><input class="tl-input" type="number" name="pages" value="{{ old('pages') }}"></div>
+                <div><label class="tl-label">Bahasa</label><input class="tl-input" name="language" value="{{ old('language', 'Indonesia') }}"></div>
+                <div><label class="tl-label">Lokasi Rak</label><input class="tl-input" name="shelf_location" value="{{ old('shelf_location') }}" placeholder="Contoh: A-2"></div>
+                <div><label class="tl-label">Cover (jpg, png, webp, maks 2 MB)</label><input class="tl-input" type="file" name="cover" accept="image/*"></div>
+                <div class="full"><label class="tl-label">Deskripsi</label><textarea class="tl-input" name="description" rows="4">{{ old('description') }}</textarea></div>
+            </div>
+            <div class="tl-row" style="margin-top:1.25rem">
+                <button class="tl-btn" type="submit">Simpan Buku</button>
+                <a href="{{ route('admin.books.index') }}" class="tl-link-plain">Batal</a>
+            </div>
+        </form>
+    </div>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\admin\books\edit.blade.php
+=================================================================
+<x-admin-layout title="Edit Buku">
+    <div class="tl-card">
+        <form method="POST" action="{{ route('admin.books.update', $book) }}" enctype="multipart/form-data">
+            @csrf @method('PUT')
+            <div class="tl-form-grid">
+                <div class="full"><label class="tl-label">Judul *</label><input class="tl-input" name="title" value="{{ old('title', $book->title) }}" required></div>
+                <div><label class="tl-label">Penulis *</label><input class="tl-input" name="author" value="{{ old('author', $book->author) }}" required></div>
+                <div><label class="tl-label">Penerbit *</label><input class="tl-input" name="publisher" value="{{ old('publisher', $book->publisher) }}" required></div>
+                <div><label class="tl-label">Tahun Terbit *</label><input class="tl-input" type="number" name="publication_year" value="{{ old('publication_year', $book->publication_year) }}" required></div>
+                <div>
+                    <label class="tl-label">Kategori *</label>
+                    <select class="tl-input" name="category_id" required>
+                        @foreach($categories as $c)<option value="{{ $c->id }}" @selected(old('category_id', $book->category_id) == $c->id)>{{ $c->name }}</option>@endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="tl-label">Tambah Eksemplar (saat ini {{ $book->copies_count }}, tersedia {{ $book->available_count }})</label>
+                    <input class="tl-input" type="number" name="add_copies" min="0" max="200" value="{{ old('add_copies', 0) }}">
+                </div>
+                <div><label class="tl-label">ISBN</label><input class="tl-input" name="isbn" value="{{ old('isbn', $book->isbn) }}"></div>
+                <div><label class="tl-label">Jumlah Halaman</label><input class="tl-input" type="number" name="pages" value="{{ old('pages', $book->pages) }}"></div>
+                <div><label class="tl-label">Bahasa</label><input class="tl-input" name="language" value="{{ old('language', $book->language) }}"></div>
+                <div><label class="tl-label">Lokasi Rak</label><input class="tl-input" name="shelf_location" value="{{ old('shelf_location', $book->shelf_location) }}"></div>
+                <div class="full">
+                    <label class="tl-label">Cover (kosongkan jika tidak ingin mengganti)</label>
+                    @if($book->cover_url)
+                        <div class="tl-row" style="margin-bottom:.5rem">
+                            <img src="{{ $book->cover_url }}" alt="" style="height:90px;border-radius:10px">
+                            <label style="font-size:.75rem;color:#5f5b7a"><input type="checkbox" name="remove_cover" value="1"> Hapus cover saat ini</label>
+                        </div>
+                    @endif
+                    <input class="tl-input" type="file" name="cover" accept="image/*">
+                </div>
+                <div class="full"><label class="tl-label">Deskripsi</label><textarea class="tl-input" name="description" rows="4">{{ old('description', $book->description) }}</textarea></div>
+            </div>
+            <div class="tl-row" style="margin-top:1.25rem">
+                <button class="tl-btn" type="submit">Simpan Perubahan</button>
+                <a href="{{ route('admin.books.index') }}" class="tl-link-plain">Batal</a>
+            </div>
+        </form>
+    </div>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\admin\books\index.blade.php
+=================================================================
+<x-admin-layout title="Manajemen Buku">
+    <div class="tl-row" style="margin-bottom:1.25rem;justify-content:space-between">
+        <form method="GET" action="{{ route('admin.books.index') }}" class="tl-row" style="flex:1;max-width:460px">
+            <input class="tl-input" type="text" name="q" value="{{ $q }}" placeholder="Cari judul, penulis, atau ISBN">
+            <button class="tl-btn" type="submit">Cari</button>
+        </form>
+        <a href="{{ route('admin.books.create') }}" class="tl-btn">+ Tambah Buku</a>
+    </div>
+
+    <div class="tl-card" style="overflow-x:auto">
+        <table class="tl-table">
+            <thead><tr><th>Buku</th><th>Kategori</th><th>ISBN</th><th>Eksemplar</th><th>Tersedia</th><th style="width:150px">Aksi</th></tr></thead>
+            <tbody>
+            @forelse($books as $b)
+                <tr>
+                    <td>
+                        <div class="tl-row" style="flex-wrap:nowrap">
+                            <div class="tl-thumb" style="background: linear-gradient(135deg,#d9ccf5,#f7c8dc)">
+                                @if($b->cover_url)<img src="{{ $b->cover_url }}" alt="">@endif
+                            </div>
+                            <div><b>{{ $b->title }}</b><br><small>{{ $b->author }}</small></div>
+                        </div>
+                    </td>
+                    <td><span class="tl-badge">{{ $b->category->name }}</span></td>
+                    <td>{{ $b->isbn ?: '-' }}</td>
+                    <td>{{ $b->copies_count }}</td>
+                    <td>{{ $b->available_count }}</td>
+                    <td>
+                        <div class="tl-row" style="gap:.4rem">
+                            <a href="{{ route('admin.books.edit', $b) }}" class="tl-btn-ok">Edit</a>
+                            <form method="POST" action="{{ route('admin.books.destroy', $b) }}" onsubmit="return confirm('Hapus buku ini beserta eksemplarnya?')">
+                                @csrf @method('DELETE')
+                                <button class="tl-btn-danger" type="submit">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="6" class="tl-empty">Belum ada buku. Klik "Tambah Buku" untuk memulai.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:1rem">{{ $books->links() }}</div>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\admin\categories\edit.blade.php
+=================================================================
+<x-admin-layout title="Edit Kategori">
+    <div class="tl-card">
+        <form method="POST" action="{{ route('admin.categories.update', $category) }}">
+            @csrf @method('PUT')
+            <div class="tl-form-grid">
+                <div><label class="tl-label">Nama *</label><input class="tl-input" name="name" value="{{ old('name', $category->name) }}" required></div>
+                <div><label class="tl-label">Deskripsi</label><input class="tl-input" name="description" value="{{ old('description', $category->description) }}"></div>
+            </div>
+            <div class="tl-row" style="margin-top:1.25rem">
+                <button class="tl-btn" type="submit">Simpan Perubahan</button>
+                <a href="{{ route('admin.categories.index') }}" class="tl-link-plain">Batal</a>
+            </div>
+        </form>
+    </div>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\admin\categories\index.blade.php
+=================================================================
+<x-admin-layout title="Kategori Buku">
+    <div class="tl-card" style="margin-bottom:1.25rem">
+        <form method="POST" action="{{ route('admin.categories.store') }}" class="tl-row">
+            @csrf
+            <input class="tl-input" style="max-width:240px" type="text" name="name" value="{{ old('name') }}" placeholder="Nama kategori" required>
+            <input class="tl-input" type="text" name="description" value="{{ old('description') }}" placeholder="Deskripsi (opsional)">
+            <button class="tl-btn" type="submit">Tambah</button>
+        </form>
+    </div>
+
+    <div class="tl-card">
+        <table class="tl-table">
+            <thead><tr><th>Nama</th><th>Slug</th><th>Jumlah Buku</th><th style="width:150px">Aksi</th></tr></thead>
+            <tbody>
+            @forelse($categories as $c)
+                <tr>
+                    <td><b>{{ $c->name }}</b><br><small>{{ $c->description }}</small></td>
+                    <td>{{ $c->slug }}</td>
+                    <td><span class="tl-badge">{{ $c->books_count }} buku</span></td>
+                    <td>
+                        <div class="tl-row" style="gap:.4rem">
+                            <a href="{{ route('admin.categories.edit', $c) }}" class="tl-btn-ok">Edit</a>
+                            <form method="POST" action="{{ route('admin.categories.destroy', $c) }}" onsubmit="return confirm('Hapus kategori ini?')">
+                                @csrf @method('DELETE')
+                                <button class="tl-btn-danger" type="submit">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="4" class="tl-empty">Belum ada kategori.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\components\admin-layout.blade.php
+=================================================================
+@props(['title' => 'Dashboard'])
+@php
+    $notes = [];
+    if (($n = \App\Models\Loan::where('status', 'Pending')->count()) > 0) {
+        $notes[] = ['url' => route('admin.loans.index', ['status' => 'Pending']), 'text' => $n . ' permintaan pinjam'];
+    }
+    if (($n = \App\Models\LoanRenewal::where('status', 'Pending')->count()) > 0) {
+        $notes[] = ['url' => route('admin.renewals.index'), 'text' => $n . ' permintaan perpanjangan'];
+    }
+    if (($n = \App\Models\BookReview::whereNull('approved_at')->count()) > 0) {
+        $notes[] = ['url' => route('admin.reviews.index'), 'text' => $n . ' ulasan baru'];
+    }
+@endphp
+<x-shell role="Administrator" :title="$title" :items="[
+    ['route' => 'admin.dashboard', 'match' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'home'],
+    ['route' => 'admin.categories.index', 'match' => 'admin.categories.*', 'label' => 'Kategori Buku', 'icon' => 'grid'],
+    ['route' => 'admin.books.index', 'match' => 'admin.books.*', 'label' => 'Manajemen Buku', 'icon' => 'book'],
+    ['route' => 'admin.loans.index', 'match' => 'admin.loans.*', 'label' => 'Peminjaman', 'icon' => 'clock'],
+    ['route' => 'admin.renewals.index', 'match' => 'admin.renewals.*', 'label' => 'Perpanjangan', 'icon' => 'refresh'],
+    ['route' => 'admin.reviews.index', 'match' => 'admin.reviews.*', 'label' => 'Ulasan', 'icon' => 'chart'],
+    ['route' => 'admin.students.index', 'match' => 'admin.students.*', 'label' => 'Daftar Siswa', 'icon' => 'users'],
+    ['route' => 'admin.reports.index', 'match' => 'admin.reports.*', 'label' => 'Laporan', 'icon' => 'chart'],
+    ['route' => 'account.edit', 'match' => 'account.*', 'label' => 'Akun Saya', 'icon' => 'user'],
+]">
+    @if(count($notes) > 0)
+        <div class="tl-alert warn">
+            Menunggu keputusan kamu:
+            @foreach($notes as $nt)@if(!$loop->first), @endif<a href="{{ $nt['url'] }}">{{ $nt['text'] }}</a>@endforeach
+        </div>
+    @endif
+    {{ $slot }}
+</x-shell>
+
+=== INFO PENYIMPANAN ===
+public\storage ada (storage:link): True
+--- storage\app\public (10 file pertama) ---
+storage\app\public\.gitignore

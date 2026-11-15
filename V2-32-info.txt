@@ -1,0 +1,1555 @@
+
+=================================================================
+FILE: resources\views\admin\dashboard.blade.php
+=================================================================
+@php
+    use Illuminate\Support\Facades\DB;
+    use App\Models\Book;
+    use App\Models\BookCopy;
+    use App\Models\Category;
+    use App\Models\Loan;
+    use App\Models\User;
+
+    $img = fn ($f) => asset('images/ds/' . $f);
+    $rp = fn ($n) => 'Rp ' . number_format((int) $n, 0, ',', '.');
+
+    $totalJudul  = Book::count();
+    $totalCopies = BookCopy::count();
+    $totalSiswa  = User::where('role', 'student')->count();
+    $menunggu    = Loan::where('status', 'Pending')->count();
+    $dipinjam    = Loan::where('status', 'Borrowed')->count();
+    $terlambat   = Loan::where('status', 'Borrowed')->whereDate('due_date', '<', today())->count();
+    $kembali     = Loan::where('status', 'Returned')->count();
+    $dendaTotal  = Loan::sum('fine_amount');
+    $dendaBayar  = Loan::whereNotNull('fine_paid_at')->sum('fine_amount');
+    $dendaBelum  = Loan::where('fine_amount', '>', 0)->whereNull('fine_paid_at')->sum('fine_amount');
+
+    $ic = [
+        'book' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+        'layers' => '<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+        'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+        'clip' => '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12h6M9 16h4"/>',
+        'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'alert' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',
+        'cash' => '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>',
+        'check' => '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+    ];
+    $stats = [
+        ['Total Buku', number_format($totalJudul), 'book', 'pink'],
+        ['Total Eksemplar', number_format($totalCopies), 'layers', 'blue'],
+        ['Total Siswa', number_format($totalSiswa), 'users', 'green'],
+        ['Peminjaman Aktif', number_format($dipinjam), 'clip', 'teal'],
+        ['Permintaan Peminjaman', number_format($menunggu), 'clock', 'lav'],
+        ['Buku Terlambat', number_format($terlambat), 'alert', 'pink'],
+        ['Total Denda', $rp($dendaTotal), 'cash', 'green'],
+        ['Denda Terbayar', $rp($dendaBayar), 'check', 'blue'],
+        ['Denda Belum Dibayar', $rp($dendaBelum), 'cash', 'amber'],
+        ['Sudah Dikembalikan', number_format($kembali), 'check', 'teal'],
+    ];
+
+    // Grafik
+    $perBulan = array_fill(1, 12, 0);
+    foreach (Loan::selectRaw('MONTH(created_at) as m, COUNT(*) as c')->whereYear('created_at', now()->year)->groupBy('m')->get() as $r) { $perBulan[(int) $r->m] = (int) $r->c; }
+    $st = Loan::selectRaw('status, COUNT(*) as c')->groupBy('status')->pluck('c', 'status');
+    $tepat = max(0, (int) ($st['Borrowed'] ?? 0) - $terlambat);
+    $statusData = [
+        ['Menunggu', (int) ($st['Pending'] ?? 0), '#f4b6d2'],
+        ['Dipinjam', $tepat, '#a78bfa'],
+        ['Terlambat', $terlambat, '#f48fb1'],
+        ['Dikembalikan', (int) ($st['Returned'] ?? 0), '#9fd0ee'],
+        ['Ditolak', (int) ($st['Rejected'] ?? 0), '#cfd6e6'],
+    ];
+    $statusTotal = array_sum(array_column($statusData, 1));
+    $katColors = ['#a78bfa', '#f48fb1', '#9fd0ee', '#9bd3b4', '#f6c885', '#d9ccf5'];
+    $kategori = Category::withCount('books')->orderByDesc('books_count')->take(6)->get();
+    $katTotal = $kategori->sum('books_count');
+    $statusVals = array_column($statusData, 1);
+    $statusCols = array_column($statusData, 2);
+    $katVals = $kategori->pluck('books_count')->values()->all();
+    $katCols = array_slice($katColors, 0, max(1, $kategori->count()));
+    $bulanVals = array_values($perBulan);
+
+    // Top 5
+    $topBuku = DB::table('loans')->join('books', 'books.id', '=', 'loans.book_id')
+        ->select('books.title', 'books.author', DB::raw('COUNT(*) as c'))->groupBy('books.id', 'books.title', 'books.author')->orderByDesc('c')->take(5)->get();
+    $topSiswa = DB::table('loans')->join('users', 'users.id', '=', 'loans.user_id')
+        ->select('users.name', DB::raw('COUNT(*) as c'))->groupBy('users.id', 'users.name')->orderByDesc('c')->take(5)->get();
+    $genre = DB::table('loans')->join('books', 'books.id', '=', 'loans.book_id')->join('categories', 'categories.id', '=', 'books.category_id')
+        ->select('categories.name', DB::raw('COUNT(*) as c'))->groupBy('categories.id', 'categories.name')->orderByDesc('c')->take(5)->get();
+    $genreMax = max(1, (int) ($genre->max('c') ?? 1));
+
+    $pending = Loan::with(['user', 'book'])->where('status', 'Pending')->latest('id')->take(4)->get();
+    $recent = Loan::with(['user', 'book'])->latest('updated_at')->take(4)->get();
+    $label = ['Pending' => 'Mengajukan pinjam', 'Borrowed' => 'Buku dipinjam', 'Returned' => 'Buku dikembalikan', 'Rejected' => 'Permintaan ditolak'];
+
+    // Kalender bulan ini
+    $awal = now()->startOfMonth();
+    $offset = $awal->dayOfWeekIso - 1;
+    $hariBulan = now()->daysInMonth;
+    $jatuhTempo = Loan::where('status', 'Borrowed')->whereYear('due_date', now()->year)->whereMonth('due_date', now()->month)->pluck('due_date')->map(fn ($d) => (int) \Carbon\Carbon::parse($d)->day)->unique()->all();
+    $bulanId = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][now()->month - 1];
+    $grad = ['linear-gradient(135deg,#cfe8f7,#b9a8ee)','linear-gradient(135deg,#f7c8dc,#d9ccf5)','linear-gradient(135deg,#cfe5d6,#cfe8f7)','linear-gradient(135deg,#d9ccf5,#f7c8dc)'];
+@endphp
+<x-admin-layout title="Dashboard Admin">
+<div class="ad">
+  <div class="ad-left">
+
+    <div class="ad-top">
+        <div class="ad-hero" style="--art: url('{{ $img('ad_hero.png') }}')">
+            <div class="txt">
+                <small>Selamat datang kembali,</small>
+                <h1>{{ Auth::user()->name }}</h1>
+                <p>Semoga hari ini penuh dengan ide hebat dan buku-buku luar biasa.</p>
+            </div>
+        </div>
+        <div class="ad-clock" style="--art: url('{{ $img('ad_clock.png') }}')">
+            <small id="adDate">&nbsp;</small>
+            <b id="adTime">--:--</b>
+            <p>Ayo buat perpustakaan kita semakin hidup!</p>
+        </div>
+    </div>
+
+    <div class="ad-stats">
+        @foreach($stats as $s)
+        <div class="ad-stat a-{{ $s[3] }}">
+            <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $ic[$s[2]] !!}</svg></span>
+            <div><small>{{ $s[0] }}</small><b>{{ $s[1] }}</b></div>
+        </div>
+        @endforeach
+    </div>
+
+    <div class="ad-charts">
+        <div class="ad-card">
+            <div class="ad-h"><h3>Statistik Peminjaman</h3><span>Tahun {{ now()->year }}</span></div>
+            <div class="ad-canvas"><canvas id="chLine"></canvas></div>
+        </div>
+        <div class="ad-card">
+            <div class="ad-h"><h3>Status Peminjaman</h3></div>
+            <div class="ad-donut">
+                <div class="ring"><canvas id="chStatus"></canvas><div class="mid"><b>{{ $statusTotal }}</b><small>Total</small></div></div>
+                <ul class="lg">
+                    @foreach($statusData as $d)<li><i style="background:{{ $d[2] }}"></i>{{ $d[0] }}<em>{{ $d[1] }}</em></li>@endforeach
+                </ul>
+            </div>
+        </div>
+        <div class="ad-card">
+            <div class="ad-h"><h3>Kategori Buku</h3></div>
+            <div class="ad-donut">
+                <div class="ring"><canvas id="chKat"></canvas><div class="mid"><b>{{ $totalJudul }}</b><small>Total Buku</small></div></div>
+                <ul class="lg">
+                    @forelse($kategori as $k)<li><i style="background:{{ $katColors[$loop->index % 6] }}"></i>{{ $k->name }}<em>{{ $k->books_count }}</em></li>@empty<li>Belum ada kategori</li>@endforelse
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad-tops">
+        <div class="ad-card">
+            <div class="ad-h"><h3>5 Buku Paling Sering Dipinjam</h3></div>
+            @forelse($topBuku as $b)
+            <div class="ad-li"><span class="n">{{ $loop->iteration }}</span><span class="th" style="background: {{ $grad[$loop->index % 4] }}"></span><div class="t"><b>{{ $b->title }}</b><small>{{ $b->author }}</small></div><em>{{ $b->c }}</em></div>
+            @empty<div class="ad-empty">Belum ada data peminjaman.</div>@endforelse
+        </div>
+        <div class="ad-card">
+            <div class="ad-h"><h3>Siswa Paling Aktif</h3></div>
+            @forelse($topSiswa as $u)
+            <div class="ad-li"><span class="n">{{ $loop->iteration }}</span><span class="av">{{ strtoupper(mb_substr($u->name, 0, 1)) }}</span><div class="t"><b>{{ $u->name }}</b><small>total pinjam</small></div><em>{{ $u->c }}</em></div>
+            @empty<div class="ad-empty">Belum ada data peminjaman.</div>@endforelse
+        </div>
+        <div class="ad-card">
+            <div class="ad-h"><h3>Genre Paling Populer</h3></div>
+            @forelse($genre as $g)
+            <div class="ad-bar"><span>{{ $g->name }}</span><div><i style="width: {{ round($g->c / $genreMax * 100) }}%"></i></div><em>{{ $g->c }}</em></div>
+            @empty<div class="ad-empty">Belum ada data peminjaman.</div>@endforelse
+        </div>
+        <div class="ad-card">
+            <div class="ad-h"><h3>Aktivitas Terbaru</h3><a href="{{ route('admin.loans.index') }}">Lihat Semua &rarr;</a></div>
+            @forelse($recent as $a)
+            <div class="ad-li"><span class="dot"></span><div class="t"><b>{{ $label[$a->status] ?? $a->status }}</b><small>{{ $a->book->title ?? 'Buku' }} &middot; {{ $a->user->name ?? '-' }}</small></div></div>
+            @empty<div class="ad-empty">Belum ada aktivitas.</div>@endforelse
+        </div>
+    </div>
+
+    <div class="ad-bottom">
+        <div class="ad-card">
+            <div class="ad-h"><h3>Reading Challenge</h3></div>
+            <div class="ad-empty">Belum ada tantangan aktif. Fitur tantangan membaca dibuat di Fase 4.</div>
+        </div>
+        <div class="ad-lumi">
+            <img src="{{ $img('lumi.png') }}" alt="">
+            <h3>Lumi AI</h3><p>Your Library Companion</p>
+            <div class="in">Lumi segera hadir...</div>
+        </div>
+        <div class="ad-galaxy" style="--gal: url('{{ $img('galaxy.png') }}')">
+            <h3>Reading Galaxy</h3>
+            <p>Bintang muncul setiap siswa menyelesaikan buku (Fase 4).</p>
+        </div>
+    </div>
+
+  </div>
+
+  <div class="ad-right">
+    <div class="ad-card">
+        <div class="ad-h"><h3>Notifikasi Terbaru</h3><a href="{{ route('admin.loans.index', ['status' => 'Pending']) }}">Lihat Semua &rarr;</a></div>
+        @forelse($pending as $p)
+        <a class="ad-nt" href="{{ route('admin.loans.index', ['status' => 'Pending']) }}">
+            <span class="av">{{ strtoupper(mb_substr($p->user->name ?? '?', 0, 1)) }}</span>
+            <div class="t"><b>Permintaan peminjaman baru</b><small>{{ $p->user->name ?? '-' }} &middot; {{ $p->book->title ?? 'Buku' }}</small></div>
+            <em>{{ $p->created_at ? $p->created_at->diffForHumans(null, true, true) : '' }}</em>
+        </a>
+        @empty<div class="ad-empty">Tidak ada permintaan yang menunggu.</div>@endforelse
+    </div>
+
+    <div class="ad-deco" style="--art: url('{{ $img('ad_deco.png') }}')"></div>
+
+    <div class="ad-card">
+        <div class="ad-h"><h3>Kalender</h3><span>{{ $bulanId }} {{ now()->year }}</span></div>
+        <div class="ad-cal">
+            @foreach(['Sen','Sel','Rab','Kam','Jum','Sab','Min'] as $h)<b>{{ $h }}</b>@endforeach
+            @for($i = 0; $i < $offset; $i++)<span></span>@endfor
+            @for($d = 1; $d <= $hariBulan; $d++)
+                @php $isToday = $d === now()->day; $isDue = in_array($d, $jatuhTempo); $isLate = $isDue && $d < now()->day; @endphp
+                <span class="{{ $isToday ? 'today' : '' }} {{ $isLate ? 'late' : ($isDue ? 'due' : '') }}">{{ $d }}</span>
+            @endfor
+        </div>
+        <div class="ad-key"><i class="due"></i>Jatuh tempo <i class="late"></i>Terlambat <i class="today"></i>Hari ini</div>
+    </div>
+
+    <div class="ad-card">
+        <div class="ad-h"><h3>Pengumuman Terbaru</h3></div>
+        <div class="ad-empty">Belum ada pengumuman. Fitur pengumuman dibuat di Fase 5.</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    function tick() {
+        var n = new Date();
+        document.getElementById('adDate').textContent = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(n);
+        document.getElementById('adTime').textContent = n.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+    }
+    tick(); setInterval(tick, 15000);
+
+    if (typeof Chart === 'undefined') { return; }
+    var bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    var lc = document.getElementById('chLine').getContext('2d');
+    var g = lc.createLinearGradient(0, 0, 0, 200);
+    g.addColorStop(0, 'rgba(167,139,250,.45)'); g.addColorStop(1, 'rgba(167,139,250,0)');
+    new Chart(lc, {
+        type: 'line',
+        data: { labels: bulan, datasets: [{ data: @json($bulanVals), borderColor: '#a78bfa', backgroundColor: g, fill: true, tension: .4, pointRadius: 3, pointBackgroundColor: '#fff', pointBorderColor: '#a78bfa', borderWidth: 2 }] },
+        options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 10 } } }, y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(167,139,250,.12)' } } } }
+    });
+
+    function donut(id, data, colors) {
+        var total = data.reduce(function (a, b) { return a + b; }, 0);
+        new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: { datasets: [{ data: total ? data : [1], backgroundColor: total ? colors : ['#ece7f8'], borderColor: '#fff', borderWidth: 2 }] },
+            options: { maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false }, tooltip: { enabled: total > 0 } } }
+        });
+    }
+    donut('chStatus', @json($statusVals), @json($statusCols));
+    donut('chKat', @json($katVals), @json($katCols));
+})();
+</script>
+</x-admin-layout>
+
+=================================================================
+FILE: resources\views\components\admin-layout.blade.php
+=================================================================
+@props(['title' => 'Dashboard'])
+@php
+    $notes = [];
+    if (($n = \App\Models\Loan::where('status', 'Pending')->count()) > 0) {
+        $notes[] = ['url' => route('admin.loans.index', ['status' => 'Pending']), 'text' => $n . ' permintaan pinjam'];
+    }
+    if (($n = \App\Models\LoanRenewal::where('status', 'Pending')->count()) > 0) {
+        $notes[] = ['url' => route('admin.renewals.index'), 'text' => $n . ' permintaan perpanjangan'];
+    }
+    if (($n = \App\Models\BookReview::whereNull('approved_at')->count()) > 0) {
+        $notes[] = ['url' => route('admin.reviews.index'), 'text' => $n . ' ulasan baru'];
+    }
+@endphp
+<x-shell role="Administrator" :title="$title" :items="[
+    ['route' => 'admin.dashboard', 'match' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'home'],
+    ['route' => 'admin.categories.index', 'match' => 'admin.categories.*', 'label' => 'Kategori Buku', 'icon' => 'grid'],
+    ['route' => 'admin.books.index', 'match' => 'admin.books.*', 'label' => 'Manajemen Buku', 'icon' => 'book'],
+    ['route' => 'admin.loans.index', 'match' => 'admin.loans.*', 'label' => 'Peminjaman', 'icon' => 'clock'],
+    ['route' => 'admin.renewals.index', 'match' => 'admin.renewals.*', 'label' => 'Perpanjangan', 'icon' => 'refresh'],
+    ['route' => 'admin.reviews.index', 'match' => 'admin.reviews.*', 'label' => 'Ulasan', 'icon' => 'chart'],
+    ['route' => 'admin.students.index', 'match' => 'admin.students.*', 'label' => 'Daftar Siswa', 'icon' => 'users'],
+    ['route' => 'admin.reports.index', 'match' => 'admin.reports.*', 'label' => 'Laporan', 'icon' => 'chart'],
+    ['route' => 'account.edit', 'match' => 'account.*', 'label' => 'Akun Saya', 'icon' => 'user'],
+]">
+    @if(count($notes) > 0)
+        <div class="tl-alert warn">
+            Menunggu keputusan kamu:
+            @foreach($notes as $nt)@if(!$loop->first), @endif<a href="{{ $nt['url'] }}">{{ $nt['text'] }}</a>@endforeach
+        </div>
+    @endif
+    {{ $slot }}
+</x-shell>
+
+=================================================================
+FILE: resources\views\components\shell.blade.php
+=================================================================
+@props(['items' => [], 'role' => 'Siswa', 'title' => 'Dashboard'])
+@php
+    $ic = [
+        'home' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+        'book' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+        'grid' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+        'bookmark' => '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+        'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'trend' => '<path d="M22 7l-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+        'heart' => '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
+        'compass' => '<circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/>',
+        'gift' => '<path d="M20 12v9H4v-9"/><rect x="2" y="7" width="20" height="5" rx="1"/><path d="M12 21V7"/><path d="M12 7H8a2.5 2.5 0 0 1 0-5c3 0 4 5 4 5z"/><path d="M12 7h4a2.5 2.5 0 0 0 0-5c-3 0-4 5-4 5z"/>',
+        'award' => '<circle cx="12" cy="8" r="6"/><path d="M8.2 13.5L7 22l5-3 5 3-1.2-8.5"/>',
+        'star' => '<path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/>',
+        'bell' => '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+        'user' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+        'cog' => '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+        'sun' => '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+        'chev' => '<path d="M6 9l6 6 6-6"/>',
+        'dot' => '<circle cx="12" cy="12" r="9"/>',
+        'refresh' => '<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/><path d="M3 21v-5h5"/>',
+        'chart' => '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>',
+        'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    ];
+    $art = fn ($f) => file_exists(public_path('images/ds/' . $f)) ? asset('images/ds/' . $f) : null;
+    $sbArt = $art('sbart.webp');
+    $logo = $art('logo.webp');
+@endphp
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $role }} | {{ config('app.name') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700|playfair-display:400,600,700,400i,600i" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="tl-body-bg">
+<div class="tl-shell">
+    <aside class="tl-sidebar">
+        <div class="tl-brand">
+            @if($logo)
+                <img src="{{ $logo }}" alt="" class="tl-logo-img">
+            @else
+                <svg width="40" height="40" viewBox="0 0 64 64" fill="none"><polygon points="32,4 46,24 32,60 18,24" fill="#d9ccf5" stroke="#a78bfa" stroke-width="1.5"/></svg>
+            @endif
+            <div><h1>Trafie-library</h1><p>Where Every Book Blooms Into a Universe</p></div>
+        </div>
+
+        <nav class="tl-nav">
+            @foreach($items as $it)
+                @php $svg = $ic[$it['icon'] ?? 'dot'] ?? $ic['dot']; @endphp
+                @if(!empty($it['soon']))
+                    <span class="tl-link soon" title="Segera hadir">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $svg !!}</svg>
+                        <span>{{ $it['label'] }}</span>
+                    </span>
+                @else
+                    <a href="{{ route($it['route']) }}" class="tl-link {{ request()->routeIs($it['match']) ? 'active' : '' }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $svg !!}</svg>
+                        <span>{{ $it['label'] }}</span>
+                    </a>
+                @endif
+            @endforeach
+        </nav>
+
+        @if($sbArt)<img src="{{ $sbArt }}" alt="" class="tl-sb-art">@endif
+
+        <div class="tl-sb-foot">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="tl-logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="tl-content">
+        <header class="tl-topbar">
+            @if($role === 'Siswa')
+                <form class="tl-search" method="GET" action="{{ route('student.books.index') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#8b87a8" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <input type="text" name="q" placeholder="Cari buku, penulis, atau kategori...">
+                </form>
+            @else
+                <div class="judul">{{ $title }}</div>
+            @endif
+            <span class="tl-pill"><i></i>Pastel Dream<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $ic['chev'] !!}</svg></span>
+            <span class="tl-iconbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $ic['sun'] !!}</svg></span>
+            <span class="tl-iconbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $ic['bell'] !!}</svg></span>
+            <span class="tl-vr"></span>
+            <div class="tl-user">
+                <div class="tl-avatar">{{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}</div>
+                <div><b>{{ Auth::user()->name }}</b><small>{{ $role }}</small></div>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $ic['chev'] !!}</svg>
+            </div>
+        </header>
+        <main class="tl-main">
+            @if(session('success'))<div class="tl-alert ok">{{ session('success') }}</div>@endif
+            @if(session('error'))<div class="tl-alert err">{{ session('error') }}</div>@endif
+            @if($errors->any())
+                <div class="tl-alert err"><b>Belum tersimpan:</b>
+                    <ul>@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+                </div>
+            @endif
+            {{ $slot }}
+        </main>
+    </div>
+</div>
+</body>
+</html>
+
+=================================================================
+FILE: routes\web.php
+=================================================================
+<?php
+
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return Auth::user()->role === 'admin'
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('student.dashboard');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/akun', [AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/akun/nama', [AccountController::class, 'updateName'])->name('account.name');
+    Route::put('/akun/password', [AccountController::class, 'updatePassword'])->name('account.password');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+    Route::get('/categories', [Admin\CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [Admin\CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [Admin\CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    Route::get('/books', [Admin\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [Admin\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [Admin\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [Admin\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [Admin\BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [Admin\BookController::class, 'destroy'])->name('books.destroy');
+
+    Route::get('/loans', [Admin\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/approve', [Admin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::patch('/loans/{loan}/reject', [Admin\LoanController::class, 'reject'])->name('loans.reject');
+    Route::patch('/loans/{loan}/return', [Admin\LoanController::class, 'returnBook'])->name('loans.return');
+    Route::patch('/loans/{loan}/fine-paid', [Admin\LoanController::class, 'finePaid'])->name('loans.finepaid');
+
+    Route::get('/renewals', [Admin\RenewalController::class, 'index'])->name('renewals.index');
+    Route::patch('/renewals/{renewal}/approve', [Admin\RenewalController::class, 'approve'])->name('renewals.approve');
+    Route::patch('/renewals/{renewal}/reject', [Admin\RenewalController::class, 'reject'])->name('renewals.reject');
+
+    Route::get('/reviews', [Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('/reviews/{review}/approve', [Admin\ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('/students', [Admin\StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/{student}', [Admin\StudentController::class, 'show'])->name('students.show');
+    Route::patch('/students/{student}/reset-password', [Admin\StudentController::class, 'resetPassword'])->name('students.reset');
+
+    Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [Admin\ReportController::class, 'export'])->name('reports.export');
+});
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::view('/dashboard', 'student.dashboard')->name('dashboard');
+
+    Route::get('/books', [Student\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/{book}', [Student\BookController::class, 'show'])->name('books.show');
+    Route::post('/books/{book}/review', [Student\ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::post('/books/{book}/pinjam', [Student\LoanController::class, 'store'])->name('loans.store');
+    Route::get('/loans', [Student\LoanController::class, 'index'])->name('loans.index');
+    Route::patch('/loans/{loan}/cancel', [Student\LoanController::class, 'cancel'])->name('loans.cancel');
+    Route::post('/loans/{loan}/renew', [Student\RenewalController::class, 'store'])->name('loans.renew');
+});
+
+require __DIR__ . '/auth.php';
+
+// V2-15: landing page Trafie-library (didaftarkan terakhir, jadi menimpa route '/' lama)
+Route::get('/', [\App\Http\Controllers\LandingV15Controller::class, 'index'])->name('landing.v15');
+
+
+=================================================================
+FILE: app\Models\Book.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Book extends Model
+{
+    protected $fillable = [
+        'isbn', 'title', 'slug', 'cover', 'author', 'publisher', 'publication_year',
+        'pages', 'description', 'category_id', 'language', 'shelf_location',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function copies()
+    {
+        return $this->hasMany(BookCopy::class);
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(BookReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(BookReview::class)->whereNotNull('approved_at');
+    }
+
+    public function getCoverUrlAttribute(): ?string
+    {
+        return $this->cover ? asset('storage/' . $this->cover) : null;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+}
+
+=================================================================
+FILE: app\Models\BookCopy.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookCopy extends Model
+{
+    protected $fillable = ['book_id', 'copy_code', 'condition', 'procurement_date', 'status'];
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+
+=================================================================
+FILE: app\Models\BookReview.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BookReview extends Model
+{
+    protected $fillable = ['user_id', 'book_id', 'rating', 'body', 'approved_at'];
+
+    protected function casts(): array
+    {
+        return ['approved_at' => 'datetime'];
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->whereNotNull('approved_at');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+}
+
+=================================================================
+FILE: app\Models\Category.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $fillable = ['name', 'slug', 'description'];
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
+}
+
+=================================================================
+FILE: app\Models\Challenge.php
+=================================================================
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Challenge extends Model {
+    protected $guarded = [];
+}
+
+=================================================================
+FILE: app\Models\Loan.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Loan extends Model
+{
+    protected $fillable = [
+        'user_id', 'book_id', 'book_copy_id', 'duration_days', 'status',
+        'requested_at', 'approved_at', 'approved_by', 'due_date', 'returned_at',
+        'fine_amount', 'fine_paid_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'requested_at' => 'datetime',
+            'approved_at'  => 'datetime',
+            'returned_at'  => 'datetime',
+            'fine_paid_at' => 'datetime',
+            'due_date'     => 'date',
+        ];
+    }
+
+    public const LABELS = [
+        'Pending'   => 'Menunggu',
+        'Borrowed'  => 'Dipinjam',
+        'Returned'  => 'Dikembalikan',
+        'Rejected'  => 'Ditolak',
+        'Cancelled' => 'Dibatalkan',
+    ];
+
+    public static function rupiah($n): string
+    {
+        return 'Rp ' . number_format((float) $n, 0, ',', '.');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
+
+    public function copy()
+    {
+        return $this->belongsTo(BookCopy::class, 'book_copy_id');
+    }
+
+    public function renewals()
+    {
+        return $this->hasMany(LoanRenewal::class);
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->status === 'Borrowed' && $this->due_date && $this->due_date->copy()->endOfDay()->isPast();
+    }
+
+    // Jumlah hari keterlambatan (berjalan kalau masih dipinjam, tetap kalau sudah dikembalikan)
+    public function getLateDaysAttribute(): int
+    {
+        if (!in_array($this->status, ['Borrowed', 'Returned']) || !$this->due_date) {
+            return 0;
+        }
+        $end = $this->returned_at ?? now();
+        $due = $this->due_date->copy()->endOfDay();
+        if (!$end->greaterThan($due)) {
+            return 0;
+        }
+        return (int) ceil($due->diffInHours($end) / 24);
+    }
+
+    // Denda: berjalan kalau masih dipinjam, tetap (tersimpan) kalau sudah dikembalikan
+    public function getCurrentFineAttribute(): int
+    {
+        if ($this->status === 'Borrowed') {
+            return $this->late_days * (int) config('library.fine_per_day');
+        }
+        if ($this->status === 'Returned') {
+            return (int) $this->fine_amount;
+        }
+        return 0;
+    }
+
+    // Status perpanjangan: none, pending, done, overdue, can
+    public function renewalState(): string
+    {
+        if ($this->status !== 'Borrowed') {
+            return 'none';
+        }
+        $r = $this->renewals;
+        if ($r->where('status', 'Pending')->isNotEmpty()) {
+            return 'pending';
+        }
+        if ($r->where('status', 'Approved')->isNotEmpty()) {
+            return 'done';
+        }
+        if ($this->isOverdue()) {
+            return 'overdue';
+        }
+        return 'can';
+    }
+}
+
+=================================================================
+FILE: app\Models\LoanRenewal.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class LoanRenewal extends Model
+{
+    protected $fillable = ['loan_id', 'extra_days', 'status', 'decided_by', 'decided_at'];
+
+    protected function casts(): array
+    {
+        return ['decided_at' => 'datetime'];
+    }
+
+    public const LABELS = [
+        'Pending'  => 'Menunggu',
+        'Approved' => 'Disetujui',
+        'Rejected' => 'Ditolak',
+    ];
+
+    public function loan()
+    {
+        return $this->belongsTo(Loan::class);
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return self::LABELS[$this->status] ?? $this->status;
+    }
+}
+
+=================================================================
+FILE: app\Models\Review.php
+=================================================================
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Review extends Model {
+    protected $guarded = [];
+    public function user() { return $this->belongsTo(User::class); }
+    public function book() { return $this->belongsTo(Book::class); }
+}
+
+=================================================================
+FILE: app\Models\User.php
+=================================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable;
+
+    // 'role' sengaja TIDAK ada di fillable: siswa tidak bisa mengubah dirinya jadi admin
+    protected $fillable = ['name', 'email', 'nisn', 'password'];
+
+    protected $hidden = ['password', 'remember_token'];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+}
+
+=================================================================
+FILE: resources\css\admin-dashboard.css
+=================================================================
+.ad { display: grid; grid-template-columns: minmax(0, 1fr) 265px; gap: 1.1rem; align-items: start; padding-bottom: 3rem; }
+.ad-left, .ad-right { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
+.ad h3 { font-family: 'Playfair Display', serif; }
+
+.ad-top { display: grid; grid-template-columns: minmax(0, 1fr) 215px; gap: 1.1rem; }
+.ad-hero { position: relative; overflow: hidden; min-height: 150px; border-radius: 26px; padding: 1.6rem 2rem; background: linear-gradient(100deg, #fff 0%, #efe6fc 45%, #e1e8fb 100%); border: 1px solid #fff; box-shadow: 0 16px 44px rgba(139,92,246,.13); }
+.ad-hero::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 62%; background: var(--art) right center / cover no-repeat; -webkit-mask-image: linear-gradient(to right, transparent, #000 38%); mask-image: linear-gradient(to right, transparent, #000 38%); }
+.ad-hero .txt { position: relative; z-index: 2; max-width: 52%; }
+.ad-hero small { font-size: .8rem; color: #6f6b8c; }
+.ad-hero h1 { margin: .15rem 0 .4rem; font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #2d2a4a; line-height: 1.15; }
+.ad-hero p { margin: 0; font-size: .72rem; color: #7b7796; }
+.ad-clock { position: relative; overflow: hidden; padding: 1.2rem; border-radius: 26px; background: linear-gradient(150deg, #fff, #f1eafc); border: 1px solid #fff; box-shadow: 0 12px 32px rgba(139,92,246,.1); }
+.ad-clock::after { content: ''; position: absolute; right: 0; bottom: 0; width: 70%; height: 60%; background: var(--art) right bottom / contain no-repeat; -webkit-mask-image: radial-gradient(ellipse at 70% 70%, #000 40%, transparent 85%); mask-image: radial-gradient(ellipse at 70% 70%, #000 40%, transparent 85%); }
+.ad-clock small { display: block; position: relative; z-index: 1; font-size: .7rem; color: #5f5b7a; }
+.ad-clock b { display: block; position: relative; z-index: 1; font-family: 'Playfair Display', serif; font-size: 2.1rem; color: #2d2a4a; margin: .2rem 0; }
+.ad-clock p { position: relative; z-index: 1; margin: 0; font-size: .62rem; color: #8b87a8; max-width: 120px; }
+
+.ad-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
+.ad-stat { display: flex; align-items: center; gap: .6rem; padding: .85rem; border-radius: 18px; background: rgba(255,255,255,.82); border: 1px solid #fff; box-shadow: 0 8px 22px rgba(139,92,246,.07); min-width: 0; }
+.ad-stat .i { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; }
+.ad-stat .i svg { width: 17px; height: 17px; }
+.ad-stat small { display: block; font-size: .55rem; color: #6f6b8c; line-height: 1.2; }
+.ad-stat b { display: block; font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #2d2a4a; white-space: nowrap; }
+.a-pink .i { background: #fbdbe8; color: #d9558a; } .a-blue .i { background: #d9e9fa; color: #4b8fd6; }
+.a-green .i { background: #d8f0e2; color: #3f9a6f; } .a-teal .i { background: #d5efec; color: #2f9a8a; }
+.a-lav .i { background: #e6defa; color: #7a54d6; } .a-amber .i { background: #fbebcf; color: #d6962c; }
+
+.ad-card { padding: 1.1rem; border-radius: 22px; background: rgba(255,255,255,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid #fff; box-shadow: 0 10px 28px rgba(139,92,246,.08); min-width: 0; }
+.ad-h { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .8rem; }
+.ad-h h3 { margin: 0; font-size: .95rem; color: #2d2a4a; }
+.ad-h span, .ad-h a { font-size: .6rem; font-weight: 600; color: #6d3fc4; text-decoration: none; white-space: nowrap; }
+.ad-empty { text-align: center; font-size: .68rem; line-height: 1.5; color: #8b87a8; padding: 1.1rem .7rem; border: 1px dashed #d9ccf5; border-radius: 14px; background: rgba(250,247,255,.75); }
+
+.ad-charts { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 1.1rem; }
+.ad-canvas { position: relative; height: 190px; }
+.ad-donut { display: flex; flex-direction: column; align-items: center; gap: .7rem; }
+.ad-donut .ring { position: relative; width: 120px; height: 120px; }
+.ad-donut .mid { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.ad-donut .mid b { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #2d2a4a; line-height: 1; }
+.ad-donut .mid small { font-size: .5rem; color: #8b87a8; }
+.lg { list-style: none; margin: 0; padding: 0; width: 100%; font-size: .6rem; color: #5f5b7a; }
+.lg li { display: flex; align-items: center; gap: .4rem; padding: .12rem 0; }
+.lg i { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.lg em { margin-left: auto; font-style: normal; font-weight: 600; }
+
+.ad-tops, .ad-bottom { display: grid; gap: 1.1rem; }
+.ad-tops { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.ad-bottom { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.ad-li { display: flex; align-items: center; gap: .55rem; padding: .4rem 0; border-bottom: 1px solid rgba(217,204,245,.4); }
+.ad-li:last-child { border-bottom: 0; }
+.ad-li .n { width: 14px; font-size: .6rem; color: #8b87a8; }
+.ad-li .th { width: 22px; height: 30px; border-radius: 5px; flex-shrink: 0; }
+.ad-li .av, .ad-nt .av { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; font-size: .65rem; font-weight: 600; color: #5b34a8; background: linear-gradient(135deg, #f7c8dc, #d9ccf5); }
+.ad-li .dot { width: 8px; height: 8px; border-radius: 50%; background: #b39ddb; flex-shrink: 0; }
+.ad-li .t, .ad-nt .t { flex: 1; min-width: 0; }
+.ad-li b, .ad-nt b { display: block; font-size: .65rem; color: #2d2a4a; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ad-li small, .ad-nt small { display: block; font-size: .55rem; color: #8b87a8; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ad-li em, .ad-nt em { font-style: normal; font-size: .62rem; font-weight: 600; color: #5f5b7a; }
+.ad-bar { display: grid; grid-template-columns: 70px 1fr 22px; align-items: center; gap: .5rem; padding: .35rem 0; font-size: .6rem; color: #5f5b7a; }
+.ad-bar div { height: 7px; border-radius: 999px; background: #eee9fa; overflow: hidden; }
+.ad-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #a78bfa, #f48fb1); }
+.ad-bar em { font-style: normal; font-weight: 600; text-align: right; }
+
+.ad-lumi { position: relative; overflow: hidden; padding: 1.1rem; border-radius: 22px; background: linear-gradient(135deg, #dfeefb, #ece3fb 60%, #f8dfec); border: 1px solid #fff; box-shadow: 0 10px 28px rgba(139,92,246,.1); }
+.ad-lumi img { position: absolute; top: 0; right: 0; width: 42%; max-width: 90px; -webkit-mask-image: radial-gradient(ellipse at 65% 40%, #000 40%, transparent 85%); mask-image: radial-gradient(ellipse at 65% 40%, #000 40%, transparent 85%); }
+.ad-lumi h3 { margin: 0; font-size: 1rem; color: #2d2a4a; }
+.ad-lumi p { margin: .1rem 0 1rem; font-size: .58rem; color: #7b7796; }
+.ad-lumi .in { padding: .5rem .9rem; border-radius: 999px; background: rgba(255,255,255,.85); border: 1px solid rgba(217,204,245,.9); font-size: .62rem; color: #a8a3c2; }
+.ad-galaxy { position: relative; overflow: hidden; min-height: 150px; padding: 1.1rem; border-radius: 22px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(180deg, rgba(16,24,66,.5), rgba(16,24,66,.15) 45%, rgba(16,24,66,.88)), var(--gal) center top / cover no-repeat, #1d2a5a; box-shadow: 0 14px 34px rgba(30,40,100,.25); }
+.ad-galaxy h3 { margin: 0; font-size: .95rem; }
+.ad-galaxy p { margin: 0; font-size: .6rem; opacity: .95; }
+
+.ad-nt { display: flex; align-items: center; gap: .6rem; padding: .5rem 0; text-decoration: none; border-bottom: 1px solid rgba(217,204,245,.4); }
+.ad-nt:last-child { border-bottom: 0; }
+.ad-deco { height: 105px; border-radius: 22px; background: var(--art) center / cover no-repeat; opacity: .95; -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 45%, transparent 100%); mask-image: radial-gradient(ellipse at 50% 50%, #000 45%, transparent 100%); }
+
+.ad-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: .15rem; text-align: center; font-size: .58rem; }
+.ad-cal b { color: #8b87a8; font-weight: 500; padding-bottom: .25rem; }
+.ad-cal span { padding: .28rem 0; border-radius: 8px; color: #4f4b6b; }
+.ad-cal .today { background: #e6defa; color: #5b34a8; font-weight: 700; }
+.ad-cal .due { background: #fbdbe8; color: #c2447a; font-weight: 600; }
+.ad-cal .late { background: #fecdd3; color: #b4233f; font-weight: 700; }
+.ad-key { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; margin-top: .7rem; font-size: .52rem; color: #6f6b8c; }
+.ad-key i { width: 8px; height: 8px; border-radius: 50%; }
+.ad-key .due { background: #f4b6d2; } .ad-key .late { background: #f08090; } .ad-key .today { background: #b9a8ee; }
+
+@media (max-width: 1250px) {
+    .ad { grid-template-columns: 1fr; }
+    .ad-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ad-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+    .ad-top { grid-template-columns: 1fr; }
+    .ad-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ad-hero .txt { max-width: 100%; }
+}
+
+=================================================================
+FILE: resources\css\app.css
+=================================================================
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --ink: #2d2a4a;
+    --muted: #7b7796;
+    --accent: #6d3fc4;
+    --lav: #d9ccf5;
+    --pink: #f7c8dc;
+    --sage: #cfe5d6;
+    --ice: #cfe8f7;
+}
+
+body.tl-body-bg {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #3b3858;
+    background:
+        radial-gradient(900px 500px at 8% -10%, rgba(247,200,220,.55), transparent 60%),
+        radial-gradient(800px 500px at 100% 0%, rgba(207,232,247,.75), transparent 60%),
+        radial-gradient(900px 600px at 60% 110%, rgba(217,204,245,.65), transparent 60%),
+        #fbf8ff;
+    min-height: 100vh;
+}
+body.tl-body-bg::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 20px 30px, rgba(139,92,246,.45), transparent),
+        radial-gradient(2px 2px at 120px 90px, rgba(244,143,177,.5), transparent),
+        radial-gradient(1.5px 1.5px at 190px 40px, rgba(96,165,250,.45), transparent),
+        radial-gradient(1px 1px at 70px 150px, rgba(139,92,246,.4), transparent),
+        radial-gradient(2px 2px at 160px 180px, rgba(255,255,255,.95), transparent);
+    background-size: 220px 220px;
+    animation: tl-twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes tl-twinkle { from { opacity: .55; } to { opacity: 1; } }
+
+.tl-serif { font-family: 'Playfair Display', serif; }
+
+/* Layout dengan sidebar */
+.tl-shell { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 1; }
+.tl-sidebar {
+    width: 260px; flex-shrink: 0; display: flex; flex-direction: column;
+    background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(236,227,253,.70) 55%, rgba(252,228,238,.65));
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(255,255,255,.85);
+    box-shadow: 6px 0 30px rgba(139,92,246,.07);
+}
+.tl-brand { display: flex; align-items: center; gap: .6rem; padding: 1.25rem 1.25rem 1rem; }
+.tl-brand h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 1.3rem; font-style: italic; color: var(--ink); line-height: 1.1; }
+.tl-brand p { margin: .15rem 0 0; font-size: .55rem; font-style: italic; color: var(--muted); }
+.tl-nav { flex: 1; overflow-y: auto; padding: .5rem .9rem 1rem; display: flex; flex-direction: column; gap: .2rem; }
+.tl-link {
+    display: flex; align-items: center; gap: .75rem; padding: .62rem 1rem; border-radius: 14px;
+    font-size: .8rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: all .2s ease;
+}
+.tl-link:hover { background: rgba(255,255,255,.75); color: var(--accent); }
+.tl-link.active { background: linear-gradient(90deg, rgba(247,200,220,.75), rgba(217,204,245,.75)); color: #5b34a8; font-weight: 600; box-shadow: 0 6px 16px rgba(167,139,250,.18); }
+.tl-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+.tl-divider { height: 1px; margin: .6rem .5rem; background: linear-gradient(90deg, transparent, rgba(167,139,250,.35), transparent); }
+.tl-logout { display: flex; width: 100%; align-items: center; gap: .75rem; padding: .62rem 1rem; border-radius: 14px; border: 0; background: transparent; font-family: inherit; font-size: .8rem; font-weight: 600; color: #e0556f; cursor: pointer; }
+.tl-logout:hover { background: rgba(254,226,226,.7); }
+.tl-logout svg { width: 17px; height: 17px; }
+
+.tl-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.tl-topbar {
+    height: 68px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;
+    background: rgba(255,255,255,.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,.85);
+}
+.tl-topbar .judul { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--ink); }
+.tl-user { display: flex; align-items: center; gap: .65rem; }
+.tl-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: .8rem; color: #5b34a8; background: linear-gradient(135deg, var(--pink), var(--lav)); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(167,139,250,.3); }
+.tl-user b { display: block; font-size: .75rem; color: var(--ink); line-height: 1.1; }
+.tl-user small { font-size: .6rem; color: var(--muted); }
+.tl-main { flex: 1; overflow-y: auto; padding: 2rem; }
+
+/* Komponen */
+.tl-hero { position: relative; overflow: hidden; border-radius: 28px; padding: 2rem 2.25rem; background: linear-gradient(120deg, rgba(255,255,255,.85), rgba(233,224,252,.85) 45%, rgba(207,232,247,.9)); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 14px 40px rgba(139,92,246,.10); }
+.tl-hero small { font-size: .8rem; color: var(--muted); }
+.tl-hero h1 { margin: .15rem 0 .4rem; font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--ink); }
+.tl-hero p { margin: 0; max-width: 460px; font-size: .78rem; color: var(--muted); }
+.tl-hero svg.deco { position: absolute; right: 0; top: 0; height: 100%; width: 45%; pointer-events: none; }
+.tl-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1.5rem; }
+.tl-card { border-radius: 24px; padding: 1.3rem; background: rgba(255,255,255,.78); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 10px 28px rgba(139,92,246,.07); }
+.tl-stat span { display: block; font-size: .72rem; color: #5f5b7a; }
+.tl-stat b { display: block; font-size: 2rem; color: var(--ink); line-height: 1.2; }
+.tl-stat em { font-style: normal; font-size: .62rem; color: #8b87a8; }
+.c-ice  { background: linear-gradient(160deg, rgba(207,232,247,.7), rgba(255,255,255,.85)); }
+.c-sage { background: linear-gradient(160deg, rgba(207,229,214,.7), rgba(255,255,255,.85)); }
+.c-pink { background: linear-gradient(160deg, rgba(247,200,220,.6), rgba(255,255,255,.85)); }
+.c-lav  { background: linear-gradient(160deg, rgba(217,204,245,.7), rgba(255,255,255,.85)); }
+
+/* Form dan tombol */
+.tl-input { width: 100%; border: 1px solid rgba(217,204,245,.9); border-radius: 14px; background: rgba(255,255,255,.85); padding: .65rem .9rem; font-size: .85rem; color: #3b3858; box-shadow: 0 3px 10px rgba(167,139,250,.06); }
+.tl-input:focus { outline: none; border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167,139,250,.25); }
+.tl-btn { display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer; padding: .65rem 1.5rem; border-radius: 999px; font-family: inherit; font-size: .8rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #a78bfa, #f48fb1); box-shadow: 0 8px 20px rgba(167,139,250,.4); transition: transform .2s ease; }
+.tl-btn:hover { transform: translateY(-2px); }
+
+/* Halaman login dan register */
+.tl-auth-wrap { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.tl-auth { width: 100%; max-width: 440px; border-radius: 28px; padding: 2rem; background: rgba(255,255,255,.72); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 25px 60px rgba(139,92,246,.18); }
+.tl-auth-brand { text-align: center; margin-bottom: 1.5rem; }
+.tl-auth-brand h1 { margin: .4rem 0 .1rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.7rem; color: var(--ink); }
+.tl-auth-brand p { margin: 0; font-size: .65rem; font-style: italic; color: var(--muted); }
+.tl-auth label { color: #5f5b7a; font-size: .75rem; font-weight: 600; }
+.tl-auth a { color: var(--accent); }
+@media (max-width: 800px) { .tl-sidebar { display: none; } .tl-main { padding: 1rem; } }
+/* ===== V2-8: tabel, form, katalog ===== */
+.tl-alert { border-radius: 16px; padding: .8rem 1rem; margin-bottom: 1rem; font-size: .8rem; }
+.tl-alert ul { margin: .3rem 0 0 1.1rem; list-style: disc; }
+.tl-alert.ok { background: rgba(207,229,214,.8); color: #2f6b4f; border: 1px solid #b7d8c4; }
+.tl-alert.err { background: rgba(254,226,226,.85); color: #a12c45; border: 1px solid #f3bcc7; }
+.tl-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.tl-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.tl-table th { text-align: left; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; color: #8b87a8; padding: .6rem .8rem; border-bottom: 1px solid rgba(217,204,245,.6); }
+.tl-table td { padding: .7rem .8rem; border-bottom: 1px solid rgba(217,204,245,.35); vertical-align: middle; color: #3b3858; }
+.tl-table small { color: #8b87a8; font-size: .68rem; }
+.tl-empty { text-align: center; color: #8b87a8; font-size: .8rem; padding: 2rem 1rem; }
+.tl-badge { display: inline-block; font-size: .65rem; font-weight: 600; padding: .2rem .7rem; border-radius: 999px; background: linear-gradient(90deg, rgba(217,204,245,.8), rgba(247,200,220,.8)); color: #5b34a8; }
+.tl-btn-danger { border: 0; cursor: pointer; font-family: inherit; font-size: .7rem; font-weight: 600; padding: .35rem .85rem; border-radius: 10px; background: rgba(254,226,226,.9); color: #c2415d; }
+.tl-btn-danger:hover { background: #fecdd3; }
+.tl-link-plain { font-size: .78rem; font-weight: 600; color: #6d3fc4; text-decoration: none; }
+.tl-thumb { width: 38px; height: 54px; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+.tl-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tl-label { display: block; font-size: .68rem; font-weight: 600; color: #5f5b7a; margin-bottom: .3rem; }
+.tl-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.tl-form-grid .full { grid-column: 1 / -1; }
+@media (max-width: 700px) { .tl-form-grid { grid-template-columns: 1fr; } }
+
+.tl-books { display: grid; gap: 1.1rem; grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1300px) { .tl-books { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px) { .tl-books { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .tl-books { grid-template-columns: 1fr; } }
+.tl-book { display: flex; flex-direction: column; text-decoration: none; border-radius: 22px; padding: .7rem; background: rgba(255,255,255,.78); backdrop-filter: blur(14px); border: 1px solid #fff; box-shadow: 0 10px 28px rgba(139,92,246,.07); transition: all .25s ease; }
+.tl-book:hover { transform: translateY(-4px); box-shadow: 0 18px 38px rgba(139,92,246,.16); }
+.tl-book h3 { margin: .7rem .2rem 0; font-size: .82rem; color: #2d2a4a; line-height: 1.25; }
+.tl-book p { margin: .15rem .2rem .5rem; font-size: .68rem; color: #8b87a8; }
+.tl-cover { position: relative; height: 220px; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: .8rem; font-family: 'Playfair Display', serif; font-weight: 700; font-size: .9rem; color: #2d2a4a; }
+.tl-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tl-cover.big { height: 380px; }
+.tl-tag { position: absolute; top: .6rem; left: .6rem; font-style: normal; font-family: 'Poppins', sans-serif; font-size: .58rem; font-weight: 600; padding: .2rem .6rem; border-radius: 999px; background: rgba(255,255,255,.9); color: #6d3fc4; }
+.tl-avail { display: inline-block; align-self: flex-start; margin: 0 .2rem .2rem; font-size: .65rem; font-weight: 600; padding: .25rem .7rem; border-radius: 999px; }
+.tl-avail.yes { background: rgba(207,229,214,.85); color: #2f6b4f; }
+.tl-avail.no { background: rgba(247,200,220,.8); color: #a12c6b; }
+.tl-detail { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; }
+@media (max-width: 800px) { .tl-detail { grid-template-columns: 1fr; } }
+.tl-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1.2rem 0; }
+.tl-meta dt { font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; color: #8b87a8; }
+.tl-meta dd { margin: .1rem 0 0; font-size: .82rem; font-weight: 600; color: #2d2a4a; }
+/* ===== V2-9: peminjaman ===== */
+.tl-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; }
+.tl-tabs a { font-size: .72rem; font-weight: 600; text-decoration: none; padding: .45rem 1rem; border-radius: 999px; color: #7b7796; background: rgba(255,255,255,.75); border: 1px solid #fff; }
+.tl-tabs a:hover { color: #6d3fc4; }
+.tl-tabs a.on { color: #5b34a8; background: linear-gradient(90deg, rgba(247,200,220,.85), rgba(217,204,245,.85)); box-shadow: 0 6px 16px rgba(167,139,250,.18); }
+.tl-st { display: inline-block; font-size: .65rem; font-weight: 600; padding: .22rem .75rem; border-radius: 999px; }
+.st-pending { background: rgba(255,236,179,.9); color: #8a6100; }
+.st-borrowed { background: rgba(207,232,247,.9); color: #1f6a9a; }
+.st-returned { background: rgba(207,229,214,.9); color: #2f6b4f; }
+.st-rejected { background: rgba(254,226,226,.9); color: #a12c45; }
+.st-cancelled { background: rgba(230,228,240,.9); color: #6b6788; }
+.tl-btn-ok { border: 0; cursor: pointer; font-family: inherit; font-size: .7rem; font-weight: 600; padding: .35rem .85rem; border-radius: 10px; background: rgba(207,229,214,.95); color: #2f6b4f; white-space: nowrap; }
+.tl-btn-ok:hover { background: #b7d8c4; }
+.tl-borrow { margin-top: 1.2rem; padding: 1rem 1.1rem; border-radius: 18px; background: linear-gradient(135deg, rgba(217,204,245,.45), rgba(247,200,220,.35)); border: 1px solid rgba(255,255,255,.9); font-size: .8rem; color: #3b3858; }
+.tl-borrow .tl-row { margin-bottom: .5rem; }
+/* ===== V2-10: kartu tautan, tombol anchor ===== */
+a.tl-card { display: block; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+a.tl-card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(139,92,246,.14); }
+a.tl-btn-ok { display: inline-block; text-decoration: none; }
+/* ===== V2-11: denda ===== */
+.tl-fine { color: #c2415d; font-weight: 600; }
+/* ===== V2-12: pemberitahuan ===== */
+.tl-alert.warn { background: rgba(255,236,179,.85); color: #8a6100; border: 1px solid #f0d78a; }
+.tl-alert a { color: inherit; font-weight: 600; }
+/* ===== V2-13: HP, landing, error ===== */
+.tl-topleft { display: flex; align-items: center; min-width: 0; }
+.tl-burger { display: none; width: 38px; height: 38px; margin-right: .75rem; border: 0; border-radius: 12px; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,.9); color: #5b34a8; box-shadow: 0 3px 10px rgba(167,139,250,.25); flex-shrink: 0; }
+.tl-burger svg { width: 20px; height: 20px; }
+.tl-backdrop { display: none; }
+
+@media (max-width: 800px) {
+    .tl-shell { height: 100dvh; }
+    .tl-burger { display: inline-flex; }
+    .tl-sidebar { display: flex; position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; transform: translateX(-105%); transition: transform .25s ease; background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(236,227,253,.97) 55%, rgba(252,228,238,.97)); }
+    .tl-open .tl-sidebar { transform: none; }
+    .tl-open .tl-backdrop { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(45,42,74,.35); }
+    .tl-topbar { padding: 0 1rem; }
+    .tl-hero { padding: 1.4rem 1.25rem; }
+    .tl-hero h1 { font-size: 1.5rem; }
+    .tl-hero svg.deco { opacity: .3; }
+}
+@media (max-width: 520px) {
+    .tl-user > div:last-child { display: none; }
+    .tl-topbar .judul { font-size: 1rem; }
+}
+
+a.tl-btn { text-decoration: none; }
+
+.tl-err-code { margin: .6rem 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 4.5rem; line-height: 1; background: linear-gradient(135deg, #a78bfa, #f48fb1); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.tl-land { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 1.25rem 1.25rem 2rem; }
+.tl-land-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .5rem 0 1rem; }
+.tl-land-hero { text-align: center; padding: 3.5rem 1rem 3rem; margin-bottom: 1.5rem; border-radius: 32px; background: linear-gradient(120deg, rgba(255,255,255,.85), rgba(233,224,252,.85) 45%, rgba(207,232,247,.9)); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 14px 40px rgba(139,92,246,.10); }
+.tl-land-kicker { margin: 0; font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #8b87a8; }
+.tl-land-hero h1 { margin: .5rem auto .7rem; max-width: 640px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.6rem; line-height: 1.15; color: #2d2a4a; }
+.tl-land-sub { margin: 0 auto; max-width: 480px; font-size: .88rem; line-height: 1.7; color: #7b7796; }
+.tl-land-h2 { margin: 2.25rem 0 .9rem; font-size: 1.4rem; color: #2d2a4a; }
+.tl-land .tl-books { grid-template-columns: repeat(4, 1fr); }
+.tl-steps { display: grid; gap: 1.1rem; grid-template-columns: repeat(3, 1fr); }
+.tl-steps .tl-card b { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; font-size: .85rem; color: #5b34a8; background: linear-gradient(135deg, #f7c8dc, #d9ccf5); }
+.tl-steps h3 { margin: .7rem 0 .25rem; font-size: .95rem; color: #2d2a4a; }
+.tl-steps p { margin: 0; font-size: .78rem; line-height: 1.6; color: #7b7796; }
+.tl-land-foot { margin-top: 2.5rem; text-align: center; font-size: .72rem; color: #8b87a8; }
+@media (max-width: 900px) {
+    .tl-land .tl-books { grid-template-columns: repeat(2, 1fr); }
+    .tl-steps { grid-template-columns: 1fr; }
+    .tl-land-hero h1 { font-size: 2rem; }
+}
+@media (max-width: 520px) {
+    .tl-land .tl-books { grid-template-columns: 1fr; }
+    .tl-land-hero { padding: 2.5rem 1rem 2rem; }
+    .tl-land-hero h1 { font-size: 1.6rem; }
+}
+
+=================================================================
+FILE: resources\css\dashboard.css
+=================================================================
+/* ===== TRAFIE-LIBRARY V2-23 : GLASS 3D (sesuai desain) ===== */
+
+/* ---------- SIDEBAR ---------- */
+body.tl-body-bg .tl-sidebar { position: relative; display: flex; flex-direction: column; overflow: hidden; width: 250px;
+  background: linear-gradient(180deg, rgba(255,255,255,.74), rgba(236,228,252,.6) 60%, rgba(248,228,244,.55));
+  backdrop-filter: blur(26px) saturate(1.6); -webkit-backdrop-filter: blur(26px) saturate(1.6);
+  border-right: 1px solid rgba(255,255,255,.9); box-shadow: 8px 0 40px -12px rgba(139,92,246,.22), inset -1px 0 0 rgba(255,255,255,.9); }
+body.tl-body-bg .tl-brand { position: relative; z-index: 2; display: flex; align-items: center; gap: .6rem; padding: 1.1rem 1rem .7rem; }
+.tl-logo-img { width: 46px; height: auto; flex-shrink: 0; filter: drop-shadow(0 6px 8px rgba(139,92,246,.3)); }
+body.tl-body-bg .tl-brand h1 { margin: 0; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 1.3rem; line-height: 1.1; color: #3d3866; }
+body.tl-body-bg .tl-brand p { margin: .15rem 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: .52rem; line-height: 1.3; color: #6f6b8c; }
+
+body.tl-body-bg .tl-nav { position: relative; z-index: 2; flex: 1; min-height: 0; overflow-y: auto; padding: .4rem .9rem .8rem; scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.45) transparent; }
+body.tl-body-bg .tl-divider { display: none; }
+body.tl-body-bg .tl-link { position: relative; display: flex; align-items: center; gap: .8rem; padding: .6rem .9rem; margin-bottom: .12rem; border-radius: 16px; color: #4a4670; font-size: .8rem; font-weight: 500; text-decoration: none;
+  background: transparent; border: 1px solid transparent; text-shadow: 0 0 8px rgba(255,255,255,.95), 0 0 2px #fff; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+body.tl-body-bg .tl-link svg { width: 20px; height: 20px; flex-shrink: 0; color: #7a63d1; filter: drop-shadow(0 1px 1px rgba(255,255,255,.9)); }
+body.tl-body-bg .tl-link:hover, body.tl-body-bg .tl-link.soon:hover { background: rgba(255,255,255,.65); border-color: rgba(255,255,255,.9); color: #5b34a8; transform: translateX(3px); box-shadow: 0 8px 16px rgba(139,92,246,.12), inset 0 1px 0 #fff; }
+body.tl-body-bg .tl-link.soon { cursor: default; opacity: 1; }
+body.tl-body-bg .tl-nav .tl-link.active { color: #4a2fa8; font-weight: 600; transform: none;
+  background: linear-gradient(100deg, rgba(248,202,226,.95), rgba(214,202,250,.95)); border-color: rgba(255,255,255,.95);
+  box-shadow: 0 12px 24px rgba(167,139,250,.32), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -4px 8px rgba(167,139,250,.15); }
+body.tl-body-bg .tl-nav .tl-link.active svg { color: #6d3fc4; }
+
+.tl-sb-art { position: absolute; left: 0; right: 0; bottom: 58px; width: 100%; height: auto; z-index: 1; pointer-events: none; opacity: .45;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%); mask-image: linear-gradient(to bottom, transparent, #000 35%); }
+@media (min-height: 880px) { .tl-sb-art { opacity: .95; } }
+.tl-sb-foot { position: relative; z-index: 3; padding: .5rem .9rem 1rem; }
+body.tl-body-bg .tl-logout { display: flex; align-items: center; gap: .75rem; width: 100%; padding: .7rem 1rem; border-radius: 18px; border: 1px solid rgba(255,255,255,.95); cursor: pointer;
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.55)); color: #4a4670; font: inherit; font-size: .8rem; font-weight: 500;
+  box-shadow: 0 10px 22px rgba(139,92,246,.16), inset 0 2px 0 #fff; transition: transform .2s ease; }
+body.tl-body-bg .tl-logout:hover { transform: translateY(-2px); }
+body.tl-body-bg .tl-logout svg { width: 19px; height: 19px; color: #7a63d1; }
+
+/* ---------- TOPBAR ---------- */
+body.tl-body-bg .tl-topbar { display: flex; align-items: center; justify-content: flex-start; gap: .9rem; height: 72px; padding: 0 1.6rem;
+  background: rgba(255,255,255,.5); backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  border-bottom: 1px solid rgba(255,255,255,.85); box-shadow: 0 10px 30px -14px rgba(139,92,246,.2); }
+body.tl-body-bg .tl-topbar .judul { margin-right: auto; }
+.tl-search { display: flex; align-items: center; gap: .6rem; flex: 1; max-width: 470px; margin-right: auto; padding: .55rem 1.1rem; border-radius: 999px;
+  background: rgba(255,255,255,.75); border: 1px solid rgba(217,204,245,.9); box-shadow: inset 0 2px 6px rgba(139,92,246,.07), 0 6px 16px rgba(139,92,246,.1), inset 0 1px 0 #fff; }
+.tl-search svg { width: 17px; height: 17px; flex-shrink: 0; }
+.tl-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; box-shadow: none; font-family: inherit; font-size: .78rem; color: #475569; padding: 0; }
+.tl-search input:focus { box-shadow: none; outline: 0; }
+.tl-pill { display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .8rem .45rem .95rem; border-radius: 999px; font-size: .68rem; font-weight: 600; color: #5f5b7a;
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.6)); border: 1px solid rgba(247,200,220,.95); box-shadow: 0 6px 14px rgba(139,92,246,.14), inset 0 2px 0 #fff; }
+.tl-pill i { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #f48fb1, #b39ddb); box-shadow: 0 0 8px rgba(244,143,177,.6); }
+.tl-pill .chev, .tl-user .chev { width: 14px; height: 14px; color: #8b87a8; }
+.tl-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; color: #7a63d1;
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.6)); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 6px 14px rgba(139,92,246,.14), inset 0 2px 0 #fff; }
+.tl-iconbtn svg { width: 19px; height: 19px; }
+.tl-vr { width: 1px; height: 30px; background: rgba(167,139,250,.3); }
+body.tl-body-bg .tl-user { display: flex; align-items: center; gap: .6rem; }
+body.tl-body-bg .tl-user b { display: block; font-size: .78rem; color: #2d2a4a; line-height: 1.2; }
+body.tl-body-bg .tl-user small { display: block; font-size: .62rem; color: #8b87a8; }
+body.tl-body-bg .tl-avatar { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; font-weight: 600; color: #6d3fc4;
+  background: linear-gradient(135deg, #f7d9ea, #d9ccf5); border: 2px solid #fff; box-shadow: 0 6px 14px rgba(139,92,246,.25), inset 0 2px 0 rgba(255,255,255,.9); }
+
+/* ---------- DASHBOARD ---------- */
+.dz { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 1.2rem; padding-bottom: 3rem; }
+.dz::before { content: ''; position: absolute; inset: -30px -20px; z-index: -1; pointer-events: none; filter: blur(8px);
+  background: radial-gradient(420px 320px at 92% 4%, rgba(247,200,220,.65), transparent 70%), radial-gradient(460px 380px at 4% 38%, rgba(207,232,247,.75), transparent 70%),
+              radial-gradient(480px 380px at 96% 62%, rgba(217,204,245,.7), transparent 70%), radial-gradient(420px 320px at 30% 96%, rgba(247,200,220,.5), transparent 70%); }
+.dz h3 { font-family: 'Playfair Display', serif; }
+
+/* kaca umum */
+.dz-card, .dz-stat, .dz-quote, .dz-lumi, .dz-hero { position: relative; border: 1px solid rgba(255,255,255,.92); backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  box-shadow: 0 20px 38px -14px rgba(139,92,246,.26), 0 5px 12px rgba(139,92,246,.08), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -12px 22px rgba(255,255,255,.3); transition: transform .25s ease, box-shadow .25s ease; }
+.dz-card:hover, .dz-stat:hover, .dz-quote:hover, .dz-lumi:hover { transform: translateY(-4px); box-shadow: 0 28px 48px -14px rgba(139,92,246,.34), 0 8px 16px rgba(139,92,246,.1), inset 0 2px 0 rgba(255,255,255,.95); }
+.dz-card::before, .dz-stat::before, .dz-quote::before, .dz-lumi::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit; background: linear-gradient(125deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 42%); }
+.dz-card > *, .dz-quote > *, .dz-lumi > :not(.face) { position: relative; z-index: 1; }
+
+/* hero */
+.dz-hero { overflow: hidden; border-radius: 26px; min-height: 140px; padding: 1.6rem 2.2rem; background: linear-gradient(100deg, rgba(255,255,255,.96), rgba(242,234,253,.92) 45%, rgba(225,234,252,.88)); box-shadow: 0 26px 50px -16px rgba(139,92,246,.3), 0 6px 14px rgba(139,92,246,.08), inset 0 2px 0 #fff; }
+.dz-hero-art { position: absolute; right: 0; top: 0; height: 100%; width: 74%; object-fit: cover; object-position: right center; pointer-events: none; -webkit-mask-image: linear-gradient(to right, transparent, #000 38%); mask-image: linear-gradient(to right, transparent, #000 38%); }
+.dz-hero::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; background: linear-gradient(120deg, rgba(255,255,255,.45), rgba(255,255,255,0) 40%); }
+.dz-hero-text { position: relative; z-index: 2; max-width: 46%; }
+.dz-hero small { font-size: .85rem; color: #6f6b8c; }
+.dz-hero h1 { margin: .15rem 0 .45rem; display: flex; align-items: center; gap: .5rem; font-family: 'Playfair Display', serif; font-size: 2.1rem; line-height: 1.1; color: #2d2a4a; text-shadow: 0 2px 0 rgba(255,255,255,.9), 0 8px 16px rgba(139,92,246,.18); }
+.dz-hero p { margin: 0; font-size: .76rem; color: #7b7796; max-width: 330px; }
+
+/* baris atas */
+.dz-top { display: grid; gap: 1.1rem; grid-template-columns: minmax(0, 3.6fr) repeat(4, minmax(0, 1fr)); }
+
+/* kartu level (galaksi) */
+.dz-level { position: relative; overflow: hidden; container-type: inline-size; min-height: 236px; border-radius: 26px; color: #fff; border: 1px solid rgba(255,255,255,.5);
+  background:
+    radial-gradient(1.6px 1.6px at 8% 18%, #fff, transparent 60%), radial-gradient(1px 1px at 22% 62%, #fff, transparent 60%), radial-gradient(2px 2px at 36% 12%, rgba(255,255,255,.95), transparent 60%),
+    radial-gradient(1px 1px at 48% 78%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 61% 30%, #fff, transparent 60%), radial-gradient(1px 1px at 74% 70%, #fff, transparent 60%),
+    radial-gradient(2px 2px at 86% 16%, rgba(255,255,255,.95), transparent 60%), radial-gradient(1px 1px at 93% 52%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 15% 88%, #fff, transparent 60%),
+    radial-gradient(360px 200px at 18% 8%, rgba(120,170,255,.5), transparent 70%), radial-gradient(420px 240px at 88% 38%, rgba(226,150,232,.5), transparent 70%), radial-gradient(320px 200px at 50% 105%, rgba(255,184,214,.5), transparent 70%),
+    linear-gradient(120deg, #4b4fb9 0%, #6a5fd2 40%, #8d70de 70%, #c58ce3 100%);
+  box-shadow: 0 30px 56px -16px rgba(100,70,200,.5), 0 8px 18px rgba(124,92,214,.25), inset 0 2px 0 rgba(255,255,255,.5), inset 0 -16px 30px rgba(50,30,130,.22); }
+.dz-level::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit; background: linear-gradient(118deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 42%); }
+.dz-lvfl { position: absolute; right: 0; bottom: 0; height: 52%; width: auto; pointer-events: none; opacity: .92; }
+.dz-level-in { position: relative; z-index: 2; display: grid; align-items: center; gap: .7rem 1.3rem; padding: 1.5rem 1.5rem 1.8rem; grid-template-columns: 124px minmax(0, 1fr); grid-template-areas: "orb xp" "orb badge"; }
+.dz-orbwrap { grid-area: orb; position: relative; width: 124px; height: 124px; justify-self: center; }
+.dz-orb { position: relative; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: flex-start; justify-content: center; padding-top: 16px; overflow: visible;
+  background: radial-gradient(circle at 40% 28%, rgba(255,255,255,.75), rgba(255,255,255,.16) 72%); border: 2px solid rgba(255,255,255,.85);
+  box-shadow: 0 0 0 7px rgba(255,255,255,.14), 0 18px 34px rgba(40,20,90,.4), inset 0 10px 18px rgba(255,255,255,.5), inset 0 -14px 24px rgba(70,40,160,.3); }
+.dz-orb::before { content: ''; position: absolute; inset: -13px; border-radius: 50%; border: 1px dashed rgba(255,255,255,.5); }
+.dz-orb img { width: 62px; height: auto; filter: saturate(1.2) drop-shadow(0 6px 10px rgba(40,20,90,.4)); }
+.dz-lvtag { position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%); min-width: 98px; padding: .35rem .8rem; border-radius: 16px; text-align: center; color: #7a3fb8;
+  background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(246,236,255,.88)); border: 1px solid #fff; box-shadow: 0 10px 18px rgba(40,20,100,.3), inset 0 2px 0 #fff; }
+.dz-lvtag b { display: block; font-family: 'Playfair Display', serif; font-size: .82rem; line-height: 1.2; }
+.dz-lvtag span { font-family: 'Playfair Display', serif; font-size: .64rem; }
+.dz-xp { grid-area: xp; min-width: 0; }
+.dz-xp small { font-size: .72rem; opacity: .95; }
+.dz-xp .num { font-family: 'Playfair Display', serif; font-size: 2rem; line-height: 1.1; margin: .1rem 0 .5rem; text-shadow: 0 3px 8px rgba(30,15,90,.35); }
+.dz-xp .num em { font-style: normal; font-size: 1rem; opacity: .85; }
+.dz-bar { height: 11px; border-radius: 999px; background: rgba(40,20,110,.25); box-shadow: inset 0 3px 6px rgba(40,20,110,.35), 0 1px 0 rgba(255,255,255,.3); overflow: hidden; }
+.dz-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(180deg, #fff, #ffd3ea); box-shadow: 0 0 12px rgba(255,255,255,.8); }
+.dz-xp p { margin: .5rem 0 0; font-size: .66rem; opacity: .95; }
+.dz-badge { grid-area: badge; display: inline-flex; align-items: center; gap: .7rem; justify-self: start; padding: .45rem .95rem .45rem .5rem; border-radius: 18px; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.6); backdrop-filter: blur(10px);
+  box-shadow: 0 10px 20px rgba(60,30,140,.25), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -6px 12px rgba(255,255,255,.1); }
+.dz-badge .medal { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c9b6ff, #7b61d8); border: 2px solid #f3d98a; box-shadow: 0 6px 12px rgba(40,20,100,.35), inset 0 2px 0 rgba(255,255,255,.5); }
+.dz-badge small { display: block; font-size: .55rem; opacity: .9; }
+.dz-badge b { font-size: .76rem; }
+@container (min-width: 560px) {
+  .dz-level-in { grid-template-columns: 132px minmax(0, 1fr) auto; grid-template-areas: "orb xp badge"; gap: 1.5rem; }
+  .dz-xp { border-left: 1px solid rgba(255,255,255,.35); padding-left: 1.5rem; }
+  .dz-badge { justify-self: end; }
+}
+
+/* 4 kartu statistik */
+.dz-stat { overflow: hidden; min-height: 236px; padding: 1.1rem; border-radius: 24px; }
+.dz-stat > :not(.art) { position: relative; z-index: 2; }
+.dz-stat .ic { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin-bottom: .6rem; border-radius: 12px; background: linear-gradient(145deg, #fff, rgba(255,255,255,.7)); box-shadow: 0 8px 16px rgba(139,92,246,.18), inset 0 2px 0 #fff, inset 0 -3px 6px rgba(139,92,246,.1); }
+.dz-stat .ic svg { width: 19px; height: 19px; }
+.dz-stat .t { display: block; font-size: .72rem; color: #4f4b6b; line-height: 1.25; }
+.dz-stat b { display: block; margin-top: .45rem; font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #2d2a4a; line-height: 1.1; text-shadow: 0 2px 0 rgba(255,255,255,.9), 0 8px 14px rgba(139,92,246,.2); }
+.dz-stat em { font-style: normal; font-size: .58rem; color: #8b87a8; }
+.dz-stat::after { content: ''; position: absolute; right: -14px; bottom: -14px; width: 78%; height: 50%; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(255,255,255,.9), rgba(255,255,255,0)); }
+.dz-stat .art { position: absolute; z-index: 1; right: 8px; bottom: 8px; height: auto; max-width: none; pointer-events: none; filter: saturate(1.15) drop-shadow(0 8px 10px rgba(120,90,200,.28)); animation: dzFloat 4.5s ease-in-out infinite; }
+.dz-stat.t-ice .art { width: 112px; } .dz-stat.t-sage .art { width: 118px; } .dz-stat.t-amber .art { width: 98px; } .dz-stat.t-pink .art { width: auto; height: 74px; right: 12px; }
+@keyframes dzFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.t-ice { background: linear-gradient(160deg, rgba(220,236,249,.95), rgba(244,249,253,.7)); }
+.t-sage { background: linear-gradient(160deg, rgba(220,239,227,.95), rgba(244,250,246,.7)); }
+.t-amber { background: linear-gradient(160deg, rgba(246,236,210,.95), rgba(253,249,238,.7)); }
+.t-pink { background: linear-gradient(160deg, rgba(250,219,232,.95), rgba(254,244,248,.7)); }
+.t-pink b { white-space: nowrap; font-size: 1.9rem; }
+
+/* baris kartu */
+.dz-r3 { display: grid; gap: 1.1rem; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr); }
+.dz-mid { display: grid; gap: 1.1rem; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.dz-r5 { display: grid; gap: 1.1rem; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.2fr) minmax(0, 1fr); }
+.dz-card { overflow: hidden; border-radius: 24px; padding: 1.2rem; background: linear-gradient(140deg, rgba(255,255,255,.82), rgba(255,255,255,.46)); }
+.dz-card-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: .9rem; gap: .5rem; }
+.dz-card-h h3 { margin: 0; font-size: 1rem; color: #2d2a4a; }
+.dz-card-h a { font-size: .62rem; font-weight: 600; color: #6d3fc4; text-decoration: none; white-space: nowrap; }
+.dz-cap { margin: .9rem 0 0; text-align: center; font-size: .68rem; line-height: 1.5; color: #8b87a8; }
+
+/* kerangka kosong (ghost) */
+.dz-ghost { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; opacity: .75; }
+.gt { display: flex; flex-direction: column; gap: .35rem; padding: .4rem; border-radius: 14px; background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.95); box-shadow: inset 0 1px 0 #fff, 0 6px 14px rgba(139,92,246,.08); }
+.gc { display: block; height: 84px; border-radius: 10px; background: linear-gradient(135deg, rgba(207,232,247,.85), rgba(217,204,245,.85)); box-shadow: inset 0 2px 6px rgba(255,255,255,.6); }
+.gt:nth-child(2) .gc { background: linear-gradient(135deg, rgba(247,200,220,.85), rgba(217,204,245,.85)); }
+.gt:nth-child(3) .gc { background: linear-gradient(135deg, rgba(207,229,214,.85), rgba(207,232,247,.85)); }
+.gt:nth-child(4) .gc { background: linear-gradient(135deg, rgba(217,204,245,.85), rgba(247,200,220,.85)); }
+.gl { display: block; height: 6px; border-radius: 6px; background: rgba(167,139,250,.24); }
+.gl.sh { width: 60%; }
+.gb { display: block; height: 5px; border-radius: 5px; background: linear-gradient(90deg, rgba(167,139,250,.4) 30%, rgba(167,139,250,.15) 30%); }
+.dz-tl { display: flex; flex-direction: column; gap: .7rem; opacity: .75; }
+.gr { display: flex; align-items: center; gap: .6rem; }
+.gr .dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid #b9a8ee; background: #fff; flex-shrink: 0; }
+.gr .tile { width: 30px; height: 30px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, rgba(207,232,247,.9), rgba(217,204,245,.9)); box-shadow: inset 0 2px 0 rgba(255,255,255,.7), 0 4px 8px rgba(139,92,246,.1); }
+.gr .ln { flex: 1; display: flex; flex-direction: column; gap: .35rem; }
+
+/* buku rekomendasi (data nyata) */
+.dz-minis { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; }
+.dz-mini { position: relative; display: flex; flex-direction: column; text-decoration: none; padding: .35rem; border-radius: 14px; background: linear-gradient(140deg, rgba(255,255,255,.85), rgba(255,255,255,.5)); border: 1px solid rgba(255,255,255,.95);
+  box-shadow: 0 10px 20px -8px rgba(139,92,246,.22), inset 0 2px 0 #fff; transition: transform .25s ease, box-shadow .25s ease; }
+.dz-mini:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -8px rgba(139,92,246,.32), inset 0 2px 0 #fff; }
+.dz-mini .tag { font-style: normal; font-size: .5rem; font-weight: 600; color: #6d3fc4; padding: .1rem .15rem .3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-mini .cv { position: relative; height: 92px; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: .3rem; font-family: 'Playfair Display', serif; font-weight: 700; font-size: .55rem; color: #2d2a4a; box-shadow: 0 8px 14px -4px rgba(60,40,120,.3); }
+.dz-mini .cv img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dz-mini h4 { margin: .4rem 0 0; font-size: .58rem; color: #2d2a4a; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.dz-mini p { margin: .05rem 0 .35rem; font-size: .5rem; color: #8b87a8; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.dz-mini i { font-style: normal; text-align: center; font-size: .55rem; font-weight: 600; padding: .28rem; border-radius: 9px; color: #5b34a8; background: linear-gradient(180deg, #fff, rgba(217,204,245,.9)); box-shadow: 0 4px 8px rgba(139,92,246,.18), inset 0 1px 0 #fff; }
+
+/* tombol */
+.dz-btn { display: block; text-align: center; margin-top: .8rem; padding: .5rem; border-radius: 12px; font-size: .65rem; font-weight: 600; color: #5b34a8; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(217,204,245,.9)); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 8px 16px rgba(139,92,246,.2), inset 0 2px 0 #fff, inset 0 -3px 6px rgba(139,92,246,.12); }
+.dz-btn.off { opacity: .8; cursor: default; }
+.dz-btn.glass { color: #fff; background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.12)); border: 1px solid rgba(255,255,255,.6); box-shadow: 0 8px 16px rgba(10,20,70,.3), inset 0 1px 0 rgba(255,255,255,.7); }
+
+/* tantangan */
+.dz-chal .emb { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; margin: .2rem auto 0; border-radius: 50%; color: #7a63d1; background: radial-gradient(circle at 35% 30%, #fff, #e6dcfb); border: 2px solid #fff; box-shadow: 0 10px 18px rgba(139,92,246,.25), inset 0 -4px 8px rgba(139,92,246,.15); }
+.dz-chal .emb svg { width: 26px; height: 26px; }
+.dz-pbar { height: 8px; margin-top: .7rem; border-radius: 999px; background: rgba(167,139,250,.2); box-shadow: inset 0 2px 4px rgba(139,92,246,.15); }
+.dz-pbar i { display: block; width: 0; height: 100%; }
+
+/* galaxy */
+.dz-galaxy { position: relative; overflow: hidden; border-radius: 24px; min-height: 200px; color: #fff; border: 1px solid rgba(255,255,255,.35);
+  background: radial-gradient(240px 160px at 20% 40%, rgba(150,90,230,.4), transparent 70%), radial-gradient(260px 180px at 80% 30%, rgba(40,200,190,.35), transparent 70%), linear-gradient(160deg, #1f3a7a 0%, #24518a 45%, #1d2d6a 100%);
+  box-shadow: 0 24px 44px -14px rgba(30,40,100,.5), inset 0 2px 0 rgba(255,255,255,.35); transition: transform .25s ease; }
+.dz-galaxy:hover { transform: translateY(-4px); }
+.dz-galaxy h3 { position: absolute; top: 1.1rem; left: 1.2rem; margin: 0; font-size: 1rem; z-index: 3; text-shadow: 0 2px 8px rgba(0,0,40,.5); }
+.dz-galaxy img { position: absolute; pointer-events: none; height: auto; }
+.g-neb { left: 6px; top: 40px; width: 46%; }
+.g-const { right: 0; top: 8px; width: 56%; }
+.g-flow { right: 0; bottom: 0; width: 40%; }
+.g-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 2rem 1.2rem 1rem; background: linear-gradient(to top, rgba(14,22,64,.88), rgba(14,22,64,0)); }
+.g-foot b { display: block; font-size: .72rem; line-height: 1.3; max-width: 70%; }
+.g-foot p { margin: .15rem 0 0; font-size: .58rem; opacity: .9; max-width: 70%; }
+.g-foot .dz-btn { max-width: 70%; margin-top: .55rem; }
+
+/* achievement */
+.dz-ach { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; }
+.dz-ach div { display: flex; flex-direction: column; align-items: center; text-align: center; padding: .65rem .3rem; border-radius: 16px; background: linear-gradient(140deg, rgba(255,255,255,.85), rgba(255,255,255,.5)); border: 1px solid rgba(255,255,255,.95);
+  box-shadow: 0 10px 20px -8px rgba(139,92,246,.2), inset 0 2px 0 #fff; transition: transform .25s ease; }
+.dz-ach div:hover { transform: translateY(-4px); }
+.dz-ach i { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin-bottom: .4rem; border-radius: 14px; color: var(--c, #7a63d1);
+  background: linear-gradient(145deg, #fff, rgba(255,255,255,.6)); box-shadow: 0 8px 14px rgba(139,92,246,.2), inset 0 2px 0 #fff, inset 0 -4px 8px rgba(139,92,246,.1); }
+.dz-ach i svg { width: 19px; height: 19px; }
+.dz-ach b { font-size: .6rem; color: #4f4b6b; }
+.dz-ach small { font-size: .5rem; color: #8b87a8; }
+
+/* quote */
+.dz-quote { overflow: hidden; display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.3rem 1.3rem 1.3rem 5.5rem; border-radius: 24px;
+  background: radial-gradient(220px 140px at 95% 85%, rgba(207,232,247,.8), transparent 70%), linear-gradient(120deg, rgba(239,230,251,.9), rgba(228,236,251,.8)); }
+.dz-quote .q-art { position: absolute; left: 0; top: 0; height: 100%; width: auto; z-index: 0; pointer-events: none; }
+.dz-quote p { margin: 0 0 .5rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: .85rem; line-height: 1.5; color: #4f4b6b; }
+.dz-quote small { font-size: .62rem; color: #8b87a8; font-style: italic; }
+
+/* Lumi */
+.dz-lumi { overflow: hidden; padding: 1.2rem; border-radius: 24px; background: linear-gradient(135deg, rgba(223,238,251,.92), rgba(236,227,251,.88) 60%, rgba(248,223,236,.9)); }
+.dz-lumi h3 { margin: 0; font-size: 1.05rem; color: #2d2a4a; }
+.dz-lumi p { margin: .1rem 0 1.4rem; font-size: .62rem; color: #7b7796; }
+.dz-lumi .face { position: absolute; top: 0; right: 0; width: 52%; max-width: 120px; height: auto; z-index: 0; pointer-events: none; }
+.dz-lumi-in { display: flex; align-items: center; gap: .5rem; padding: .35rem .4rem .35rem .8rem; border-radius: 999px; background: rgba(255,255,255,.85); border: 1px solid rgba(217,204,245,.95); box-shadow: inset 0 2px 5px rgba(139,92,246,.08), 0 6px 14px rgba(139,92,246,.12); }
+.dz-lumi-in .s svg { width: 14px; height: 14px; color: #a8a3c2; }
+.dz-lumi-in .tx { flex: 1; font-size: .64rem; color: #a8a3c2; }
+.dz-lumi-in .go { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #8b6fe0, #b79bef); box-shadow: 0 6px 12px rgba(123,97,216,.4), inset 0 1px 0 rgba(255,255,255,.5); }
+.dz-lumi-in .go svg { width: 13px; height: 13px; }
+
+/* responsif */
+@media (max-width: 1250px) {
+  .dz-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dz-level { grid-column: span 2; }
+  .dz-r3, .dz-r5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .dz-r3, .dz-r5, .dz-mid { grid-template-columns: 1fr; }
+  .dz-hero-text { max-width: 100%; }
+}
+/* ===== V2-24 : KACA TERLIHAT + GLOW + CUTOUT BERSIH ===== */
+
+/* --- Latar berwarna cerah di belakang kaca (supaya efek kaca benar-benar kelihatan) --- */
+.dz::before { inset: -40px -30px; filter: blur(5px);
+  background:
+    radial-gradient(300px 300px at 8% 16%, rgba(110,185,255,.8), transparent 70%),
+    radial-gradient(280px 280px at 95% 9%, rgba(255,140,200,.8), transparent 70%),
+    radial-gradient(320px 320px at 34% 33%, rgba(185,140,255,.72), transparent 70%),
+    radial-gradient(300px 300px at 80% 41%, rgba(255,190,140,.62), transparent 70%),
+    radial-gradient(340px 340px at 10% 62%, rgba(255,150,210,.68), transparent 70%),
+    radial-gradient(320px 320px at 58% 68%, rgba(120,220,230,.62), transparent 70%),
+    radial-gradient(300px 300px at 93% 80%, rgba(185,140,255,.74), transparent 70%),
+    radial-gradient(320px 320px at 40% 97%, rgba(255,200,150,.58), transparent 70%); }
+
+/* --- Kaca: tembus pandang, blur kuat, kilau diagonal, tepi bercahaya --- */
+.dz-card, .dz-stat, .dz-quote, .dz-lumi, .dz-hero { backdrop-filter: blur(16px) saturate(1.9) brightness(1.05); -webkit-backdrop-filter: blur(16px) saturate(1.9) brightness(1.05);
+  box-shadow: 0 26px 46px -16px rgba(120,90,220,.4), 0 0 38px rgba(190,160,255,.32), inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 24px rgba(255,255,255,.38); }
+.dz-card { background: linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.24)); }
+.dz-hero { background: linear-gradient(100deg, rgba(255,255,255,.82), rgba(240,232,253,.55) 45%, rgba(220,232,252,.45)); }
+.dz-quote { background: radial-gradient(220px 140px at 95% 85%, rgba(190,225,250,.7), transparent 70%), linear-gradient(120deg, rgba(240,230,252,.68), rgba(228,236,252,.45)); }
+.dz-lumi { background: linear-gradient(135deg, rgba(223,238,251,.7), rgba(236,227,251,.55) 60%, rgba(248,223,236,.65)); }
+.t-ice { background: linear-gradient(160deg, rgba(190,222,252,.78), rgba(235,246,255,.38)); box-shadow: 0 26px 42px -16px rgba(100,160,255,.5), 0 0 36px rgba(130,185,255,.5), inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 24px rgba(255,255,255,.38); }
+.t-sage { background: linear-gradient(160deg, rgba(190,236,210,.78), rgba(236,250,242,.38)); box-shadow: 0 26px 42px -16px rgba(80,190,140,.48), 0 0 36px rgba(120,215,170,.48), inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 24px rgba(255,255,255,.38); }
+.t-amber { background: linear-gradient(160deg, rgba(255,230,170,.78), rgba(255,247,225,.38)); box-shadow: 0 26px 42px -16px rgba(230,170,60,.48), 0 0 36px rgba(255,205,110,.5), inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 24px rgba(255,255,255,.38); }
+.t-pink { background: linear-gradient(160deg, rgba(255,196,222,.8), rgba(255,240,247,.38)); box-shadow: 0 26px 42px -16px rgba(240,100,160,.48), 0 0 36px rgba(255,150,195,.5), inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 24px rgba(255,255,255,.38); }
+.dz-level { box-shadow: 0 34px 60px -18px rgba(100,70,220,.6), 0 0 60px rgba(160,120,255,.55), inset 0 1px 1px rgba(255,255,255,.7), inset 0 -16px 30px rgba(50,30,130,.25); }
+.dz-galaxy { box-shadow: 0 28px 48px -16px rgba(30,60,160,.6), 0 0 44px rgba(90,170,255,.45), inset 0 1px 1px rgba(255,255,255,.5); }
+
+.dz-card::before, .dz-stat::before, .dz-quote::before, .dz-lumi::before, .dz-hero::before, .dz-level::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.66) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,0) 33.5%), radial-gradient(90% 60% at 0% 0%, rgba(255,255,255,.45), transparent 60%); }
+.dz-level::before { background: linear-gradient(135deg, rgba(255,255,255,.4) 0%, rgba(255,255,255,.1) 30%, rgba(255,255,255,0) 31.5%), radial-gradient(80% 55% at 0% 0%, rgba(255,255,255,.3), transparent 60%); }
+
+/* tepi kaca bercahaya (warna pelangi tipis) */
+.dz-card::after, .dz-stat::after, .dz-quote::after, .dz-lumi::after, .dz-hero::after, .dz-level::after, .dz-galaxy::after { content: ''; position: absolute; inset: 0; width: auto; height: auto; z-index: 3; pointer-events: none; border-radius: inherit; padding: 1.5px;
+  background: linear-gradient(135deg, rgba(255,255,255,.98), rgba(190,160,255,.45) 38%, rgba(255,160,210,.55) 68%, rgba(255,255,255,.95));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
+.dz-stat:hover { box-shadow: 0 34px 54px -16px rgba(120,90,220,.5), 0 0 50px rgba(190,160,255,.55), inset 0 1px 1px rgba(255,255,255,.95); }
+.dz-card:hover, .dz-quote:hover, .dz-lumi:hover { box-shadow: 0 32px 54px -16px rgba(120,90,220,.5), 0 0 50px rgba(190,160,255,.5), inset 0 1px 1px rgba(255,255,255,.95); }
+
+/* --- Gambar: latar putih dilebur (multiply) supaya tidak ada kotak --- */
+.dz-stat .art { mix-blend-mode: multiply; filter: none; -webkit-mask-image: none; mask-image: none; }
+.dz-stat.t-ice .art { width: 124px; right: 6px; bottom: 6px; }
+.dz-stat.t-sage .art { width: 128px; right: 4px; bottom: 6px; }
+.dz-stat.t-amber .art { width: 108px; right: 8px; bottom: 6px; }
+.dz-stat.t-pink .art { width: auto; height: 78px; right: 12px; bottom: 6px; }
+body.tl-body-bg .tl-brand { z-index: auto; }
+.tl-logo-img { width: 52px; mix-blend-mode: multiply; filter: none; }
+.dz-quote { padding-left: 6.8rem; }
+.dz-quote .q-art { mix-blend-mode: multiply; left: -4px; top: auto; bottom: 0; height: 96%; width: auto; }
+.dz-orb img { width: 68px; filter: drop-shadow(0 6px 10px rgba(40,20,90,.4)); }
+.dz-orb { padding-top: 14px; }
+.dz-galaxy img { mix-blend-mode: screen; }
+
+/* --- Menu aktif menyala --- */
+body.tl-body-bg .tl-nav .tl-link.active { box-shadow: 0 12px 26px rgba(167,139,250,.38), 0 0 24px rgba(244,143,177,.45), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -4px 8px rgba(167,139,250,.15); }
+
+
+
+
+
+=== DAFTAR MIGRASI ===
+0001_01_01_000000_create_users_table.php
+0001_01_01_000001_create_cache_table.php
+0001_01_01_000002_create_jobs_table.php
+2026_11_08_000001_add_role_and_nisn_to_users_table.php
+2026_11_08_000002_create_categories_table.php
+2026_11_08_000003_create_books_table.php
+2026_11_08_000004_create_loans_table.php
+2026_11_08_000005_add_fine_to_loans_table.php
+2026_11_08_000006_create_loan_renewals_table.php
+2026_11_08_000007_create_book_reviews_table.php
+2026_11_08_054835_create_reviews_table.php
+2026_11_08_054836_create_challenges_table.php
+
+=== DAFTAR public\images\ds ===
+ad_clock.png  (9016 byte)
+ad_deco.png  (45827 byte)
+ad_hero.png  (75457 byte)
+crystal.orig.png  (16101 byte)
+crystal.png  (220059 byte)
+flowers.orig.png  (26809 byte)
+flowers.png  (371560 byte)
+galaxy.png  (65365 byte)
+gconst.webp  (24648 byte)
+gem.webp  (16994 byte)
+gflow.webp  (12790 byte)
+gneb.webp  (14972 byte)
+hero.png  (211892 byte)
+hero.webp  (45026 byte)
+logo.png  (13275 byte)
+logo.webp  (25142 byte)
+lumi.orig.png  (17352 byte)
+lumi.png  (234965 byte)
+lumi.webp  (13110 byte)
+lvfl.webp  (51434 byte)
+quote.webp  (32192 byte)
+s1.orig.png  (10580 byte)
+s1.png  (137670 byte)
+s1.webp  (14452 byte)
+s2.orig.png  (10619 byte)
+s2.png  (137950 byte)
+s2.webp  (16920 byte)
+s3.orig.png  (9537 byte)
+s3.png  (126381 byte)
+s3.webp  (18110 byte)
+s4.orig.png  (8132 byte)
+s4.png  (102225 byte)
+s4.webp  (15664 byte)
+sbart.webp  (99868 byte)
+sidebar.png  (96705 byte)
+
+=== DAFTAR public\img\landing ===
+auth-edge.svg  (8741 byte)
+auth-login-back.svg  (16349 byte)
+auth-login-front.svg  (12838 byte)
+auth-login.svg  (12459 byte)
+auth-register-back.svg  (14519 byte)
+auth-register-front.svg  (14741 byte)
+auth-register.svg  (21544 byte)
+BACA-SAYA.txt  (706 byte)
+castle.png  (511856 byte)
+castle.svg  (15277 byte)
+challenge.svg  (2920 byte)
+footer.svg  (2672 byte)
+hero.svg  (9116 byte)
+logo.svg  (1043 byte)
+lumi.svg  (2708 byte)
+
+=== DAFTAR public\img ===
+
+=== DAFTAR public\images ===
+book-glow.png  (809589 byte)
+book-open.png  (221201 byte)
+book-stack.png  (752300 byte)
+castle.png  (715755 byte)
+harp.png  (392061 byte)
+xp-castle.png  (378727 byte)

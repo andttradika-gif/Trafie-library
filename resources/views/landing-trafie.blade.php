@@ -310,10 +310,10 @@ a{color:inherit;text-decoration:none}
     <link rel="stylesheet" href="{{ asset('css/landing-polish.css') }}?v={{ filemtime(public_path('css/landing-polish.css')) }}">
     <script src="{{ asset('js/landing-polish.js') }}?v={{ filemtime(public_path('js/landing-polish.js')) }}" defer></script>
     <!-- trafie-icon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=3">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=3">
-    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=3">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=3">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=4">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=4">
+    <link rel="shortcut icon" href="/favicon.ico?v=4">
     <meta name="theme-color" content="#a78bfa">
     <!-- /trafie-icon -->
 <style>
